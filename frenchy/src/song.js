@@ -280,6 +280,31 @@ export default {
               ]
             }
           ]
+        },
+        {
+          id: 2,
+          bars: [
+            {
+              id: 9,
+              chords: [
+                {
+                  beats: '1234',
+                  chord: 'Adim',
+                  isStop: false
+                }
+              ]
+            },
+            {
+              id: 10,
+              chords: [
+                {
+                  beats: '1234',
+                  chord: 'Bbm',
+                  isStop: true
+                }
+              ]
+            }
+          ]
         }
       ]
     },

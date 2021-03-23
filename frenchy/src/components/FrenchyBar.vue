@@ -1,7 +1,7 @@
 <template>
   <div class="bar">
     <svg class="shading" viewBox="0 0 100 100">
-      <g class="stops" fill="silver">
+      <g class="stops" fill="var(--stop-color)">
         <rect v-if="stopOn(1) && !isSlashed" x="0" y="0" width="50" height="50"></rect>
         <rect v-if="stopOn(2) && !isSlashed" x="50" y="0" width="50" height="50"></rect>
         <rect v-if="stopOn(3) && !isSlashed" x="0" y="50" width="50" height="50"></rect>
@@ -9,7 +9,7 @@
         <path v-if="stopOn(1) && stopOn(2) && isSlashed" d="M 0 0 100 0 0 100 0 0"></path>
         <path v-if="stopOn(3) && stopOn(4) && isSlashed" d="M 100 0 100 100 0 100 100 0"></path>
       </g>
-      <g class="borders" fill="transparent" stroke="navy" stroke-width="2px">
+      <g class="borders" fill="transparent" stroke="var(--gridline-color)" stroke-width="2px">
         <path d="M 0 0 100 0 100 100 0 100 0 0"></path>
         <path v-if="blocks==='╱'" d="M 100 0, 0 100"></path>
         <path v-if="blocks==='┘'" d="M 50 0, 50 50, 0 50"></path>

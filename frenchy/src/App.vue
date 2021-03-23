@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="song">
     <div class="stanza" v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
       <div class="line" v-for="(line, lineIdx) in stanza.lines" :key="lineIdx">
         <frenchy-bar v-for="bar in line.bars" :key="bar.id" :barData="bar"></frenchy-bar>
@@ -28,16 +28,30 @@ import song from './song.js'
     padding: 10px;
   }
 
+  :root {
+    --gridline-color: black;
+    --stop-color: #DDD;
+  }
+
+  .song {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5em;
+    align-items: center;
+  }
+
   .stanza {
     display: inline-flex;
     flex-direction: column;
     align-items: start;
-    margin-bottom: 1em;
-    box-shadow: 4px 4px cadetblue;
-    border: 1px solid navy;
+    /* box-shadow: 4px 4px #EEE; */
+    filter: drop-shadow(2px 2px black) drop-shadow(-2px -2px black);
+    /* border: 1px solid var(--gridline-color); */
+    /* background: white; */
   }
   .line {
     display: inline-flex;
+    background: white;
   }
   .bar {
     width: 5rem;

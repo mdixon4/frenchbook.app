@@ -4,7 +4,7 @@
     'stop': isStop
    }]">
     <div class="chord-scaffold">
-      <rendered-chord :shape="shape">{{ chord }}</rendered-chord>
+      <reprise-rendered-chord :shape="shape">{{ chord }}</reprise-rendered-chord>
     </div>
   </div>
 </template>
@@ -62,11 +62,12 @@ export default {
   grid-template-rows: 1fr minmax(8fr, max-content) 1fr;
 }
 
+:root {
+  --chord-size: 25px;
+}
 
-
-rendered-chord {
+rendered-chord, reprise-rendered-chord {
   white-space: nowrap;
-  font-size: 25px;
   height: 100%;
   /* background: #4F9A; */
   display: flex;
@@ -75,17 +76,14 @@ rendered-chord {
   /* outline: 1px dashed blue; */
   grid-area: content;
 }
-.stop rendered-chord {
-  text-shadow: silver 1px 1px, silver -1px -1px;
+.stop rendered-chord, .stop reprise-rendered-chord {
+  text-shadow: var(--stop-color) 1px 1px, var(--stop-color) -1px -1px;
 }
 
 
 .b1234 {
   display: flex;
   justify-content: center;
-}
-.b1234 rendered-chord {
-  font-size: 40px;
 }
 
 .b1 .chord-scaffold {
