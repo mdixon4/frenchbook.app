@@ -268,18 +268,26 @@ class RepriseRenderedChord extends HTMLElement {
     
     this.innerHTML = `
       <style>
+        .pori.rendered-chord {
+          font-family: 'Pori Chords Std';
+          font-size: calc(var(--chord-size) * 0.9);
+        }
+        .pori.fullSquare {
+          font-size: calc(var(--chord-size) * 1.5);
+        }
+
         .rendered-chord {
           font-family: 'Reprise Chords';
           line-height: 0.1;
           display: inline-block;
           position: relative;
-          font-size: calc(var(--chord-size) * 1.1);
+          font-size: calc(var(--chord-size) * 1.2);
           margin: 0 auto;
           transform: translateY(0.1em);
         }
 
         .fullSquare {
-          font-size: calc(var(--chord-size) * 1.7);
+          font-size: calc(var(--chord-size) * 1.9);
         }
         
         
