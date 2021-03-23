@@ -264,7 +264,6 @@ class RepriseRenderedChord extends HTMLElement {
     if (chord.alterations) outputStr += `<span class="alterations">${ chord.alterationSymbols }</span>`
     if (chord.bass) outputStr += `<span class="bass-slash">/</span><span class="bass">${ chord.bassSymbols }</span>`
     innerDiv.innerHTML = outputStr
-    console.log(innerDiv)
     
     this.innerHTML = `
       <style>

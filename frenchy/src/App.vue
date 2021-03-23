@@ -1,18 +1,28 @@
 <template>
-  <div class="song">
-    <div class="stanza" v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
-      <div class="line" v-for="(line, lineIdx) in stanza.lines" :key="lineIdx">
-        <frenchy-bar v-for="bar in line.bars" :key="bar.id" :barData="bar"></frenchy-bar>
+  <div>
+    <div class="title">
+      {{ song.metadata.title }}
+    </div>
+
+    <div class="song">
+      <div class="stanza" v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
+        <div class="line" v-for="(line, lineIdx) in stanza.lines" :key="lineIdx">
+          <frenchy-bar v-for="bar in line.bars" :key="bar.id" :barData="bar"></frenchy-bar>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+import { songify } from './songify.js'
 import FrenchyBar from './components/FrenchyBar.vue'
 
-import song from './song.js'
+import songText from './song3.js'
 
+let song = computed(() => songify(songText))
+// let title = song.metadata.title
 
 </script>
 
@@ -26,6 +36,14 @@ import song from './song.js'
     font-family: 'Century Schoolbook';
     font-size: 16px;
     padding: 10px;
+  }
+
+  .title {
+    display: block;
+    border: 3px solid black;
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
   }
 
   :root {
