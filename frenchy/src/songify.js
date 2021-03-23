@@ -8,29 +8,35 @@ const parseBar = barText => {
     isStop: /\.$/.test(chord)
   }))
 
+  console.log(chords)
+
   if (chords.length === 1) {
-    return [
-      {
-        beats: '1234',
-        chord: chords[0].chordText,
-        isStop: chords[0].isStop
-      }
-    ]
+    return {
+      chords: [
+        {
+          beats: '1234',
+          chord: chords[0].chordText,
+          isStop: chords[0].isStop
+        }
+      ]
+    }
   }
 
   if (chords.length === 2) {
-    return [
-      {
-        beats: '12',
-        chord: chords[0].chordText,
-        isStop: chords[0].isStop
-      },
-      {
-        beats: '34',
-        chord: chords[1].chordText,
-        isStop: chords[1].isStop
-      }
-    ]
+    return {
+      chords: [
+        {
+          beats: '12',
+          chord: chords[0].chordText,
+          isStop: chords[0].isStop
+        },
+        {
+          beats: '34',
+          chord: chords[1].chordText,
+          isStop: chords[1].isStop
+        }
+      ]
+    }
   }
 
   if (chords.length === 4) {
@@ -46,9 +52,76 @@ const parseBar = barText => {
       }
       return chords
     }, [])
-    return chords
+    return  {
+      chords
+    }
+  }
+
+  return {
+    chords: []
   }
 }
+
+
+const parseLine = lineText => {
+
+  // if line starts with spaces, align right not left
+  let align = /^\s+/.test(lineText) ? 'right' : 'left'
+
+  if (!/\s*\|/.test(lineText)) {
+    // Line is not a line of bars
+    return {
+      isText: true,
+      bars: [],
+      align,
+      text: lineText.trim()
+    }
+  }
+
+  let bars = lineText
+    .replace(/^\s*\|/, '')
+    .replace(/\|\s*$/, '')
+    .split('|')
+    .map(barText => barText.trim())
+  
+  bars = bars.map((bar, idx) => ({
+    id: idx + 1,
+    ...parseBar(bar)
+  }))
+
+  // if line starts with spaces and then a barline, align right not left
+  // let align = /^\s+\|/.test(lineText) ? 'right' : 'left'
+  
+  return {
+    isText: false,
+    bars,
+    align,
+    text: ''
+  }
+
+}
+
+
+const parseStanza = stanzaText => {
+
+  // let textLines = stanzaText
+  //   .split(/\n+/)
+  //   .filter(line => line.trim.length)
+
+  // // lines with bars, first non-whitespace character is |
+  // let linesWithBars = textLines.filter(/^\s*|/.test(textLines))
+
+
+
+  return {
+    lines: stanzaText.split(/\n+/).filter(line => line.trim().length).map((line, idx) => ({
+      id: idx + 1,
+      ...parseLine(line)
+    }))
+  }
+
+}
+
 
 export const songify = (songText) => {
   if (!/^\=+$/m.test(songText)) {
@@ -71,13 +144,7 @@ export const songify = (songText) => {
   stanzas = stanzas
     .map((stanza, idx) => ({
       id: idx + 1,
-      lines: stanza.split(/\n+/).filter(line => line.trim().length).map((line, idx) => ({
-        id: idx + 1,
-        bars: line.split('|').filter(bar => bar.trim().length).map((bar, idx) => ({
-          id: idx + 1,
-          chords: parseBar(bar)
-        }))
-      }))
+      ...parseStanza(stanza)
     }))
 
   console.log(stanzas)

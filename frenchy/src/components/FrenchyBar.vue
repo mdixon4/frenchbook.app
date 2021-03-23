@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     stopOn(beatNum) {
-      return this.chords.find(c => c.beats.includes(beatNum)).isStop
+      return this.chords.length && this.chords.find(c => c.beats.includes(beatNum)).isStop
     }
   },
   created () {

@@ -1,4 +1,4 @@
-<template>
+d<template>
   <div>
     <div class="title">
       {{ song.metadata.title }}
@@ -6,9 +6,14 @@
 
     <div class="song">
       <div class="stanza" v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
-        <div class="line" v-for="(line, lineIdx) in stanza.lines" :key="lineIdx">
-          <frenchy-bar v-for="bar in line.bars" :key="bar.id" :barData="bar"></frenchy-bar>
-        </div>
+        <template v-for="(line, lineIdx) in stanza.lines">
+          <div v-if="line.isText" class="line-text" :key="`text${lineIdx}`" :class="{ 'align-right': line.align === 'right' }">
+            {{ line.text }}
+          </div>
+          <div v-else class="line" :key="lineIdx" :class="{ 'align-right': line.align === 'right' }">
+            <frenchy-bar v-for="bar in line.bars" :key="bar.id" :barData="bar"></frenchy-bar>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -40,10 +45,11 @@ let song = computed(() => songify(songText))
 
   .title {
     display: block;
-    border: 3px solid black;
+    border: 3px solid var(--gridline-color);
     text-align: center;
-    padding: 2rem;
+    padding: 1rem;
     margin-bottom: 2rem;
+    font-size: 2rem;
   }
 
   :root {
@@ -63,13 +69,19 @@ let song = computed(() => songify(songText))
     flex-direction: column;
     align-items: start;
     /* box-shadow: 4px 4px #EEE; */
-    filter: drop-shadow(2px 2px black) drop-shadow(-2px -2px black);
+    /* filter: drop-shadow(2px 0 var(--gridline-color)) drop-shadow(-2px 0 var(--gridline-color)) drop-shadow(0 -2px var(--gridline-color)) drop-shadow(0 2px var(--gridline-color)); */
     /* border: 1px solid var(--gridline-color); */
     /* background: white; */
   }
   .line {
     display: inline-flex;
     background: white;
+  }
+  .line.align-right {
+    align-self: end;
+  }
+  .line-text.align-right {
+    align-self: end;
   }
   .bar {
     width: 5rem;

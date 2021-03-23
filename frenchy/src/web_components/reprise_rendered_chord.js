@@ -87,7 +87,7 @@ const MODIFIER_SYMBOLS = {
   // '7': '<span class="mod-digit">&#xe197;</span>',
   // '8': '<span class="mod-digit">&#xe198;</span>',
   // '9': '<span class="mod-digit">&#xe199;</span>',
-  // halfdim: '<span class="mod-symbol">&#xe18f;</span>',
+  halfdim: '<span class="mod-symbol">Ø</span>',
   // '^': '<span class="mod-symbol mod-triangle">&#xe18a;</span>',
   dim: '<span class="mod-symbol">º</span>',
 }
