@@ -1,14 +1,18 @@
+const quotedRegex = /\"([^\"]*)\"/
+
 const parseBar = barText => {
 
-  let chords = barText.split(/\s+/)
+  let annotationsMatch = barText.match(quotedRegex)
+  let annotations = annotationsMatch ? annotationsMatch[1] : ''
+
+  let chords = barText.replace(quotedRegex, ' ').split(/\s+/)
     .map(chord => chord.trim())
     .filter(Boolean)
-  chords = chords.map(chord => ({
+  
+    chords = chords.map(chord => ({
     chordText: chord.replace(/\.$/, ''),
     isStop: /\.$/.test(chord)
   }))
-
-  console.log(chords)
 
   if (chords.length === 1) {
     return {
@@ -16,9 +20,10 @@ const parseBar = barText => {
         {
           beats: '1234',
           chord: chords[0].chordText,
-          isStop: chords[0].isStop
+          isStop: chords[0].isStop,
         }
-      ]
+      ],
+      annotation: annotations
     }
   }
 
@@ -35,7 +40,8 @@ const parseBar = barText => {
           chord: chords[1].chordText,
           isStop: chords[1].isStop
         }
-      ]
+      ],
+      annotation: annotations
     }
   }
 
@@ -53,47 +59,70 @@ const parseBar = barText => {
       return chords
     }, [])
     return  {
-      chords
+      chords,
+      annotation: annotations
     }
   }
 
   return {
-    chords: []
+    chords: [],
+    annotation: annotations
   }
 }
 
 
 const parseLine = lineText => {
 
+  let isRhythms = false
+
   // if line starts with spaces, align right not left
   let align = /^\s+/.test(lineText) ? 'right' : 'left'
 
-  if (!/\s*\|/.test(lineText)) {
+  // ignore annotations to test the line structure
+  if (!/^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))) {
     // Line is not a line of bars
     return {
+      isBars: false,
       isText: true,
+      isRhythms: false,
       bars: [],
       align,
       text: lineText.trim()
     }
   }
 
+  if (lineText.startsWith('rhythms:')) {
+    // Rhythms, that pertain to the previous line
+    isRhythms = true
+  }
+
   let bars = lineText
+    .replace(/^rhythms:/, '')
+    .replace(/^\s*\"[^\"]\"\s*/, '') // remove any pre-cursor annotations
     .replace(/^\s*\|/, '')
     .replace(/\|\s*$/, '')
     .split('|')
     .map(barText => barText.trim())
   
-  bars = bars.map((bar, idx) => ({
-    id: idx + 1,
-    ...parseBar(bar)
-  }))
+  if (isRhythms) {
+    bars = bars.map((bar, idx) => ({
+      id: idx + 1,
+      rhythms: bar
+    }))
+  } else {
+    bars = bars.map((bar, idx) => ({
+      id: idx + 1,
+      ...parseBar(bar)
+    }))
+  }
 
   // if line starts with spaces and then a barline, align right not left
   // let align = /^\s+\|/.test(lineText) ? 'right' : 'left'
-  
+  console.log(bars)
   return {
+    isBars: true,
     isText: false,
+    isRhythms,
     bars,
     align,
     text: ''
@@ -102,22 +131,94 @@ const parseLine = lineText => {
 }
 
 
+const totalPerspectiveVortexForBars = (bars, lineLayout, lineIdx) => {
+
+  bars = bars.map((bar, barIdx) => {
+    
+    let startAt = lineLayout[lineIdx].indexOf('1')
+    let myPos = startAt + barIdx
+    let isBarAbove = lineIdx > 0 
+      && lineLayout[lineIdx - 1].charAt(myPos) === '1'
+    let isBarBelow = lineIdx < lineLayout.length - 1 
+      && lineLayout[lineIdx + 1].charAt(myPos) === '1'
+
+    return {
+      ...bar,
+      isLeftmost: barIdx === 0,
+      isRightmost: barIdx === bars.length - 1,
+      isTopmost: !isBarAbove,
+      isBottommost: !isBarBelow
+    }
+  })
+
+  return bars
+}
+
+const isLineMusic = lineText => {
+  // Line is music if it has unquoted | symbols
+  // For now this is a satisfactory definition but no doubt I'll have to change it
+  // Also it can't start with rhythms
+  // if (lineText.startsWith('rhythms:')) {
+  //   return false
+  // }
+  return /^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))
+}
+
+
 const parseStanza = stanzaText => {
 
-  // let textLines = stanzaText
-  //   .split(/\n+/)
-  //   .filter(line => line.trim.length)
+  let allLines = stanzaText.split(/\n+/).filter(line => line.trim().length)
+  
+  let title = isLineMusic(allLines[0]) ? '' : allLines[0].trim()
 
-  // // lines with bars, first non-whitespace character is |
-  // let linesWithBars = textLines.filter(/^\s*|/.test(textLines))
+  let coordinates = title.match(/{(\-?[\d\.]*),(\-?[\d\.]*)}/)
+  if (coordinates) coordinates = { x: parseInt(coordinates[1]), y: parseInt(coordinates[2]) }
 
+  title = title.replace(/{(\-?[\d\.]*),(\-?[\d\.]*)}/, '').trim()
 
+  let lines = []
+  allLines.forEach((line, idx) => {
+    if (!isLineMusic(line)) return
+    let l = parseLine(line)
+    if (l.isRhythms) {
+      console.log(l)
+    }
+    if (l.isRhythms && lines.length > 0) {
+      lines[lines.length - 1].rhythms = l.bars
+    }
+    else lines.push({
+      id: lines.length + 1,
+      ...l
+    })
+  })
+
+  // let lines = allLines.filter(isLineMusic).map((line, idx) => ({
+  //   id: idx + 1,
+  //   ...parseLine(line)
+  // }))
+
+  let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
+  let lineLayout = lines.map(line => { 
+    let on = '1'.repeat(line.bars.length)
+    let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
+    return line.align === 'right' ? `${off}${on}` : `${on}${off}`
+  })
+
+  lines = lines.map((line, lineIdx) => ({
+    ...line,
+    bars: totalPerspectiveVortexForBars(line.bars, lineLayout, lineIdx)
+  }))
 
   return {
-    lines: stanzaText.split(/\n+/).filter(line => line.trim().length).map((line, idx) => ({
-      id: idx + 1,
-      ...parseLine(line)
-    }))
+    title,
+    lines,
+    lineLayout,
+    maxWidth,
+    columnStart: (coordinates && coordinates.x > -1) ? coordinates.x + 1 : Math.max(9 - (maxWidth), 0),
+    columnSpan: maxWidth * 2,
+    rowStart: (coordinates && coordinates.y > -1) ? coordinates.y + 1 : null,
+    rowSpan: lines.length * 2,
+
   }
 
 }
@@ -136,7 +237,6 @@ export const songify = (songText) => {
       acc[item[1].trim()] = item[2].trim()
       return acc
     }, {})
-  console.log(metadata)
 
   let parts = songText.split(/^\~+$/m)
   let stanzas = parts.slice(1).filter(part => part.trim().length)

@@ -34,8 +34,10 @@ const RENDER_PARAMS = {
 const DEFAULT_SYMBOLS = {
   // '##': '&#x1d12a;',
   // '#': '&#x266f;',
+  '#': '&lt;',
   // bb: '&#x1d12b;',
   // b: '&#x266d;',
+  b: '&gt;',
   // // ma: '&#xe180;',
   // ma: '&#xe18a;', // triangle
   // // mi: '&#xe181;',
@@ -57,8 +59,10 @@ const DEFAULT_SYMBOLS = {
 const BASS_SYMBOLS = {
   // '##': '&#x1d12a;',
   // '#': '&#x266f;',
+  '#': '&lt;',
   // bb: '&#x1d12b;',
   // b: '&#x266d;',
+  b: '&gt;',
   // natural: '&#x266e;'
 }
 
@@ -87,9 +91,22 @@ const MODIFIER_SYMBOLS = {
   // '7': '<span class="mod-digit">&#xe197;</span>',
   // '8': '<span class="mod-digit">&#xe198;</span>',
   // '9': '<span class="mod-digit">&#xe199;</span>',
-  halfdim: '<span class="mod-symbol">Ø</span>',
+  // halfdim: '<span class="mod-symbol">Ø</span>',
+  halfdim: '<span class="mod-symbol">@</span>',
   // '^': '<span class="mod-symbol mod-triangle">&#xe18a;</span>',
-  dim: '<span class="mod-symbol">º</span>',
+  '^': '<span class="mod-symbol mod-triangle">^</span>',
+  // dim: '<span class="mod-symbol">º</span>',
+  dim: '<span class="mod-symbol">°</span>',
+  '1': '<span class="mod-digit">1</span>',
+  '2': '<span class="mod-digit">2</span>',
+  '3': '<span class="mod-digit">3</span>',
+  '4': '<span class="mod-digit">4</span>',
+  '5': '<span class="mod-digit">5</span>',
+  '6': '<span class="mod-digit">6</span>',
+  '7': '<span class="mod-digit">7</span>',
+  '8': '<span class="mod-digit">8</span>',
+  '9': '<span class="mod-digit">9</span>',
+  '0': '<span class="mod-digit">0</span>',
 }
 
 
@@ -252,7 +269,7 @@ class RepriseRenderedChord extends HTMLElement {
     }
     this.classList.add(this.getAttribute('shape'))
     let innerDiv = document.createElement('div')
-    innerDiv.classList.add('rendered-chord', this.getAttribute('shape'))
+    innerDiv.classList.add('rendered-chord', this.getAttribute('shape'), 'lily')
 
     let outputStr = ''
     if (chord.rootSymbols) {
@@ -273,6 +290,33 @@ class RepriseRenderedChord extends HTMLElement {
         }
         .pori.fullSquare {
           font-size: calc(var(--chord-size) * 1.5);
+        }
+
+        .lily.rendered-chord {
+          font-family: 'lilyjazz-chord';
+          font-size: calc(var(--chord-size) * 0.8);
+          transform: scaleX(0.95) translateY(0.18em);
+        }
+        .lily.fullSquare {
+          font-size: calc(var(--chord-size) * 1.3);
+        }
+        .lily .mod-digit {
+          transform: translateY(-0.3em) scale(0.65);
+          margin: 0 -0.1em;
+        }
+        .lily .bass-slash {
+          margin-right: -0.1em;
+        }
+        .compact-left .lily .bass-slash {
+          top: .6em;
+          left: 0.2em;
+        }
+        .compact-left .lily .bass {
+          top: 1.35em;
+          font-size: 0.9em;
+        }
+        .lily .mod-triangle {
+          font-size: 0.8em;
         }
 
         .rendered-chord {
