@@ -12,7 +12,7 @@ CHORUS {0,0}
 | Ab7  | -   | Chalfdim  | F7
 | Bbm7 | -   | Bbhalfdim | Eb7
 | Ab   | -   | Chalfdim  | F7
-| Bbm7 | Eb7 "to coda" | Ab | - "fine."
+| Bbm7 | Eb7 "to coda" || Ab | - "fine."
 ~~~~~~~~~~~~~~~~~~~~~~
 CODA
              | Chalfdim | F7 |

@@ -1,4 +1,39 @@
+//build regexes without worrying about
+// - double-backslashing
+// - adding whitespace for readability
+// - adding in comments
+let clean = (piece) => (piece
+  .replace(/((^|\n)(?:[^\/\\]|\/[^*\/]|\\.)*?)\s*\/\*(?:[^*]|\*[^\/])*(\*\/|)/g, '$1')
+  .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
+  .replace(/\n\s*/g, '')
+);
+const regex = ({raw}, ...interpolations) => (
+  new RegExp(interpolations.reduce(
+      (regex, insert, index) => (regex + insert + clean(raw[index + 1])),
+      clean(raw[0])
+  ))
+);
+
+
+const barlines = [
+  '|',
+  '||',
+  ':|',
+  '|:',
+  '||(',
+  ')||',
+]
+
 const quotedRegex = /\"([^\"]*)\"/
+
+const barlineRegex = regex`^
+  (?<precursor>.*?)             //precursor
+  (
+    (?<barline>\)?(\||\:)?\|\:?\(?)   //barline
+    (?<barcontent>.*?)
+  )*
+$`
+
 
 const parseBar = barText => {
 
@@ -73,6 +108,8 @@ const parseBar = barText => {
 
 const parseLine = lineText => {
 
+  console.log(lineText)
+
   let isRhythms = false
 
   // if line starts with spaces, align right not left
@@ -96,14 +133,32 @@ const parseLine = lineText => {
     isRhythms = true
   }
 
-  let bars = lineText
-    .replace(/^rhythms:/, '')
-    .replace(/^\s*\"[^\"]\"\s*/, '') // remove any pre-cursor annotations
-    .replace(/^\s*\|/, '')
-    .replace(/\|\s*$/, '')
-    .split('|')
-    .map(barText => barText.trim())
+  // let bars = lineText
+  //   .replace(/^rhythms:/, '')
+  //   .replace(/^\s*\"[^\"]\"\s*/, '') // remove any pre-cursor annotations
+  //   .replace(/^\s*\|/, '')
+  //   .replace(/\|\s*$/, '')
+  //   .split('|')
+  //   .map(barText => barText.trim())
   
+  let barTexts = lineText.match(/(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/g)
+  let bars = barTexts.reduce((bars, barText, idx) => {
+    let [,barline,,textContent] = barText.match(/(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/)
+    if (idx > 0) {
+      bars[idx - 1].rightBarline = barline
+    }
+    if (textContent.length) {
+      bars.push({
+        textContent,
+        leftBarline: barline,
+        rightBarline: '|'
+      })
+    }
+    return bars
+  }, [])
+
+
+
   if (isRhythms) {
     bars = bars.map((bar, idx) => ({
       id: idx + 1,
@@ -112,7 +167,8 @@ const parseLine = lineText => {
   } else {
     bars = bars.map((bar, idx) => ({
       id: idx + 1,
-      ...parseBar(bar)
+      ...bar,
+      ...parseBar(bar.textContent.trim())
     }))
   }
 
@@ -169,6 +225,16 @@ const parseStanza = stanzaText => {
 
   let allLines = stanzaText.split(/\n+/).filter(line => line.trim().length)
   
+  let isMusic = true
+  if (allLines[0].startsWith('[plain text]')) {
+    isMusic = false
+    return {
+      isMusic: false,
+      text: stanzaText,
+      lines: []
+    }
+  }
+
   let title = isLineMusic(allLines[0]) ? '' : allLines[0].trim()
 
   let coordinates = title.match(/{(\-?[\d\.]*),(\-?[\d\.]*)}/)
@@ -210,6 +276,7 @@ const parseStanza = stanzaText => {
   }))
 
   return {
+    isMusic, 
     title,
     lines,
     lineLayout,

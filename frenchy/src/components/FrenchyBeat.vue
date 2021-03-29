@@ -1,10 +1,12 @@
 <template>
   <div class="beat" :class="[`b${beats}`, {
     'slash': isSlashed,
-    'stop': isStop
+    'stop': isStop,
+    'ditto': isDitto
    }]">
     <div class="chord-scaffold">
-      <reprise-rendered-chord :shape="shape">{{ chord }}</reprise-rendered-chord>
+      <reprise-rendered-chord v-if="!isDitto" :shape="shape">{{ chord }}</reprise-rendered-chord>
+      <div v-else class="ditto-symbol"></div>
     </div>
   </div>
 </template>
@@ -31,6 +33,9 @@ export default {
       if (this.beats === '34' && this.isSlashed) return 'rightTriangle'
       if (this.beats === '1234') return 'fullSquare'
       return 'rectangle'
+    },
+    isDitto () {
+      return this.beats === '1234' && this.chord === '-'
     }
   },
   mounted () {
@@ -42,6 +47,12 @@ export default {
 </script>
 
 <style>
+.ditto-symbol {
+  font-family: 'musejazz';
+  font-size: 2.2rem;
+  line-height: 5rem;
+  
+}
 
 .beat {
   position: absolute;
