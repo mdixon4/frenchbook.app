@@ -302,10 +302,10 @@ class RepriseRenderedChord extends HTMLElement {
         }
         .lily .mod-digit {
           transform: translateY(-0.3em) scale(0.65);
-          margin: 0 -0.1em;
+          margin: 0 -0.25em 0 -0.1em;
         }
         .lily .bass-slash {
-          margin-right: -0.1em;
+          margin-left: -0.1em;
         }
         .compact-left .lily .bass-slash {
           top: .6em;

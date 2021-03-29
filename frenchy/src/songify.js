@@ -296,7 +296,7 @@ export const songify = (songText) => {
     throw new Error('Song file does not include ===== separator')
   }
 
-  let frontMatter = songText.split(/^=+$/)[0]
+  let [frontMatter, songMatter, ...otherMatter] = songText.split(/^=+$/m)
   let metadata = frontMatter.split(/\n+/)
     .filter(item => /\:/.test(item))
     .map(item => item.split(/([^:]*)\:(.*)/))
@@ -305,8 +305,8 @@ export const songify = (songText) => {
       return acc
     }, {})
 
-  let parts = songText.split(/^\~+$/m)
-  let stanzas = parts.slice(1).filter(part => part.trim().length)
+  let parts = songMatter.split(/^$/m)
+  let stanzas = parts.filter(part => part.trim().length)
   
   stanzas = stanzas
     .map((stanza, idx) => ({
