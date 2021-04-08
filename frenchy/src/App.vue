@@ -1,18 +1,6 @@
-d<template>
+<template>
   <div>
-    <div class="header">
-      <div class="logo">Shirazz</div>
-      <div class="id">{{ song.metadata.number }}. {{ song.metadata.title }} - {{ song.metadata.key}}</div>
-      <div class="copyright"></div>
-    </div>
-    <div class="title-bar">
-      <div class="number">{{ song.metadata.number }}</div>
-      <div class="title">
-        {{ song.metadata.title }}
-      </div>
-      <div class="number">{{ song.metadata.number }}</div>
-    </div>
-
+    <frenchy-header :metadata="song.metadata"></frenchy-header>
     <div class="song">
       <div class="song-grid">
         <template v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
@@ -24,12 +12,12 @@ d<template>
               '--row-span': stanza.rowSpan + 1
             }">
               <div class="stanza-break"></div>
-              <template v-for="(line, lineIdx) in stanza.lines" :key="lineIdx">
-                <div class="line" :class="{ 'align-right': line.align === 'right' }">
+              <div class="stanza-title">{{ stanza.title }}</div>
+              <div class="stanza-music">
+                <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
                   <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
                     <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
                   </div>
-                  <div v-if="lineIdx === 0" class="stanza-title">{{ stanza.title }}</div>
                   <frenchy-bar v-for="(bar, barIdx) in line.bars" :key="bar.id" :barData="bar" :barIdx="barIdx" :lineIdx="lineIdx" :lineLayout="stanza.lineLayout"></frenchy-bar>
                   <div v-if="line.rhythms" class="line-rhythms">
                     <div v-for="(rhythm, rhythmIdx) in line.rhythms" :key="rhythmIdx">
@@ -37,7 +25,7 @@ d<template>
                     </div>
                   </div>
                 </div>
-              </template>
+              </div>
             </div>
           </template>
           <template v-else>
@@ -55,13 +43,30 @@ d<template>
 import { ref, computed } from 'vue'
 import { songify } from './songify.js'
 import FrenchyBar from './components/FrenchyBar.vue'
+import FrenchyHeader from './components/FrenchyHeader.vue'
 
-import songText from './out_of_nowhere.js'
+import songText from './didnt_he_ramble.js'
 let song = songify(songText)
 
 </script>
 
 <style>
+
+  :root {
+    --bar-width: 21mm;
+    --bar-height: 21mm;
+
+    --x-unit: calc(var(--bar-width) / 2);
+    --y-unit: calc(var(--bar-height) / 2);
+
+    --row-gap: var(--y-unit);
+    --col-gap: var(--x-unit);
+
+    --gridline-color: navy;
+    --stop-color: #DDD;
+    --stroke-width: 2;
+  }
+
 
   * {
     box-sizing: border-box;
@@ -74,46 +79,8 @@ let song = songify(songText)
     padding: 10px;
   }
 
-  .header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    font-family: 'Century Schoolbook';
-    width: 40rem;
-    margin: 0 auto;
-  }
-  .logo {
-    font-weight: bold;
-  }
-
-  .title-bar {
-    display: grid;
-    grid-template-columns: max-content auto max-content;
-    border: 3px solid var(--gridline-color);
-    width: 40rem;
-    margin: 0 auto;
-  }
-
-  .number {
-    font-family: 'Arial Narrow';
-    font-weight: bold;
-    color: red;
-    padding: 0.5rem;
-    font-size: 1.8rem;
-    align-self: center;
-  }
-  
-
-  .title {
-    font-family: 'reprise title';
-    text-align: center;
-    padding: 0.5rem;
-    font-size: 3rem;
-  }
-
 
   :root {
-    --gridline-color: black;
-    --stop-color: #DDD;
   }
 
   .song {
@@ -173,6 +140,11 @@ let song = songify(songText)
   .stanza-break {
     height: 2.5rem;
   }
+  .stanza-music {
+    display: flex;
+    flex-direction: column;
+  }
+
   .line {
     display: inline-flex;
     background: white;

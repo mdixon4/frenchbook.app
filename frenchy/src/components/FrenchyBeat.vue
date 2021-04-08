@@ -83,7 +83,7 @@ rendered-chord, reprise-rendered-chord {
   /* background: #4F9A; */
   display: flex;
   align-items: center;
-  text-shadow: white 1px 1px, white -1px -1px;
+  text-shadow: white 1px 1px, white -1px -1px, white 1px -1px, white -1px 1px;
   /* outline: 1px dashed blue; */
   grid-area: content;
 }
