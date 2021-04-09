@@ -3,46 +3,27 @@
     <frenchy-header :metadata="song.metadata"></frenchy-header>
     <div class="song">
       <div class="song-grid">
-        <template v-for="(stanza, stanzaIdx) in song.stanzas" :key="stanzaIdx">
-          <template v-if="stanza.isMusic">
-            <div class="stanza" :style="{
-              '--column-start': stanza.columnStart,
-              '--column-span': stanza.columnSpan,
-              '--row-start': stanza.rowStart,
-              '--row-span': stanza.rowSpan + 1
-            }">
-              <div class="stanza-break"></div>
-              <div class="stanza-title">{{ stanza.title }}</div>
-              <div class="stanza-music">
-                <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
-                  <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
-                    <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
-                  </div>
-                  <frenchy-bar v-for="(bar, barIdx) in line.bars" :key="bar.id" :barData="bar" :barIdx="barIdx" :lineIdx="lineIdx" :lineLayout="stanza.lineLayout"></frenchy-bar>
-                  <div v-if="line.rhythms" class="line-rhythms">
-                    <div v-for="(rhythm, rhythmIdx) in line.rhythms" :key="rhythmIdx">
-                      <span>{{ rhythm.rhythms.textContent }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <template v-for="(part, idx) in song.parts" :key="idx">
+          <template v-if="part.type === 'hr'"><hr class="hr"></template>
+          <template v-if="part.type === 'stanza'">
+            <frenchy-stanza :stanza="part"></frenchy-stanza>
           </template>
-          <template v-else>
+          <template v-if="part.type === 'plain-text'">
             <div class="non-music">
-              {{ stanza.text }}
+              {{ part.text }}
             </div>
           </template>
         </template>
       </div>
     </div>
+    <component :is="'style'">{{ song.css }}</component>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { songify } from './songify.js'
-import FrenchyBar from './components/FrenchyBar.vue'
+import FrenchyStanza from './components/FrenchyStanza.vue'
 import FrenchyHeader from './components/FrenchyHeader.vue'
 
 import songText from './didnt_he_ramble.js'
@@ -54,7 +35,7 @@ let song = songify(songText)
 
   :root {
     --bar-width: 21mm;
-    --bar-height: 21mm;
+    --bar-height: 19mm;
 
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
@@ -62,7 +43,7 @@ let song = songify(songText)
     --row-gap: var(--y-unit);
     --col-gap: var(--x-unit);
 
-    --gridline-color: navy;
+    --gridline-color: #333;
     --stop-color: #DDD;
     --stroke-width: 2;
   }
@@ -75,6 +56,7 @@ let song = songify(songText)
     background: white;
     color: black;
     font-family: 'Patrick Hand';
+    font-family: 'LilyJAZZ Text';
     font-size: 16px;
     padding: 10px;
   }
@@ -86,13 +68,10 @@ let song = songify(songText)
   .song {
     display: flex;
     flex-direction: column;
-    gap: 2.5em;
     align-items: center;
   }
 
   .song-grid {
-    display: grid;
-    grid-template-columns: repeat(16, 2.5rem);
     position: relative;
   }
 
@@ -107,26 +86,27 @@ let song = songify(songText)
     pointer-events: none;
   }
 
-  .stanza-title {
-    position: absolute;
-    white-space: nowrap;
-    bottom: calc(100%);
+  .hr {
+    margin: 0;
+    border: calc(var(--stroke-width) * 0.5px) dashed var(--gridline-color);
+  }
 
-    /* padding: 0.5rem; */
-    /* right: 100%; */
-    /* bottom: 100%; */
-    /* transform: rotate(-90deg); */
-    /* transform-origin: 100% 100%; */
-    /* font-weight: bold; */
+  .stanza-title {
+    white-space: nowrap;
+    z-index: 50;
   }
 
   .stanza {
-    display: inline-flex;
+    position: relative;
+    display: flex;
     flex-direction: column;
     align-items: start;
     page-break-inside: avoid;
-    grid-column: var(--column-start) / span var(--column-span);
-    grid-row: var(--row-start, auto) / span var(--row-span);
+    left: calc((var(--column-start) - 1) * var(--x-unit));
+
+
+    /* grid-column: var(--column-start) / span var(--column-span);
+    grid-row: var(--row-start, auto) / span var(--row-span); */
 
     /* page-break-after: always; */
     /* box-shadow: 4px 4px #EEE; */
@@ -136,9 +116,13 @@ let song = songify(songText)
   }
   .stanza-title {
     font-size: calc(18/16 * 1rem);
+    text-shadow: white 1px 1px, white -1px -1px, white 1px -1px, white -1px 1px;
   }
   .stanza-break {
-    height: 2.5rem;
+    position: relative;
+    display: flex;
+    align-items: end;
+    height: 1em;
   }
   .stanza-music {
     display: flex;
@@ -147,7 +131,7 @@ let song = songify(songText)
 
   .line {
     display: inline-flex;
-    background: white;
+    /* background: white; */
     position: relative;
   }
   .line.align-right {
@@ -157,11 +141,12 @@ let song = songify(songText)
     align-self: end;
   }
   .bar {
-    width: 5rem;
-    height: 5rem;
+    width: var(--bar-width);
+    height: var(--bar-height);
     position: relative;
     flex-shrink: 0;
   }
+
   .line-rhythms {
     position: absolute;
     bottom: 0;
@@ -182,13 +167,32 @@ let song = songify(songText)
     /* padding-left: 0.5rem; */
   }
 
-  .coda-arrow {
-    padding: 0 0.5em;
-    align-self: center;
-    /* background: red; */
-  }
   .non-music {
     white-space: pre;
     font-size: calc(20/16 * 1rem);
+  }
+
+  .coda-here {
+    position: absolute;
+    display: flex;
+    align-items: start;
+    right: 100%;
+    flex-direction: column;
+    top: -8px;
+    filter: drop-shadow(white 0 1px) drop-shadow(white 0 -1px) drop-shadow(white 1px 0) drop-shadow(white -1px 0);
+  }
+  .coda-here .coda-arrow {
+    transform: rotate(90deg) scaleY(-1);
+  }
+  
+  
+
+  .coda-symbol {
+    height: 24px;
+    margin-right: -6px;
+    margin-bottom: -4px;
+  }
+  .coda-arrow {
+    width: 24px;
   }
 </style>

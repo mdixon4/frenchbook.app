@@ -37,6 +37,9 @@ $`
 
 const parseBar = barText => {
 
+  let classes = barText.match(classesRegex)?.map(c => c.substr(1)) || []
+  barText = barText.replace(classesRegex, '')
+
   let annotationsMatch = barText.match(quotedRegex)
   let annotations = annotationsMatch ? annotationsMatch[1] : ''
 
@@ -58,7 +61,8 @@ const parseBar = barText => {
           isStop: chords[0].isStop,
         }
       ],
-      annotation: annotations
+      annotation: annotations,
+      classes
     }
   }
 
@@ -76,7 +80,8 @@ const parseBar = barText => {
           isStop: chords[1].isStop
         }
       ],
-      annotation: annotations
+      annotation: annotations,
+      classes
     }
   }
 
@@ -95,13 +100,15 @@ const parseBar = barText => {
     }, [])
     return  {
       chords,
-      annotation: annotations
+      annotation: annotations,
+      classes
     }
   }
 
   return {
     chords: [],
-    annotation: annotations
+    annotation: annotations,
+    classes
   }
 }
 
@@ -220,28 +227,79 @@ const isLineMusic = lineText => {
   return /^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))
 }
 
+const classesRegex = /\B\.\S+/g
 
-const parseStanza = stanzaText => {
 
-  let allLines = stanzaText.split(/\n+/).filter(line => line.trim().length)
+const extractStanzaMetadata = stanzaText => {
+  let firstLine = stanzaText.split(/\n+/).filter(line => line.length)[0]
+  // If the first line is music, we have no metadata
+  if (isLineMusic(firstLine)) return {}
+  // Classes will be words starting with .
+  console.log(firstLine)
+  let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
+  let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
+  console.log({ title, classes })
+  return {
+    title,
+    classes
+  }
+
+  // let title = isLineMusic(allLines[0]) ? '' : allLines[0].trim()
+
+  // let coordinates = title.match(/{(\-?[\d\.]*),(\-?[\d\.]*)}/)
+  // if (coordinates) coordinates = { x: parseInt(coordinates[1]), y: parseInt(coordinates[2]) }
+
+  // title = title.replace(/{(\-?[\d\.]*),(\-?[\d\.]*)}/, '').trim()
+}
+
+
+const parsePart = partText => {
+  console.log({ partText })
   
-  let isMusic = true
-  if (allLines[0].startsWith('[plain text]')) {
-    isMusic = false
+  // If it's just one line, of 3 or more dashes, treat as a horizontal line
+  if (partText.match(/^\-\-\-+$/)) {
     return {
-      isMusic: false,
-      text: stanzaText,
-      lines: []
+      type: 'hr'
     }
   }
 
-  let title = isLineMusic(allLines[0]) ? '' : allLines[0].trim()
+  // If the first and last non-whitespace character of the part is double quote, treat as plain text
+  // (or markdown, one day?)
+  let plainText = partText.match(/^\s*"(.*)"\s*$/)
+  if (plainText) {
+    return {
+      type: 'plain-text',
+      text: plainText[1]
+    }
+  }
 
-  let coordinates = title.match(/{(\-?[\d\.]*),(\-?[\d\.]*)}/)
-  if (coordinates) coordinates = { x: parseInt(coordinates[1]), y: parseInt(coordinates[2]) }
+  // Otherwise, treat it as a stanza
+  return {
+    type: 'stanza',
+    ...parseStanza(partText)
+  }
+}
 
-  title = title.replace(/{(\-?[\d\.]*),(\-?[\d\.]*)}/, '').trim()
+const getBorderCoordinates = lineLayout => {
+  let coordinates = []
+  // Do the right end first
+  for (let lineIdx = 0; lineIdx < lineLayout.length; lineIdx += 1) {
+    let rightEdge = lineLayout[lineIdx].lastIndexOf('1')
+    coordinates.push([ rightEdge, lineIdx ], [ rightEdge, lineIdx + 1 ])
+  }
+  // Do the left end, but in reverse
+  for (let lineIdx = lineLayout.length - 1; lineIdx; lineIdx -= 1) {
+    let leftEdge = lineLayout[lineIdx].indexOf('1')
+    coordinates.push([ leftEdge, lineIdx + 1 ], [ leftEdge, lineIdx ])
+  }
+  return coordinates
+}
 
+const parseStanza = stanzaText => {
+
+  let { title, classes, coordinates } = extractStanzaMetadata(stanzaText)
+  let allLines = stanzaText.split(/\n+/).filter(line => line.trim().length)
+  
   let lines = []
   allLines.forEach((line, idx) => {
     if (!isLineMusic(line)) return
@@ -258,11 +316,6 @@ const parseStanza = stanzaText => {
     })
   })
 
-  // let lines = allLines.filter(isLineMusic).map((line, idx) => ({
-  //   id: idx + 1,
-  //   ...parseLine(line)
-  // }))
-
   let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
   let lineLayout = lines.map(line => { 
     let on = '1'.repeat(line.bars.length)
@@ -275,19 +328,35 @@ const parseStanza = stanzaText => {
     bars: totalPerspectiveVortexForBars(line.bars, lineLayout, lineIdx)
   }))
 
+  // let borderCoordinates = getBorderCoordinates(lineLayout)
+  let borderCoordinates = []
+
+  console.log(borderCoordinates)
+
   return {
-    isMusic, 
     title,
+    classes,
     lines,
     lineLayout,
+    borderCoordinates,
     maxWidth,
     columnStart: (coordinates && coordinates.x > -1) ? coordinates.x + 1 : Math.max(9 - (maxWidth), 0),
     columnSpan: maxWidth * 2,
     rowStart: (coordinates && coordinates.y > -1) ? coordinates.y + 1 : null,
     rowSpan: lines.length * 2,
-
   }
 
+}
+
+
+const parseFrontMatter = frontMatter => {
+  return frontMatter.split(/\n+/)
+    .filter(item => /\:/.test(item))
+    .map(item => item.split(/([^:]*)\:(.*)/))
+    .reduce((acc, item) => {
+      acc[item[1].trim()] = item[2].trim()
+      return acc
+    }, {})
 }
 
 
@@ -296,28 +365,17 @@ export const songify = (songText) => {
     throw new Error('Song file does not include ===== separator')
   }
 
-  let [frontMatter, songMatter, ...otherMatter] = songText.split(/^=+$/m)
-  let metadata = frontMatter.split(/\n+/)
-    .filter(item => /\:/.test(item))
-    .map(item => item.split(/([^:]*)\:(.*)/))
-    .reduce((acc, item) => {
-      acc[item[1].trim()] = item[2].trim()
-      return acc
-    }, {})
+  let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/^=+$/m)
+  let metadata = parseFrontMatter(frontMatter)
 
   let parts = songMatter.split(/^$/m)
-  let stanzas = parts.filter(part => part.trim().length)
+    .filter(part => part.trim().length)
+    .map(part => part.replace(/^\n|\n$/g, ''))
+    .map(parsePart)
   
-  stanzas = stanzas
-    .map((stanza, idx) => ({
-      id: idx + 1,
-      ...parseStanza(stanza)
-    }))
-
-  console.log(stanzas)
-
   return {
     metadata,
-    stanzas
+    parts,
+    css
   }
 }
