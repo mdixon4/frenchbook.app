@@ -166,7 +166,7 @@ const stanzaBorderViewBox = computed(() => {
     position: relative;
     display: flex;
     align-items: end;
-    height: 1em;
+    height: calc(var(--row-gap) / 2);
   }
   .stanza-music {
     display: flex;

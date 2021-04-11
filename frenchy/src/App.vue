@@ -8,8 +8,7 @@
           <frenchy-stanza :stanza="part"></frenchy-stanza>
         </template>
         <template v-if="part.type === 'plain-text'">
-          <div class="non-music">
-            {{ part.text }}
+          <div class="non-music" v-html="part.html">
           </div>
         </template>
       </template>
@@ -46,6 +45,28 @@ let song = songify(songText)
     --stroke-width: .25mm;
   }
 
+  @media screen {
+    :root {
+      --bar-width: 5rem;
+      --bar-height: 4.5rem;
+      --stroke-width: 2px;
+
+    }
+
+    #app {
+      margin: 0.4rem 1rem;
+      background-image: 
+        linear-gradient(to bottom, transparent 0 22px, lightblue 22px 23px), 
+        linear-gradient(to right, transparent 0 70px, crimson 70px 71px, transparent 71px);
+      background-size: 9999px 23px;
+      background-repeat: repeat;
+      border: 1px solid black;
+      box-shadow: 4px 4px black;
+      padding: 2rem 1rem;
+    }
+  }
+
+
   g.borders path {
     stroke-width: var(--stroke-width);
   }
@@ -55,12 +76,13 @@ let song = songify(songText)
     box-sizing: border-box;
   }
   html, body {
-    background: white;
+    /* background: white; */
     color: black;
-    font-family: 'Patrick Hand';
+
+    /* font-family: 'Patrick Hand'; */
     font-family: 'LilyJAZZ Text';
     font-size: 16px;
-    padding: 10px;
+    padding: 0px;
   }
 
   .page {

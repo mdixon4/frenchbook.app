@@ -1,3 +1,5 @@
+import markdownit from 'markdown-it'
+
 //build regexes without worrying about
 // - double-backslashing
 // - adding whitespace for readability
@@ -115,8 +117,6 @@ const parseBar = barText => {
 
 const parseLine = lineText => {
 
-  console.log(lineText)
-
   let isRhythms = false
 
   // if line starts with spaces, align right not left
@@ -181,7 +181,6 @@ const parseLine = lineText => {
 
   // if line starts with spaces and then a barline, align right not left
   // let align = /^\s+\|/.test(lineText) ? 'right' : 'left'
-  console.log(bars)
   return {
     isBars: true,
     isText: false,
@@ -221,9 +220,9 @@ const isLineMusic = lineText => {
   // Line is music if it has unquoted | symbols
   // For now this is a satisfactory definition but no doubt I'll have to change it
   // Also it can't start with rhythms
-  // if (lineText.startsWith('rhythms:')) {
-  //   return false
-  // }
+  if (lineText.startsWith('rhythms:')) {
+    return false
+  }
   return /^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))
 }
 
@@ -238,50 +237,15 @@ const extractStanzaMetadata = stanzaText => {
     classes: []
   }
   // Classes will be words starting with .
-  console.log(firstLine)
   let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
   let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
-  console.log({ title, classes })
   return {
     title,
     classes
   }
-
-  // let title = isLineMusic(allLines[0]) ? '' : allLines[0].trim()
-
-  // let coordinates = title.match(/{(\-?[\d\.]*),(\-?[\d\.]*)}/)
-  // if (coordinates) coordinates = { x: parseInt(coordinates[1]), y: parseInt(coordinates[2]) }
-
-  // title = title.replace(/{(\-?[\d\.]*),(\-?[\d\.]*)}/, '').trim()
 }
 
 
-const parsePart = partText => {
-  console.log({ partText })
-  
-  // If it's just one line, of 3 or more dashes, treat as a horizontal line
-  if (partText.match(/^\-\-\-+$/)) {
-    return {
-      type: 'hr'
-    }
-  }
-
-  // If the first and last non-whitespace character of the part is double quote, treat as plain text
-  // (or markdown, one day?)
-  let plainText = partText.match(/^\s*"(.*)"\s*$/)
-  if (plainText) {
-    return {
-      type: 'plain-text',
-      text: plainText[1]
-    }
-  }
-
-  // Otherwise, treat it as a stanza
-  return {
-    type: 'stanza',
-    ...parseStanza(partText)
-  }
-}
 
 const getBorderCoordinates = lineLayout => {
   let coordinates = []
@@ -308,9 +272,6 @@ const parseStanza = stanzaText => {
   allLines.forEach((line, idx) => {
     if (!isLineMusic(line)) return
     let l = parseLine(line)
-    if (l.isRhythms) {
-      console.log(l)
-    }
     if (l.isRhythms && lines.length > 0) {
       lines[lines.length - 1].rhythms = l.bars
     }
@@ -320,15 +281,12 @@ const parseStanza = stanzaText => {
     })
   })
 
-  console.log({lines})
   let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
-  console.log({ maxWidth })
   let lineLayout = lines.map(line => { 
     let on = '1'.repeat(line.bars?.length || 0)
     let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
     return line.align === 'right' ? `${off}${on}` : `${on}${off}`
   })
-  console.log({ lineLayout })
 
   lines = lines.map((line, lineIdx) => ({
     ...line,
@@ -337,8 +295,6 @@ const parseStanza = stanzaText => {
 
   let borderCoordinates = getBorderCoordinates(lineLayout)
   // let borderCoordinates = []
-
-  console.log(borderCoordinates)
 
   return {
     title,
@@ -353,6 +309,44 @@ const parseStanza = stanzaText => {
     rowSpan: lines.length * 2,
   }
 
+}
+
+
+const parseMarkdown = markdownText => {
+  return markdownit({
+    typographer: true,
+    linkify: true,
+    html: true
+  }).render(markdownText)
+}
+
+
+const parsePart = partText => {
+  // If it's just one line, of 3 or more dashes, treat as a horizontal line
+  if (partText.match(/^\-\-\-+$/)) {
+    return {
+      type: 'hr'
+    }
+  }
+
+  // If the first and last non-whitespace character of the part is double quote, treat as plain text
+  // (or markdown, one day?)
+  console.log(partText)
+  let plainText = partText.match(/^\s*\"(.*)\"\s*$/s)
+  console.log(plainText)
+  if (plainText) {
+    return {
+      type: 'plain-text',
+      text: plainText[1],
+      html: parseMarkdown(plainText[1])
+    }
+  }
+
+  // Otherwise, treat it as a stanza
+  return {
+    type: 'stanza',
+    ...parseStanza(partText)
+  }
 }
 
 

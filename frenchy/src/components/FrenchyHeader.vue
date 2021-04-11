@@ -54,7 +54,8 @@ defineProps({
     border: var(--stroke-width) px solid var(--gridline-color);
     width: 40rem;
     margin: 0 auto 1em;
-    padding: 0.2rem 0.2rem 0;
+    padding: 0.2rem 0.2rem 0.1rem;
+    border-bottom: calc(2 * var(--stroke-width)) solid black
   }
 
   .number {
