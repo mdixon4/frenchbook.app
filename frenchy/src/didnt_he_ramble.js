@@ -5,7 +5,7 @@ number: 51
 credits: Trad.
 ===
 
-Dirge ("Flee as a Bird")
+Dirge ("Flee as a Bird") .b
 | Fm | Fm Bbm | Fm | C7 | Fm | Bbm G7 | C7 | - |
 | Fm | Fm Bbm | Fm | C7 | Fm | Fm Bbm | Fm Bbm | Fm Eb7 |
 | Ab7 | - | Eb7 | - | Fm | Bbm | Bdim | C7 |

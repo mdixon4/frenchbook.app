@@ -43,7 +43,11 @@ let song = songify(songText)
 
     --gridline-color: black;
     --stop-color: #DDD;
-    --stroke-width: 2;
+    --stroke-width: .25mm;
+  }
+
+  g.borders path {
+    stroke-width: var(--stroke-width);
   }
 
 
@@ -72,7 +76,7 @@ let song = songify(songText)
 
   .hr {
     margin: 0;
-    border: calc(var(--stroke-width) * 0.5px) dashed var(--gridline-color);
+    border: calc(var(--stroke-width) * 1) dashed var(--gridline-color);
     align-self: stretch;
   }
 

@@ -34,8 +34,9 @@ defineProps({
   .header {
     display: flex;
     justify-content: space-between;
-    font-family: 'League Spartan';
+    font-family: 'Century';
     margin: 0 0 -0.2rem;
+    border-bottom: calc(2 * var(--stroke-width)) solid black
   }
 
   .credits {
@@ -50,23 +51,24 @@ defineProps({
     display: grid;
     grid-template-columns: max-content auto max-content;
     align-items: baseline;
-    border: 1px solid var(--gridline-color);
+    border: var(--stroke-width) px solid var(--gridline-color);
     width: 40rem;
     margin: 0 auto 1em;
     padding: 0.2rem 0.2rem 0;
   }
 
   .number {
-    font-family: 'League Spartan Black';
+    font-family: 'Arial Narrow';
     font-weight: bold;
     /* padding: 0.5rem; */
     font-size: 1.8rem;
     line-height: 100%;
+    color: red;
   }
   
 
   .title {
-    font-family: 'League Spartan Medium';
+    font-family: 'Century';
     text-align: center;
     /* padding: 0.5rem; */
     font-size: 2rem;

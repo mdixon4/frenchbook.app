@@ -22,11 +22,21 @@
       </svg>
     </div>
     <div class="stanza-music">
+      <svg class="stanza-border-b" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
+        <mask :id="`stanza-mask-b-${stanza.id}`">
+          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
+          <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path>
+          <path class="mask-stroke-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="white"></path>
+          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="0" fill="black"></path>
+        </mask>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" :mask="`url(#stanza-mask-b-${stanza.id})`"></path>
+      </svg>
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <path class="layer4" :d="stanzaBorderPath"></path>
-        <path class="layer3" :d="stanzaBorderPath"></path>
-        <path class="layer2" :d="stanzaBorderPath"></path>
-        <path class="layer1" :d="stanzaBorderPath"></path>
+        <mask :id="`stanza-mask-${stanza.id}`">
+          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
+          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="white" fill="black"></path>
+        </mask>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
       </svg>
       <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
         <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
@@ -68,28 +78,56 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
-  .stanza-border {
+  .stanza-border, .stanza-border-b {
     position: absolute;
     inset: 0;
     height: 100%;
     width: 100%;
     overflow: visible;
+    /* opacity: 1; */
   }
 
-  .stanza-border { fill: transparent; }
+  .stanza-border-b {
+    display: none;
+  }
+  .stanza.b .stanza-border-b {
+    display: block;
+  }
+  .stanza.b .stanza-border {
+    display: none;
+  }
 
-  .stanza-border .layer2 {
+  /* .stanza-border { fill: transparent; } */
+
+  .stanza-border .border-stroke {
     fill: transparent;
     stroke: var(--gridline-color);
-    stroke-width: 3px;
+    /* stroke: var(--gridline-color); */
+    stroke-width: calc(2 * var(--stroke-width));
   }
-  .stanza.b .stanza-border .layer1 {
+
+
+  .stanza-border-b .border-stroke {
     fill: transparent;
-    stroke: white;
-    stroke-width: 1px;
+    stroke: var(--gridline-color);
+    /* stroke: var(--gridline-color); */
+    stroke-width: calc(3* var(--stroke-width));
+  }
+
+
+  .stanza.b .mask-stroke-gap {
+    stroke-width: calc(2 * var(--stroke-width));
+  }
+  .stanza.b .mask-stroke-inner {
+    stroke-width: calc(1 * var(--stroke-width));
+  }
+  .mask-stroke-inner {
+    stroke-width: var(--stroke-width);
   }
   
   .stanza-border { z-index: 40 }
+
+
 
   .stanza-music {
     position: relative;

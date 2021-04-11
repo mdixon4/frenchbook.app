@@ -379,6 +379,10 @@ export const songify = (songText) => {
     .filter(part => part.trim().length)
     .map(part => part.replace(/^\n|\n$/g, ''))
     .map(parsePart)
+    .map((parsePart, idx) => ({
+      id: idx,
+      ...parsePart
+    }))
   
   return {
     metadata,
