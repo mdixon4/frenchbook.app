@@ -2,6 +2,7 @@ export default `
 title: Didn’t He Ramble
 key: F
 number: 51
+credits: Trad.
 ===
 
 Dirge ("Flee as a Bird")
@@ -24,8 +25,6 @@ Tag .coda
 | F "Freely" | C7 | F Bb7 | F |
 
 ===
-.tag {
-  background: gold;
-}
+/* css */
 
 `

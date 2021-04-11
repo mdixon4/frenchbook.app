@@ -17,8 +17,8 @@
       <path class="left-border-inset" d="M 2 0 2 100"></path>
       <path class="left-border-default" d="M 0 0 0 100"></path>
       <g class="left-border-repeat">
-        <circle cx="7" cy="40" r="2" fill="currentColor"></circle>
-        <circle cx="7" cy="60" r="2" fill="currentColor"></circle>
+        <circle cx="7" cy="40" r="2" fill="var(--gridline-color)"></circle>
+        <circle cx="7" cy="60" r="2" fill="var(--gridline-color)"></circle>
       </g>
       <svg class="left-border-bracket" x="4" y="3">
         <path d="M9 94C3.4 91.4236 1 90.3195 1 82.9585C1 75.5976 1 68.2365 1 68.2365C1 68.2365 1 41.4278 1 24.25C1 19.0616 1 10.9643 1 10.9643C1 4.32145 3.19998 3.32503 8.33325 1.00004"/>
@@ -27,8 +27,8 @@
       <path class="right-border-inset" d="M 98 0 98 100"></path>
       <path class="right-border-default" d="M 100 0 100 100"></path>
       <g class="right-border-repeat">
-        <circle cx="93" cy="40" r="2" fill="currentColor"></circle>
-        <circle cx="93" cy="60" r="2" fill="currentColor"></circle>
+        <circle cx="93" cy="40" r="2" fill="var(--gridline-color)"></circle>
+        <circle cx="93" cy="60" r="2" fill="var(--gridline-color)"></circle>
       </g>
       <svg class="right-border-bracket" x="96" y="3" style="overflow: visible">
         <g transform="scale(-1,1)">

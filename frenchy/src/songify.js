@@ -233,7 +233,10 @@ const classesRegex = /\B\.\S+/g
 const extractStanzaMetadata = stanzaText => {
   let firstLine = stanzaText.split(/\n+/).filter(line => line.length)[0]
   // If the first line is music, we have no metadata
-  if (isLineMusic(firstLine)) return {}
+  if (isLineMusic(firstLine)) return {
+    title: '',
+    classes: []
+  }
   // Classes will be words starting with .
   console.log(firstLine)
   let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
@@ -282,13 +285,14 @@ const parsePart = partText => {
 
 const getBorderCoordinates = lineLayout => {
   let coordinates = []
+  // coordinates.push([ lineLayout[0].indexOf(1), 0 ])
   // Do the right end first
   for (let lineIdx = 0; lineIdx < lineLayout.length; lineIdx += 1) {
     let rightEdge = lineLayout[lineIdx].lastIndexOf('1')
-    coordinates.push([ rightEdge, lineIdx ], [ rightEdge, lineIdx + 1 ])
+    coordinates.push([ rightEdge + 1, lineIdx ], [ rightEdge + 1, lineIdx + 1 ])
   }
   // Do the left end, but in reverse
-  for (let lineIdx = lineLayout.length - 1; lineIdx; lineIdx -= 1) {
+  for (let lineIdx = lineLayout.length - 1; lineIdx > -1; lineIdx -= 1) {
     let leftEdge = lineLayout[lineIdx].indexOf('1')
     coordinates.push([ leftEdge, lineIdx + 1 ], [ leftEdge, lineIdx ])
   }
@@ -316,20 +320,23 @@ const parseStanza = stanzaText => {
     })
   })
 
+  console.log({lines})
   let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
+  console.log({ maxWidth })
   let lineLayout = lines.map(line => { 
-    let on = '1'.repeat(line.bars.length)
+    let on = '1'.repeat(line.bars?.length || 0)
     let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
     return line.align === 'right' ? `${off}${on}` : `${on}${off}`
   })
+  console.log({ lineLayout })
 
   lines = lines.map((line, lineIdx) => ({
     ...line,
     bars: totalPerspectiveVortexForBars(line.bars, lineLayout, lineIdx)
   }))
 
-  // let borderCoordinates = getBorderCoordinates(lineLayout)
-  let borderCoordinates = []
+  let borderCoordinates = getBorderCoordinates(lineLayout)
+  // let borderCoordinates = []
 
   console.log(borderCoordinates)
 

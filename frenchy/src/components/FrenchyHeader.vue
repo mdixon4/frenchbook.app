@@ -29,15 +29,19 @@ defineProps({
 
 </script>
 
-<style scoped>
+<style>
 
   .header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    font-family: 'League Spartan Black';
-    width: 40rem;
-    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'League Spartan';
+    margin: 0 0 -0.2rem;
   }
+
+  .credits {
+    height: 0.8em;
+  }
+
   .logo {
     width: 6rem;
   }
@@ -46,9 +50,9 @@ defineProps({
     display: grid;
     grid-template-columns: max-content auto max-content;
     align-items: baseline;
-    border: 3px solid var(--gridline-color);
+    border: 1px solid var(--gridline-color);
     width: 40rem;
-    margin: 0 auto;
+    margin: 0 auto 1em;
     padding: 0.2rem 0.2rem 0;
   }
 
