@@ -17,180 +17,51 @@ const regex = ({raw}, ...interpolations) => (
 );
 
 
-const barlines = [
-  '|',
-  '||',
-  ':|',
-  '|:',
-  '||(',
-  ')||',
-]
-
 const quotedRegex = /\"([^\"]*)\"/
-
-const barlineRegex = regex`^
-  (?<precursor>.*?)             //precursor
-  (
-    (?<barline>\)?(\||\:)?\|\:?\(?)   //barline
-    (?<barcontent>.*?)
-  )*
-$`
+const classesRegex = /\B\.\S+/g
+const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
+const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 
 
-const parseBar = barText => {
+const parseBarContent = barText => {
+  // TODO - refactor this function
+  console.log(barText)
 
+  let annotationMatch = barText.match(quotedRegex)
+  let annotation = annotationMatch ? annotationMatch[1] : ''
+  barText = barText.replace(quotedRegex, ' ')
   let classes = barText.match(classesRegex)?.map(c => c.substr(1)) || []
-  barText = barText.replace(classesRegex, '')
+  barText = barText.replace(classesRegex, ' ')
 
-  let annotationsMatch = barText.match(quotedRegex)
-  let annotations = annotationsMatch ? annotationsMatch[1] : ''
-
-  let chords = barText.replace(quotedRegex, ' ').split(/\s+/)
+  let chords = barText.split(/\s+/)
     .map(chord => chord.trim())
     .filter(Boolean)
-  
-    chords = chords.map(chord => ({
-    chordText: chord.replace(/\.$/, ''),
-    isStop: /\.$/.test(chord)
+    .map(c => ({
+      chord: c.replace(/\.$/, ''),
+      isStop: /\.$/.test(c)
+    }))
+
+  let beatPattern = chords.length === 1
+    ? [ '1234' ]
+    : chords.length === 2
+      ? [ '12', '34' ]
+      : chords.length === 4
+        ? [ '1', '2', '3', '4' ]
+        : undefined
+
+  chords = chords.map((c, idx) => ({
+    ...c, 
+    beats: beatPattern[idx]
   }))
 
-  if (chords.length === 1) {
-    return {
-      chords: [
-        {
-          beats: '1234',
-          chord: chords[0].chordText,
-          isStop: chords[0].isStop,
-        }
-      ],
-      annotation: annotations,
-      classes
-    }
-  }
-
-  if (chords.length === 2) {
-    return {
-      chords: [
-        {
-          beats: '12',
-          chord: chords[0].chordText,
-          isStop: chords[0].isStop
-        },
-        {
-          beats: '34',
-          chord: chords[1].chordText,
-          isStop: chords[1].isStop
-        }
-      ],
-      annotation: annotations,
-      classes
-    }
-  }
-
-  if (chords.length === 4) {
-    chords = chords.reduce((chords, c, idx) => {
-      if (c.chordText === '-') {
-        chords[chords.length - 1].beats += String(idx + 1)
-      } else {
-        chords.push({
-          beats: String(idx + 1),
-          chord: c.chordText,
-          isStop: c.isStop
-        })
-      }
-      return chords
-    }, [])
-    return  {
-      chords,
-      annotation: annotations,
-      classes
-    }
-  }
-
   return {
-    chords: [],
-    annotation: annotations,
+    chords,
+    annotation,
     classes
   }
 }
 
 
-const parseLine = lineText => {
-
-  let isRhythms = false
-
-  // if line starts with spaces, align right not left
-  let align = /^\s+/.test(lineText) ? 'right' : 'left'
-
-  // ignore annotations to test the line structure
-  if (!/^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))) {
-    // Line is not a line of bars
-    return {
-      isBars: false,
-      isText: true,
-      isRhythms: false,
-      bars: [],
-      align,
-      text: lineText.trim()
-    }
-  }
-
-  if (lineText.startsWith('rhythms:')) {
-    // Rhythms, that pertain to the previous line
-    isRhythms = true
-  }
-
-  // let bars = lineText
-  //   .replace(/^rhythms:/, '')
-  //   .replace(/^\s*\"[^\"]\"\s*/, '') // remove any pre-cursor annotations
-  //   .replace(/^\s*\|/, '')
-  //   .replace(/\|\s*$/, '')
-  //   .split('|')
-  //   .map(barText => barText.trim())
-  
-  let barTexts = lineText.match(/(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/g)
-  let bars = barTexts.reduce((bars, barText, idx) => {
-    let [,barline,,textContent] = barText.match(/(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/)
-    if (idx > 0) {
-      bars[idx - 1].rightBarline = barline
-    }
-    if (textContent.length) {
-      bars.push({
-        textContent,
-        leftBarline: barline,
-        rightBarline: '|'
-      })
-    }
-    return bars
-  }, [])
-
-
-
-  if (isRhythms) {
-    bars = bars.map((bar, idx) => ({
-      id: idx + 1,
-      rhythms: bar
-    }))
-  } else {
-    bars = bars.map((bar, idx) => ({
-      id: idx + 1,
-      ...bar,
-      ...parseBar(bar.textContent.trim())
-    }))
-  }
-
-  // if line starts with spaces and then a barline, align right not left
-  // let align = /^\s+\|/.test(lineText) ? 'right' : 'left'
-  return {
-    isBars: true,
-    isText: false,
-    isRhythms,
-    bars,
-    align,
-    text: ''
-  }
-
-}
 
 
 const totalPerspectiveVortexForBars = (bars, lineLayout, lineIdx) => {
@@ -212,37 +83,68 @@ const totalPerspectiveVortexForBars = (bars, lineLayout, lineIdx) => {
       isBottommost: !isBarBelow
     }
   })
-
+  
   return bars
 }
 
-const isLineMusic = lineText => {
-  // Line is music if it has unquoted | symbols
-  // For now this is a satisfactory definition but no doubt I'll have to change it
-  // Also it can't start with rhythms
-  if (lineText.startsWith('rhythms:')) {
-    return false
-  }
-  return /^\s*\|/.test(lineText.replace(quotedRegex, ' ').replace(/^rhythms:/, ''))
+
+const splitTextIntoBars = rawText => {
+  let bars = rawText.match(globalBarlineRegex)
+    .reduce((bars, barText, idx) => {
+      let [,barline,,textContent] = barText.match(barlineRegex)
+      if (idx > 0) {
+        bars[idx - 1].rightBarline = barline
+      }
+      if (textContent.length) {
+        bars.push({
+          textContent,
+          leftBarline: barline,
+          rightBarline: '|'
+        })
+      }
+      return bars
+    }, [])
+  return bars
 }
 
-const classesRegex = /\B\.\S+/g
 
+const parseLineData = rawLine => {
 
-const extractStanzaMetadata = stanzaText => {
-  let firstLine = stanzaText.split(/\n+/).filter(line => line.length)[0]
-  // If the first line is music, we have no metadata
-  if (isLineMusic(firstLine)) return {
-    title: '',
-    classes: []
-  }
-  // Classes will be words starting with .
-  let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
-  let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
+  // if line starts with spaces, align right not left
+  let align = /^\s+/.test(rawLine.text) ? 'right' : 'left'
+
+  let rhythmBars = rawLine.rhythms ? splitTextIntoBars(rawLine.rhythms) : null
+  
+  let bars = splitTextIntoBars(rawLine.text).map((bar, idx) => {
+    return {
+      id: idx + 1,
+      ...bar, //leftBarline, rightBarline, textContent
+      rhythm: (rhythmBars?.length > idx) ? rhythmBars[idx].textContent : null,
+      ...parseBarContent(bar.textContent.trim())
+    }
+  })
+
   return {
-    title,
-    classes
+    bars,
+    align
   }
+
+}
+
+
+const isLineMusic = lineText => {
+  // Line is music if it starts with | (optionally white-space indented)
+  return /^\s*\|/.test(lineText)
+}
+
+const isRhythms = lineText => {
+  // Start with "rhythms"?
+  return /^\s*rhythms\b/i.test(lineText)
+}
+
+const isAnnotations = lineText => {
+  // If we're testing this, we can assume it *IS* an annotation line.
+  return true
 }
 
 
@@ -263,24 +165,55 @@ const getBorderCoordinates = lineLayout => {
   return coordinates
 }
 
+const extractStanzaMetadata = stanzaText => {
+  let firstLine = stanzaText.split(/\n+/).filter(line => line.length)[0]
+  // If the first line is music, we have no metadata
+  if (isLineMusic(firstLine)) return {
+    title: '',
+    classes: [],
+    rest: stanzaText
+  }
+  // Classes will be words starting with .
+  let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
+  let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
+  return {
+    title,
+    classes,
+    rest: stanzaText.split('\n').slice(1).join('\n')
+  }
+}
+
+
 const parseStanza = stanzaText => {
 
-  let { title, classes, coordinates } = extractStanzaMetadata(stanzaText)
-  let allLines = stanzaText.split(/\n+/).filter(line => line.trim().length)
+  let { title, classes, rest } = extractStanzaMetadata(stanzaText)
   
-  let lines = []
-  allLines.forEach((line, idx) => {
-    if (!isLineMusic(line)) return
-    let l = parseLine(line)
-    if (l.isRhythms && lines.length > 0) {
-      lines[lines.length - 1].rhythms = l.bars
-    }
-    else lines.push({
-      id: lines.length + 1,
-      ...l
-    })
-  })
+  // The rest is the actual stanza body. Bundle up rhythm and annotation lines 
+  // with the preceeding *actual* music line.
+  let lines = rest.split(/\n+/)
+    .filter(line => line.trim().length)
+    .reduce((lines, line) => {
+      if (isLineMusic(line)) {
+        return [...lines, {
+          text: line
+        }]
+      }
+      if (isRhythms(line)) {
+        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i)
+        return lines
+      }
+      if (isAnnotations(line)) {
+        lines[lines.length - 1].annotationText = line
+        return lines
+      }
+    }, [])
 
+  // Now that the lines are bundled:
+  // { text, rhythmText, annotationText }
+  // ...we can parse and organise the data
+  lines = lines.map(line => parseLineData(line))
+
+  // Get the basic layout of the stanza
   let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
   let lineLayout = lines.map(line => { 
     let on = '1'.repeat(line.bars?.length || 0)
@@ -294,7 +227,6 @@ const parseStanza = stanzaText => {
   }))
 
   let borderCoordinates = getBorderCoordinates(lineLayout)
-  // let borderCoordinates = []
 
   return {
     title,
@@ -302,11 +234,7 @@ const parseStanza = stanzaText => {
     lines,
     lineLayout,
     borderCoordinates,
-    maxWidth,
-    columnStart: (coordinates && coordinates.x > -1) ? coordinates.x + 1 : Math.max(9 - (maxWidth), 0),
-    columnSpan: maxWidth * 2,
-    rowStart: (coordinates && coordinates.y > -1) ? coordinates.y + 1 : null,
-    rowSpan: lines.length * 2,
+    maxWidth
   }
 
 }
@@ -331,9 +259,7 @@ const parsePart = partText => {
 
   // If the first and last non-whitespace character of the part is double quote, treat as plain text
   // (or markdown, one day?)
-  console.log(partText)
   let plainText = partText.match(/^\s*\"(.*)\"\s*$/s)
-  console.log(plainText)
   if (plainText) {
     return {
       type: 'plain-text',

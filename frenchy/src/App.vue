@@ -53,6 +53,7 @@ let song = songify(songText)
 
     }
 
+    body { display: flex; justify-content: center;}
     #app {
       margin: 0.4rem 1rem;
       background-image: 
@@ -62,7 +63,10 @@ let song = songify(songText)
       background-repeat: repeat;
       border: 1px solid black;
       box-shadow: 4px 4px black;
-      padding: 2rem 1rem;
+      padding: 2rem 3rem;
+      aspect-ratio: 1 / 1.414;
+      overflow-y: auto;
+      overflow-x: hidden
     }
   }
 

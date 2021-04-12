@@ -11,6 +11,7 @@ Dirge ("Flee as a Bird") .b
 | Ab7 | - | Eb7 | - | Fm | Bbm | Bdim | C7 |
 | Fm | Fm Bbm | Fm | C7 | Fm | C7 | Fm Bbm | Fm Bbm |
 | Fm/C | C7 | Fm Bbm | Fm |
+rhythms:  | | | q Q q Q | q E e-h |
 
 Chorus (faster)
 | F | - | - | - |
