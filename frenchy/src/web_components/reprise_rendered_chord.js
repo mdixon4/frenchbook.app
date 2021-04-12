@@ -293,7 +293,7 @@ class RepriseRenderedChord extends HTMLElement {
         }
 
         .lily.rendered-chord {
-          font-family: 'lilyjazz-chord';
+          font-family: 'LJC';
           font-size: calc(var(--chord-size) * 0.8);
           transform: scaleX(0.95) translateY(0.18em);
         }

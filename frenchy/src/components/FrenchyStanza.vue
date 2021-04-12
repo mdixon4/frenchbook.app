@@ -1,9 +1,6 @@
 <template>
   <div class="stanza" :style="{
-    '--column-start': stanza.columnStart,
-    '--column-span': stanza.columnSpan,
-    '--row-start': stanza.rowStart,
-    '--row-span': stanza.rowSpan + 1
+    '--default-indent': stanza.indent,
   }" :class="stanza.classes">
     <div class="stanza-break">
       <div class="stanza-title">{{ stanza.title }}</div>
@@ -65,12 +62,12 @@ const props = defineProps({
 })
 
 const stanzaBorderPath = computed(() => {
-  return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
+  return `M${props.stanza.borderCoordinates.map(coords => coords.join(' ')).join(' L')} Z`
 })
 
 const stanzaBorderViewBox = computed(() => {
-  let width = props.stanza.lineLayout[0].length * 100
-  let height = props.stanza.lineLayout.length * 100
+  let width = props.stanza.width
+  let height = props.stanza.height
   return `0 0 ${width} ${height}`
 })
 
@@ -146,17 +143,7 @@ const stanzaBorderViewBox = computed(() => {
     flex-direction: column;
     align-items: start;
     page-break-inside: avoid;
-    left: calc(calc(var(--column-start-override, var(--column-start)) - 1) * var(--x-unit));
-
-
-    /* grid-column: var(--column-start) / span var(--column-span);
-    grid-row: var(--row-start, auto) / span var(--row-span); */
-
-    /* page-break-after: always; */
-    /* box-shadow: 4px 4px #EEE; */
-    /* filter: drop-shadow(2px 0 var(--gridline-color)) drop-shadow(-2px 0 var(--gridline-color)) drop-shadow(0 -2px var(--gridline-color)) drop-shadow(0 2px var(--gridline-color)); */
-    /* border: 1px solid var(--gridline-color); */
-    /* background: white; */
+    left: calc(var(--default-indent) * var(--bar-width));
   }
   .stanza-title {
     font-size: calc(18/16 * 1rem);

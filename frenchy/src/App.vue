@@ -1,34 +1,91 @@
 <template>
-  <div class="page">
-    <frenchy-header :metadata="song.metadata"></frenchy-header>
-    <div class="song">
-      <template v-for="(part, idx) in song.parts" :key="idx">
-        <template v-if="part.type === 'hr'"><hr class="hr"></template>
-        <template v-if="part.type === 'stanza'">
-          <frenchy-stanza :stanza="part"></frenchy-stanza>
+  <div class="controller">
+    <textarea v-model="songText"></textarea>
+  </div>
+  <div class="desk">
+    <div class="page" v-if="song">
+      <frenchy-header :metadata="song.metadata"></frenchy-header>
+      <div class="song">
+        <template v-for="(part, idx) in song.parts" :key="idx">
+          <template v-if="part.type === 'hr'"><hr class="hr"></template>
+          <template v-if="part.type === 'stanza'">
+            <frenchy-stanza :stanza="part"></frenchy-stanza>
+          </template>
+          <template v-if="part.type === 'plain-text'">
+            <div class="non-music" v-html="part.html">
+            </div>
+          </template>
         </template>
-        <template v-if="part.type === 'plain-text'">
-          <div class="non-music" v-html="part.html">
-          </div>
-        </template>
-      </template>
+      </div>
+      <component :is="'style'">{{ song.css }}</component>
     </div>
-    <component :is="'style'">{{ song.css }}</component>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRouteHash } from '@vueuse/router'
+import base64url from 'base64url'
 import { songify } from './songify.js'
 import FrenchyStanza from './components/FrenchyStanza.vue'
 import FrenchyHeader from './components/FrenchyHeader.vue'
 
-import songText from './didnt_he_ramble.js'
-let song = songify(songText)
+
+// convert a Unicode string to a string in which
+// each 16-bit unit occupies only one byte
+function toBinary(string) {
+  const codeUnits = new Uint16Array(string.length);
+  for (let i = 0; i < codeUnits.length; i++) {
+    codeUnits[i] = string.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+}
+function fromBinary(binary) {
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint16Array(bytes.buffer));
+}
+
+const toUrlHash = utf8String => {
+  return btoa(toBinary(utf8String))
+}
+
+const fromUrlHash = base64String => {
+  return fromBinary(atob(base64String))
+}
+
+
+
+let rawSongText = fromUrlHash(window.location.hash.substr(1))
+
+let songText = ref(rawSongText)
+watch(songText, () => {
+  try {
+    window.location.hash = toUrlHash(songText.value)
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+let song = computed(() => {
+  try {
+    return songify(songText.value)
+  } catch {
+    return null
+  }
+})
 
 </script>
 
 <style>
+  @font-face {
+    font-family: 'LJC';
+    font-style: normal;
+    font-weight: normal;
+    src: url('./assets/lilyjazz-chord.otf') format('opentype');
+  }
 
   :root {
     --bar-width: 21mm;
@@ -45,28 +102,74 @@ let song = songify(songText)
     --stroke-width: .25mm;
   }
 
+  @media print {
+    .controller {
+      display: none;
+    }
+  }
+
   @media screen {
     :root {
       --bar-width: 5rem;
       --bar-height: 4.5rem;
       --stroke-width: 2px;
-
     }
 
-    body { display: flex; justify-content: center;}
+    /* body { display: flex; justify-content: center;} */
+
     #app {
-      margin: 0.4rem 1rem;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      min-height: 100vh;
+      background: #444;
+    }
+
+    .controller {
+      color: white;
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      max-height: 100vh;
+      min-height: 20rem;
+      min-width: 20rem;
+    }
+
+    .controller textarea {
+      position: relative;
+      flex-grow: 1;
+    }
+
+    .desk {
+      background-color: #252600;
+      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png");
+      flex-grow: 1;
+      /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+    }
+
+    .page {
+      background: white;
+      /* margin: 0.4rem auto; */
+      --page-width: calc(10 * var(--bar-width));
+      --page-height: calc(1.41 * var(--page-width));
+      /* --page-height: 50rem; */
+      width: var(--page-width);
       background-image: 
+        linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
+      background-size: var(--page-width) calc(var(--page-height) + 1px);
+      /* background-image: 
         linear-gradient(to bottom, transparent 0 22px, lightblue 22px 23px), 
-        linear-gradient(to right, transparent 0 70px, crimson 70px 71px, transparent 71px);
-      background-size: 9999px 23px;
+        linear-gradient(to right, transparent 0 70px, crimson 70px 71px, transparent 71px); */
+      /* background-size: 9999px 23px; */
       background-repeat: repeat;
       border: 1px solid black;
       box-shadow: 4px 4px black;
-      padding: 2rem 3rem;
-      aspect-ratio: 1 / 1.414;
-      overflow-y: auto;
-      overflow-x: hidden
+      /* aspect-ratio: 1 / 1.414; */
+      /* overflow-y: auto; */
+      /* overflow-x: hidden */
+      margin: var(--y-unit) auto;
     }
   }
 
@@ -84,14 +187,15 @@ let song = songify(songText)
     color: black;
 
     /* font-family: 'Patrick Hand'; */
-    font-family: 'LilyJAZZ Text';
+    font-family: 'Century';
     font-size: 16px;
     padding: 0px;
+    margin: 0;
   }
 
   .page {
-    width: 40rem;
-    margin: 0 auto;
+    width: calc(10 * var(--bar-width));
+    padding: var(--y-unit) var(--bar-width)
   }
 
   .song {

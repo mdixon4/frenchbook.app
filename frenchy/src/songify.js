@@ -1,5 +1,7 @@
 import markdownit from 'markdown-it'
 
+const MAX_BARS_PER_LINE = 8
+
 //build regexes without worrying about
 // - double-backslashing
 // - adding whitespace for readability
@@ -24,8 +26,6 @@ const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 
 
 const parseBarContent = barText => {
-  // TODO - refactor this function
-  console.log(barText)
 
   let annotationMatch = barText.match(quotedRegex)
   let annotation = annotationMatch ? annotationMatch[1] : ''
@@ -64,27 +64,45 @@ const parseBarContent = barText => {
 
 
 
-const totalPerspectiveVortexForBars = (bars, lineLayout, lineIdx) => {
-
-  bars = bars.map((bar, barIdx) => {
-    
-    let startAt = lineLayout[lineIdx].indexOf('1')
-    let myPos = startAt + barIdx
-    let isBarAbove = lineIdx > 0 
-      && lineLayout[lineIdx - 1].charAt(myPos) === '1'
-    let isBarBelow = lineIdx < lineLayout.length - 1 
-      && lineLayout[lineIdx + 1].charAt(myPos) === '1'
-
+const totalPerspectiveVortexForBars = (lines, layout) => {
+  return lines.map((line, lineIdx) => {
+    let lineLayout = layout[lineIdx]
     return {
-      ...bar,
-      isLeftmost: barIdx === 0,
-      isRightmost: barIdx === bars.length - 1,
-      isTopmost: !isBarAbove,
-      isBottommost: !isBarBelow
+      ...line,
+      bars: line.bars.map((bar, barIdx) => {
+        let startAt = lineLayout.indexOf('1')
+        let myPos = startAt + barIdx
+        let isBarAbove = lineIdx > 0 
+          && lineLayout[lineIdx - 1].charAt(myPos) === '1'
+        let isBarBelow = lineIdx < lineLayout.length - 1 
+          && lineLayout[lineIdx + 1].charAt(myPos) === '1'
+        return {
+          ...bar,
+          isLeftmost: barIdx === 0,
+          isRightmost: barIdx === line.bars.length - 1,
+          isTopmost: !isBarAbove,
+          isBottommost: !isBarBelow
+        }
+      })
     }
   })
-  
-  return bars
+}
+
+
+const formulateLayout = (stanzaLines) => {
+  let maxWidth = Math.max(...stanzaLines.map(line => line.bars?.length || 0))
+  let layout = stanzaLines.map(line => { 
+    let on = '1'.repeat(line.bars?.length || 0)
+    let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
+    return line.align === 'right' ? `${off}${on}` : `${on}${off}`
+  })
+  let indent = (MAX_BARS_PER_LINE - maxWidth) / 2
+  return {
+    layout,
+    indent,
+    width: maxWidth,
+    height: stanzaLines.length
+  }
 }
 
 
@@ -214,27 +232,21 @@ const parseStanza = stanzaText => {
   lines = lines.map(line => parseLineData(line))
 
   // Get the basic layout of the stanza
-  let maxWidth = Math.max(...lines.map(line => line.bars?.length || 0))
-  let lineLayout = lines.map(line => { 
-    let on = '1'.repeat(line.bars?.length || 0)
-    let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
-    return line.align === 'right' ? `${off}${on}` : `${on}${off}`
-  })
-
-  lines = lines.map((line, lineIdx) => ({
-    ...line,
-    bars: totalPerspectiveVortexForBars(line.bars, lineLayout, lineIdx)
-  }))
-
-  let borderCoordinates = getBorderCoordinates(lineLayout)
+  let { layout, indent, width, height } = formulateLayout(lines)
+  // Total perspective vortex
+  lines = totalPerspectiveVortexForBars(lines, layout)
+  
+  let borderCoordinates = getBorderCoordinates(layout)
 
   return {
     title,
     classes,
     lines,
-    lineLayout,
+    layout,
     borderCoordinates,
-    maxWidth
+    indent,
+    width, 
+    height
   }
 
 }
@@ -257,8 +269,8 @@ const parsePart = partText => {
     }
   }
 
-  // If the first and last non-whitespace character of the part is double quote, treat as plain text
-  // (or markdown, one day?)
+  // If the first and last non-whitespace character of the part is double quote, 
+  // treat as plain text / markdown
   let plainText = partText.match(/^\s*\"(.*)\"\s*$/s)
   if (plainText) {
     return {
