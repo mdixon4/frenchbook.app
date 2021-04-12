@@ -166,7 +166,7 @@ const stanzaBorderViewBox = computed(() => {
     position: relative;
   }
   .line.align-right {
-    align-self: end;
+    align-self: flex-end;
   }
   .line-text.align-right {
     align-self: end;
