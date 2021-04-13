@@ -60,6 +60,15 @@ const parseBarContent = barText => {
     beats: beatPattern[idx]
   }))
 
+  chords = chords.reduce((chords, c, idx) => {
+    if (chords.length && c.isDitto) {
+      chords[chords.length - 1].beats = chords[chords.length - 1].beats + c.beats
+    } else {
+      chords.push(c)
+    }
+    return chords
+  }, [])
+
   return {
     chords,
     annotation,
@@ -79,9 +88,9 @@ const totalPerspectiveVortexForBars = (lines, layout) => {
         let startAt = lineLayout.indexOf('1')
         let myPos = startAt + barIdx
         let isBarAbove = lineIdx > 0 
-          && lineLayout[lineIdx - 1].charAt(myPos) === '1'
-        let isBarBelow = lineIdx < lineLayout.length - 1 
-          && lineLayout[lineIdx + 1].charAt(myPos) === '1'
+          && layout[lineIdx - 1].charAt(myPos) === '1'
+        let isBarBelow = lineIdx < layout.length - 1 
+          && layout[lineIdx + 1].charAt(myPos) === '1'
         return {
           ...bar,
           isLeftmost: barIdx === 0,

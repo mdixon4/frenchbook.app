@@ -93,7 +93,6 @@ export default {
   /* background: #4F9A; */
   display: flex;
   align-items: center;
-  text-shadow: white 1px 1px, white -1px -1px, white 1px -1px, white -1px 1px;
   /* outline: 1px dashed blue; */
   grid-area: content;
 }
@@ -193,15 +192,27 @@ export default {
 
 
 
-/* .b123 {
-  width: 100%;
-  height: 50%;
-  top: 0;
+.b123 {
+  display: grid;
+  grid-template-columns: 1fr minmax(50%, max-content) 11fr;
+  grid-template-rows: 1fr minmax(50%, max-content) 31fr;
+  grid-template-areas:
+    ". .       ."
+    ". content ."
+    ". .       .";
+  align-items: stretch;
+  justify-items: center;
 }
-  .b234 {
-    width: 100%;
-    height: 50%;
-    bottom: 0;
-  } */
+.b234 {
+  display: grid;
+  grid-template-columns: 11fr minmax(50%, max-content) 1fr;
+  grid-template-rows: 11fr minmax(50%, max-content) 1fr;
+  grid-template-areas:
+    ". .        ."
+    ". content  ."
+    ". .        .";
+  align-items: stretch;
+  justify-items: center;
+}
 
 </style>

@@ -3,7 +3,10 @@
     '--default-indent': stanza.indent,
   }" :class="stanza.classes">
     <div class="stanza-break">
-      <div class="stanza-title">{{ stanza.title }}</div>
+      <div class="stanza-title">
+        <span>{{ stanza.title }}</span>
+        <span class="outline">{{ stanza.title }}</span>
+      </div>
     </div>
     <div v-if="stanza.classes.includes('coda')" class="coda-here">
       <svg class="coda-symbol" width="35" height="43" viewBox="0 0 35 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -20,18 +23,23 @@
     </div>
     <div class="stanza-music">
       <svg class="stanza-border-b" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <mask :id="`stanza-mask-b-${stanza.id}`">
+        <mask :id="`stanza-border-eraser-mask-b-${stanza.id}`">
           <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
           <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path>
-          <path class="mask-stroke-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="white"></path>
-          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="0" fill="black"></path>
         </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" :mask="`url(#stanza-mask-b-${stanza.id})`"></path>
+        <mask :id="`stanza-mask-b-${stanza.id}`">
+          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
+          <!-- <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path> -->
+          <!-- <path class="mask-stroke-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="white"></path> -->
+          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="0" fill="black"></path> -->
+        </mask>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath"></path>
+        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
       </svg>
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
         <mask :id="`stanza-mask-${stanza.id}`">
           <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" stroke-width="white" fill="black"></path>
+          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" stroke-width="white" fill="black"></path> -->
         </mask>
         <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
       </svg>
@@ -101,27 +109,33 @@ const stanzaBorderViewBox = computed(() => {
     fill: transparent;
     stroke: var(--gridline-color);
     /* stroke: var(--gridline-color); */
-    stroke-width: calc(3 * var(--stroke-width));
+    stroke-width: var(--thick-stroke-width);
   }
 
 
   .stanza-border-b .border-stroke {
     fill: transparent;
     stroke: var(--gridline-color);
-    /* stroke: var(--gridline-color); */
-    stroke-width: calc(3* var(--stroke-width));
+    /* stroke: blue; */
+    stroke-width: var(--thick-stroke-width);
+    /* stroke-width: 10px; */
   }
-
+  .stanza-border-b .border-stroke-gap {
+    fill: transparent;
+    stroke: white;
+    stroke-width: calc(var(--stroke-width) * 0.5);
+  }
 
   .stanza.b .mask-stroke-gap {
-    stroke-width: calc(2 * var(--stroke-width));
+    stroke-width: 2px;
+    /* stroke-width: calc(var(--thick-stroke-width) / 2 + var(--stroke-width) / 2); */
   }
-  .stanza.b .mask-stroke-inner {
+  /* .stanza.b .mask-stroke-inner {
     stroke-width: calc(1 * var(--stroke-width));
   }
   .mask-stroke-inner {
     stroke-width: var(--stroke-width);
-  }
+  } */
   
   .stanza-border { z-index: 40 }
 
@@ -155,11 +169,22 @@ const stanzaBorderViewBox = computed(() => {
     /* font-family: 'IM Fell DW Pica'; */
     /* line-height: 2; */
     /* font-family: 'LilyJAZZ Text'; */
-    /* -webkit-text-stroke: 3px white; */
+    position: relative;
     /* -webkit-text-fill-color: black; */
     /* paint-order: stroke fill; */
-    text-shadow: white 1px 1px, white -1px -1px, white 1px -1px, white -1px 1px;
+    /* fill: black; */
+    /* stroke: red; */
+    /* stroke-width: 4px; */
+    /* text-shadow: white 1px 0, white -1px 0, white 0 -1px, white 0 1px; */
   }
+  .stanza-title .outline {
+    user-select: none;
+    -webkit-text-stroke: 2px white;
+    position: absolute;
+    left: 0;
+    z-index: -1;
+  }
+
   .stanza-break {
     position: relative;
     display: flex;

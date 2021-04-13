@@ -17,15 +17,23 @@
           <path v-if="stopOn(1) && stopOn(2) && isSlashed" d="M 0 0 100 0 0 100 0 0"></path>
           <path v-if="stopOn(3) && stopOn(4) && isSlashed" d="M 100 0 100 100 0 100 100 0"></path>
         </g>
-        <g class="borders" fill="transparent" stroke="var(--gridline-color)" vector-effect='non-scaling-stroke'>
-          <!-- <path d="M 0 0 100 0 100 100 0 100 0 0"></path> -->
+        <g class="borders-internal" fill="transparent">
+          <path v-if="blocks==='╱'" vector-effect='non-scaling-stroke' d="M 100 0, 0 100"></path>
+          <!-- <path v-if="blocks==='╱'" d="M 93 7, 7 93"></path> -->
+          <path v-if="blocks==='┘'" vector-effect='non-scaling-stroke' d="M 50 0, 50 50, 0 50"></path>
+          <path v-if="blocks==='┴'" vector-effect='non-scaling-stroke' d="M 50 0, 50 50 M 0 50, 100 50"></path>
+          <path v-if="blocks==='┼'" vector-effect='non-scaling-stroke' d="M 50 0 50 100 M 0 50 100 50"></path>
+          <path v-if="blocks==='┬'" vector-effect='non-scaling-stroke' d="M 0 50 100 50 M 50 50 50 100"></path>
+          <path v-if="blocks==='┌'" vector-effect='non-scaling-stroke' d="M 100 50 50 50 50 100"></path>
+        </g>
+        <g class="borders" fill="transparent" vector-effect='non-scaling-stroke'>
           <!-- top -->
-          <path d="M 0 0 100 0" vector-effect='non-scaling-stroke'></path>
+          <path class="top-barline" shape-rendering="crispEdges" d="M 0 0 100 0" vector-effect='non-scaling-stroke'></path>
           <!-- bottom -->
-          <path d="M 0 100 100 100" vector-effect='non-scaling-stroke'></path>
+          <path class="bottom-barline" shape-rendering="crispEdges" d="M 0 100 100 100" vector-effect='non-scaling-stroke'></path>
           <!-- left -->
-          <path v-if="barData.leftBarline.includes('||') || barData.leftBarline === '|:' || barData.leftBarline === ':|'" d="M 2 0 2 100" vector-effect='non-scaling-stroke'></path>
-          <path v-else d="M 0 0 0 100" vector-effect='non-scaling-stroke'></path>
+          <path class="left-barline" shape-rendering="crispEdges" v-if="barData.leftBarline.includes('||') || barData.leftBarline === '|:' || barData.leftBarline === ':|'" d="M 2 0 2 100" vector-effect='non-scaling-stroke'></path>
+          <path class="left-barline" shape-rendering="crispEdges" v-else d="M 0 0 0 100" vector-effect='non-scaling-stroke'></path>
           <g v-if="barData.leftBarline === '|:'">
             <circle cx="7" cy="40" r="2" fill="var(--gridline-color)"></circle>
             <circle cx="7" cy="60" r="2" fill="var(--gridline-color)"></circle>
@@ -34,8 +42,8 @@
             <path vector-effect='non-scaling-stroke' d="M9 94C3.4 91.4236 1 90.3195 1 82.9585C1 75.5976 1 68.2365 1 68.2365C1 68.2365 1 41.4278 1 24.25C1 19.0616 1 10.9643 1 10.9643C1 4.32145 3.19998 3.32503 8.33325 1.00004"/>
           </svg>
           <!-- right -->
-          <path class="right-barline" v-if="barData.rightBarline.includes('||') || barData.rightBarline === '|:' || barData.rightBarline === ':|'" d="M 98 0 98 100" vector-effect='non-scaling-stroke'></path>
-          <path class="right-barline" v-else d="M 100 0 100 100" vector-effect='non-scaling-stroke'></path>
+          <path class="right-barline" shape-rendering="crispEdges" v-if="barData.rightBarline.includes('||') || barData.rightBarline === '|:' || barData.rightBarline === ':|'" d="M 98 0 98 100" vector-effect='non-scaling-stroke'></path>
+          <path class="right-barline" shape-rendering="crispEdges" v-else d="M 100 0 100 100" vector-effect='non-scaling-stroke'></path>
           <g v-if="barData.rightBarline === ':|'">
             <circle cx="93" cy="40" r="2" fill="var(--gridline-color)"></circle>
             <circle cx="93" cy="60" r="2" fill="var(--gridline-color)"></circle>
@@ -45,14 +53,6 @@
               <path vector-effect='non-scaling-stroke' d="M9 94C3.4 91.4236 1 90.3195 1 82.9585C1 75.5976 1 68.2365 1 68.2365C1 68.2365 1 41.4278 1 24.25C1 19.0616 1 10.9643 1 10.9643C1 4.32145 3.19998 3.32503 8.33325 1.00004"/>
             </g>
           </svg>
-
-          <path v-if="blocks==='╱'" vector-effect='non-scaling-stroke' d="M 100 0, 0 100"></path>
-          <!-- <path v-if="blocks==='╱'" d="M 93 7, 7 93"></path> -->
-          <path v-if="blocks==='┘'" vector-effect='non-scaling-stroke' d="M 50 0, 50 50, 0 50"></path>
-          <path v-if="blocks==='┴'" vector-effect='non-scaling-stroke' d="M 50 0, 50 50 M 0 50, 100 50"></path>
-          <path v-if="blocks==='┼'" vector-effect='non-scaling-stroke' d="M 50 0 50 100 M 0 50 100 50"></path>
-          <path v-if="blocks==='┬'" vector-effect='non-scaling-stroke' d="M 0 50 100 50 M 50 50 50 100"></path>
-          <path v-if="blocks==='┌'" vector-effect='non-scaling-stroke' d="M 100 50 50 50 50 100"></path>
         </g>
       </g>
     </svg>
@@ -124,16 +124,27 @@ export default {
 </script>
 
 <style>
+  .bar.is-topmost .top-barline {
+    stroke: white;
+    stroke-width: calc(var(--stroke-width) / 2);
+  }
+  .bar.is-bottommost .bottom-barline {
+    display: none;
+  }
+  .bar.is-rightmost .right-barline {
+    display: none;
+  }
+  .bar.is-leftmost .left-barline {
+    display: none;
+  }
+
+
   .shading {
     position: absolute;
     inset: 0;
     height: 100%;
     width: 100%;
     overflow: visible;
-  }
-  .ext-borders {
-    position: absolute;
-    inset: -2px;
   }
 
   .bar > .chords {

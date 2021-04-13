@@ -1,5 +1,8 @@
 <template>
-  <div class="lily rendered-chord" :class="[ shape ]" v-html="chord.renderedChord"></div>
+  <div class="lily rendered-chord add-outline" :class="[ shape ]">
+    <span v-html="chord.renderedChord"></span>
+    <span class="outline" v-html="chord.renderedChord"></span>
+  </div>
 </template>
 
 <script setup>
@@ -38,6 +41,14 @@ const shape = computed(() => {
 .lily .mod-digit {
   transform: translateY(-0.3em) scale(0.65);
   margin: 0 -0.25em 0 -0.1em;
+}
+
+.rendered-chord .outline {
+  user-select: none;
+  -webkit-text-stroke: 2px white;
+  position: absolute;
+  left: 0;
+  z-index: -1;
 }
 
 

@@ -100,7 +100,8 @@ let song = computed(() => {
 
     --gridline-color: black;
     --stop-color: #DDD;
-    --stroke-width: .25mm;
+    --stroke-width: .5mm;
+    --thick-stroke-width: 0.75mm;
   }
 
   @media print {
@@ -114,6 +115,7 @@ let song = computed(() => {
       --bar-width: 5rem;
       --bar-height: 4.5rem;
       --stroke-width: 2px;
+      --thick-stroke-width: 3px;
     }
 
     /* body { display: flex; justify-content: center;} */
@@ -174,6 +176,13 @@ let song = computed(() => {
 
   g.borders path {
     stroke-width: var(--stroke-width);
+    stroke: var(--gridline-color);
+    stroke-linecap: butt;
+  }
+
+  g.borders-internal path {
+    stroke-width: var(--stroke-width);
+    stroke: var(--gridline-color);
   }
 
 
