@@ -31,9 +31,9 @@
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
         <mask :id="`stanza-mask-${stanza.id}`">
           <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="white" fill="black"></path>
+          <path class="mask-fill-inner" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" stroke-width="white" fill="black"></path>
         </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
       </svg>
       <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
         <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
@@ -62,12 +62,12 @@ const props = defineProps({
 })
 
 const stanzaBorderPath = computed(() => {
-  return `M${props.stanza.borderCoordinates.map(coords => coords.join(' ')).join(' L')} Z`
+  return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
 })
 
 const stanzaBorderViewBox = computed(() => {
-  let width = props.stanza.width
-  let height = props.stanza.height
+  let width = props.stanza.width * 100
+  let height = props.stanza.height * 100
   return `0 0 ${width} ${height}`
 })
 
@@ -101,7 +101,7 @@ const stanzaBorderViewBox = computed(() => {
     fill: transparent;
     stroke: var(--gridline-color);
     /* stroke: var(--gridline-color); */
-    stroke-width: calc(2 * var(--stroke-width));
+    stroke-width: calc(3 * var(--stroke-width));
   }
 
 
@@ -144,7 +144,8 @@ const stanzaBorderViewBox = computed(() => {
     flex-direction: column;
     align-items: start;
     page-break-inside: avoid;
-    left: calc(var(--default-indent) * var(--bar-width));
+    left: calc(var(--indent, var(--default-indent)) * var(--bar-width));
+    margin-top: calc(var(--downdent, 0) * var(--bar-height));
   }
   .stanza-title {
     font-size: calc(18/16 * 1rem);

@@ -1,0 +1,48 @@
+title: Can't Buy Me Love
+key: Fm
+number: 83
+credits: Lennon/McCartney, 1964
+===
+
+Intro: .intro
+| Am7 | Dm7 | Am7 | Dm7 |
+| Gm7 | C7  | F   | -   |: Fm "vamp" | - :|
+
+Verse:
+| Fm7 | - | - | - |
+| Bbm7| - | Fm7| - |
+| C7 | Bbm7 | Fm7 | - .to-coda |
+
+Chorus (trumpet): .chorus-trumpet
+| Am7 | Dm7 | Am7 | Dm7 |
+| Am7 | Dm7 | Bb6 | . C7 - - |
+
+Chorus (vocals): .chorus-vocals .b
+| Am7 | Dm7 | Bbm7 | Fm7 |
+| Am7 | Dm7 | Bb6 | . C7 - - |
+
+---
+
+Tag: .coda
+| Am7 | Dm7 | Am7 | Dm7 |
+| Gm7 | C7  | F   | - "cha-cha-cha" |
+
+===
+.intro {
+ --indent: 2;
+}
+
+
+.chorus-trumpet {
+  --indent: 0;
+  z-index: 45
+}
+
+.chorus-trumpet .bar {
+  background-color: white
+}
+
+.chorus-vocals {
+  --indent: 4;
+  --downdent: -2;
+}
