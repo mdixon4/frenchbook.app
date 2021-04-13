@@ -177,7 +177,7 @@ let song = computed(() => {
   g.borders path {
     stroke-width: var(--stroke-width);
     stroke: var(--gridline-color);
-    stroke-linecap: butt;
+    stroke-linecap: square;
   }
 
   g.borders-internal path {
@@ -217,6 +217,7 @@ let song = computed(() => {
   .hr {
     margin: 0;
     border: calc(var(--stroke-width) * 1) dashed var(--gridline-color);
+    border-top: 0;
     align-self: stretch;
   }
 

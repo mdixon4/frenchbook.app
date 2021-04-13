@@ -304,13 +304,19 @@ const parsePart = partText => {
 
 
 const parseFrontMatter = frontMatter => {
-  return frontMatter.split(/\n+/)
+  let metadata = frontMatter.split(/\n+/)
     .filter(item => /\:/.test(item))
     .map(item => item.split(/([^:]*)\:(.*)/))
     .reduce((acc, item) => {
       acc[item[1].trim()] = item[2].trim()
       return acc
     }, {})
+  if (metadata.title) {
+    metadata.title = markdownit({
+      typographer: true
+    }).renderInline(metadata.title)
+  }
+  return metadata
 }
 
 

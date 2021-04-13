@@ -22,6 +22,17 @@
       </svg>
     </div>
     <div class="stanza-music">
+      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
+        <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
+          <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
+        </div>
+        <frenchy-bar v-for="(bar, barIdx) in line.bars" :key="bar.id" :barData="bar" :barIdx="barIdx" :lineIdx="lineIdx" :lineLayout="stanza.lineLayout"></frenchy-bar>
+        <div v-if="line.rhythms" class="line-rhythms">
+          <div v-for="(rhythm, rhythmIdx) in line.rhythms" :key="rhythmIdx">
+            <span>{{ rhythm.rhythms.textContent }}</span>
+          </div>
+        </div>
+      </div>
       <svg class="stanza-border-b" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
         <mask :id="`stanza-border-eraser-mask-b-${stanza.id}`">
           <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
@@ -43,17 +54,6 @@
         </mask>
         <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
       </svg>
-      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
-        <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
-          <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
-        </div>
-        <frenchy-bar v-for="(bar, barIdx) in line.bars" :key="bar.id" :barData="bar" :barIdx="barIdx" :lineIdx="lineIdx" :lineLayout="stanza.lineLayout"></frenchy-bar>
-        <div v-if="line.rhythms" class="line-rhythms">
-          <div v-for="(rhythm, rhythmIdx) in line.rhythms" :key="rhythmIdx">
-            <span>{{ rhythm.rhythms.textContent }}</span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="stanza-break"></div>
   </div>
@@ -83,6 +83,20 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
+  /* .bar.is-topmost .top-barline {
+    stroke: white;
+    stroke-width: calc(var(--stroke-width) / 2);
+  }
+  .bar.is-bottommost .bottom-barline {
+    display: none;
+  }
+  .bar.is-rightmost .right-barline {
+    display: none;
+  }
+  .bar.is-leftmost .left-barline {
+    display: none;
+  } */
+
   .stanza-border, .stanza-border-b {
     position: absolute;
     inset: 0;
@@ -116,6 +130,7 @@ const stanzaBorderViewBox = computed(() => {
   .stanza-border-b .border-stroke {
     fill: transparent;
     stroke: var(--gridline-color);
+    /* stroke: bl; */
     /* stroke: blue; */
     stroke-width: var(--thick-stroke-width);
     /* stroke-width: 10px; */
@@ -124,6 +139,7 @@ const stanzaBorderViewBox = computed(() => {
     fill: transparent;
     stroke: white;
     stroke-width: calc(var(--stroke-width) * 0.5);
+    stroke-width: calc(var(--stroke-width) * .75);
   }
 
   .stanza.b .mask-stroke-gap {

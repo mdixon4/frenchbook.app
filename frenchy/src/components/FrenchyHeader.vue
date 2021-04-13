@@ -9,9 +9,7 @@
   </div>
   <div class="title-bar">
     <div class="number">{{ metadata.number }}</div>
-    <div class="title">
-      {{ metadata.title }}
-    </div>
+    <div class="title" v-html="metadata.title"></div>
     <div class="number">{{ metadata.number }}</div>
   </div>
 </template>

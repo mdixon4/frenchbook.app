@@ -124,21 +124,6 @@ export default {
 </script>
 
 <style>
-  .bar.is-topmost .top-barline {
-    stroke: white;
-    stroke-width: calc(var(--stroke-width) / 2);
-  }
-  .bar.is-bottommost .bottom-barline {
-    display: none;
-  }
-  .bar.is-rightmost .right-barline {
-    display: none;
-  }
-  .bar.is-leftmost .left-barline {
-    display: none;
-  }
-
-
   .shading {
     position: absolute;
     inset: 0;
