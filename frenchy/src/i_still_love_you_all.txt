@@ -1,0 +1,21 @@
+title: I Still Love You All
+key: Fm-Gm
+number: 12
+credits: Ball, 1961
+===
+
+Intro:
+| Bbm| - | Fm | - | Bb7| C7 | Fm | - |
+
+| Fm | - | -  | - | -  | -  | C7 | - |
+| C7 | - | -  | - | -  | -  | Fm | - |
+| Fm | - | -  | - | F7 | -  | Bbm| - |
+| Bbm| - | Fm | - | Bb7| C7 | Fm | - |
+
+Modulation (on cue):
+| Gm | - | -  | - | -  | -  | D7 | - |
+| D7 | - | -  | - | -  | -  | Gm | - |
+| Gm | - | -  | - | G7 | -  | Cm | - |
+| Cm | - | Gm | - | C7 | D7 | Gm | - |
+                            | Gm | - |
+

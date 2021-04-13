@@ -35,8 +35,9 @@ defineProps({
     display: flex;
     justify-content: space-between;
     font-family: 'Century';
-    margin: 0 0 -0.2rem;
-    border-bottom: calc(2 * var(--stroke-width)) solid black
+    font-family: 'EB Garamond';
+    margin: 0 0;
+    border-bottom: calc(1.5 * var(--stroke-width)) solid black
   }
 
   .credits {
@@ -50,11 +51,12 @@ defineProps({
   .title-bar {
     display: grid;
     grid-template-columns: max-content auto max-content;
-    align-items: baseline;
+    align-items: center;
     border: var(--stroke-width) px solid var(--gridline-color);
-    margin: 0 auto 1em;
-    padding: 0.2rem 0.2rem 0.1rem;
-    border-bottom: calc(2 * var(--stroke-width)) solid black
+    margin: 0 auto calc(var(--y-unit) / 2);
+    padding: 0rem 0.2rem;
+    line-height: 1;
+    border-bottom: calc(1.5 * var(--stroke-width)) solid black
   }
 
   .number {
@@ -62,17 +64,19 @@ defineProps({
     font-weight: bold;
     /* padding: 0.5rem; */
     font-size: 1.8rem;
-    line-height: 100%;
+    /* line-height: 100%; */
     color: red;
   }
   
 
   .title {
-    font-family: 'Century';
+    /* font-family: 'Century'; */
+    font-family: 'EB Garamond';
+    /* font-family: 'IM Fell DW Pica'; */
     text-align: center;
     /* padding: 0.5rem; */
-    font-size: 2rem;
-    line-height: 1;
+    font-size: 2.2rem;
+    /* line-height: ; */
   }
 
 </style>

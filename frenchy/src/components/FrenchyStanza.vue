@@ -81,6 +81,7 @@ const stanzaBorderViewBox = computed(() => {
     height: 100%;
     width: 100%;
     overflow: visible;
+    pointer-events: none;
     /* opacity: 1; */
   }
 
@@ -147,12 +148,21 @@ const stanzaBorderViewBox = computed(() => {
   }
   .stanza-title {
     font-size: calc(18/16 * 1rem);
+    /* line-height: calc(18/16 * 1rem * 1.2); */
+    line-height: 1.1;
+    font-family: 'EB Garamond';
+    /* font-family: 'IM Fell DW Pica'; */
+    /* line-height: 2; */
+    /* font-family: 'LilyJAZZ Text'; */
+    /* -webkit-text-stroke: 3px white; */
+    /* -webkit-text-fill-color: black; */
+    /* paint-order: stroke fill; */
     text-shadow: white 1px 1px, white -1px -1px, white 1px -1px, white -1px 1px;
   }
   .stanza-break {
     position: relative;
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     height: calc(var(--row-gap) / 2);
   }
   .stanza-music {

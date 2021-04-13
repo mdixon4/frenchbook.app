@@ -80,6 +80,7 @@ let song = computed(() => {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&display=swap');
   @font-face {
     font-family: 'LJC';
     font-style: normal;
@@ -88,11 +89,11 @@ let song = computed(() => {
   }
 
   :root {
-    --bar-width: 21mm;
-    --bar-height: 19mm;
-
+    --bar-width: 23mm;
+    --bar-height: 21mm;
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
+    --x-page-margin: var(--x-unit);
 
     --row-gap: var(--y-unit);
     --col-gap: var(--x-unit);
@@ -152,10 +153,7 @@ let song = computed(() => {
     .page {
       background: white;
       /* margin: 0.4rem auto; */
-      --page-width: calc(10 * var(--bar-width));
-      --page-height: calc(1.41 * var(--page-width));
       /* --page-height: 50rem; */
-      width: var(--page-width);
       background-image: 
         linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
       background-size: var(--page-width) calc(var(--page-height) + 1px);
@@ -187,15 +185,18 @@ let song = computed(() => {
     color: black;
 
     /* font-family: 'Patrick Hand'; */
-    font-family: 'Century';
+    /* font-family: 'Century'; */
+    /* font-family: 'IM Fell DW Pica'; */
     font-size: 16px;
     padding: 0px;
     margin: 0;
   }
 
   .page {
-    width: calc(10 * var(--bar-width));
-    padding: var(--y-unit) var(--bar-width)
+    --page-width: calc(8 * var(--bar-width) + 2 * var(--x-page-margin));
+    --page-height: calc(1.41 * var(--page-width));
+    width: var(--page-width);
+    padding: var(--y-unit) var(--x-page-margin)
   }
 
   .song {

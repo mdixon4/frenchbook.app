@@ -57,7 +57,7 @@
       </g>
     </svg>
     <div class="chords" :class="{ slash: isSlashed }">
-      <frenchy-beat :key="chord.beats" v-for="chord in chords" :beats="chord.beats" :chord="chord.chord" :isStop="chord.isStop" :isSlashed="isSlashed"></frenchy-beat>
+      <frenchy-beat :key="chord.beats" v-for="chord in chords" :beats="chord.beats" :chord="chord" :isStop="chord.isStop" :isSlashed="isSlashed"></frenchy-beat>
     </div>
     <div class="annotation">{{ barData.annotation }}</div>
     <div class="to-coda-diagram" v-if="barData.classes.includes('to-coda')">

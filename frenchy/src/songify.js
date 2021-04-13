@@ -1,4 +1,5 @@
 import markdownit from 'markdown-it'
+import { renderChord } from './chord_renderer.js'
 
 const MAX_BARS_PER_LINE = 8
 
@@ -38,7 +39,12 @@ const parseBarContent = barText => {
     .filter(Boolean)
     .map(c => ({
       chord: c.replace(/\.$/, ''),
-      isStop: /\.$/.test(c)
+      isStop: /\.$/.test(c),
+      isDitto: c === '-'
+    }))
+    .map(c => ({
+      ...c,
+      ...renderChord(c.chord)
     }))
 
   let beatPattern = chords.length === 1
