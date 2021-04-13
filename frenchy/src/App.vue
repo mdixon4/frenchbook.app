@@ -1,7 +1,11 @@
 <template>
-  <div class="controller">
+  <div class="controller" v-if="isEditing">
+    <button class="end-edit" @click="isEditing = false">Close</button>
     <textarea v-model="songText"></textarea>
   </div>
+  <button class="begin-edit" v-else @click="isEditing = true">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+  </button>
   <div class="desk">
     <div class="page" v-if="song">
       <frenchy-header :metadata="song.metadata"></frenchy-header>
@@ -77,6 +81,8 @@ let song = computed(() => {
   }
 })
 
+const isEditing = ref(false)
+
 </script>
 
 <style>
@@ -108,6 +114,9 @@ let song = computed(() => {
     .controller {
       display: none;
     }
+    .begin-edit {
+      display: none;
+    }
   }
 
   @media screen {
@@ -125,19 +134,40 @@ let song = computed(() => {
       flex-direction: row;
       flex-wrap: wrap;
       min-height: 100vh;
-      background: #444;
+      background-color: #252600;
+      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png");
+      align-items: stretch;
     }
 
     .controller {
       color: white;
+      background: rgba(255, 255, 255, 0.329);
       padding: 1rem;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      max-height: 100vh;
       min-height: 20rem;
       min-width: 20rem;
+    }
+
+    .begin-edit {
+      border: 0;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.329);
+      box-shadow: black 4px 4px 18px;
+      color: white;
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      border-radius: 100%;
+      width: 4rem;
+      height: 4rem;
+      cursor: pointer;
+    }
+    .begin-edit svg {
+      width: 2rem;
+      height: 2rem;
     }
 
     .controller textarea {
@@ -146,8 +176,6 @@ let song = computed(() => {
     }
 
     .desk {
-      background-color: #252600;
-      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png");
       flex-grow: 1;
       /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
     }
@@ -159,6 +187,7 @@ let song = computed(() => {
       background-image: 
         linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
       background-size: var(--page-width) calc(var(--page-height) + 1px);
+      min-height: var(--page-height);
       /* background-image: 
         linear-gradient(to bottom, transparent 0 22px, lightblue 22px 23px), 
         linear-gradient(to right, transparent 0 70px, crimson 70px 71px, transparent 71px); */
@@ -257,4 +286,5 @@ let song = computed(() => {
   .segno-symbol {
     height: 24px;
   }
+
 </style>
