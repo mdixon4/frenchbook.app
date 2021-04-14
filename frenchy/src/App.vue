@@ -7,21 +7,23 @@
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
   </button>
   <div class="desk">
-    <div class="page" v-if="song" ref="pageElement">
-      <frenchy-header :metadata="song.metadata"></frenchy-header>
-      <div class="song">
-        <template v-for="(part, idx) in song.parts" :key="idx">
-          <template v-if="part.type === 'hr'"><hr class="hr"></template>
-          <template v-if="part.type === 'stanza'">
-            <frenchy-stanza :stanza="part"></frenchy-stanza>
+    <div class="page-holder">
+      <div class="page" v-if="song" ref="pageElement">
+        <frenchy-header :metadata="song.metadata"></frenchy-header>
+        <div class="song">
+          <template v-for="(part, idx) in song.parts" :key="idx">
+            <template v-if="part.type === 'hr'"><hr class="hr"></template>
+            <template v-if="part.type === 'stanza'">
+              <frenchy-stanza :stanza="part"></frenchy-stanza>
+            </template>
+            <template v-if="part.type === 'plain-text'">
+              <div class="non-music" v-html="part.html">
+              </div>
+            </template>
           </template>
-          <template v-if="part.type === 'plain-text'">
-            <div class="non-music" v-html="part.html">
-            </div>
-          </template>
-        </template>
+        </div>
+        <component :is="'style'">{{ song.css }}</component>
       </div>
-      <component :is="'style'">{{ song.css }}</component>
     </div>
   </div>
 </template>
@@ -85,11 +87,15 @@ let song = computed(() => {
 
 const isEditing = ref(false)
 
+const pz = 
+
 watch(pageElement, () => {
   if (pageElement.value) {
     panzoom(pageElement.value, {
       bounds: true,
-      transformOrigin: {x: 0.5, y: 0.5}
+      maxZoom: 3,
+      minZoom: 0.25,
+      // transformOrigin: {x: 0.5, y: 0.5}
     })
   }
 })
@@ -146,8 +152,10 @@ watch(pageElement, () => {
       flex-wrap: wrap;
       min-height: 100vh;
       background-color: #252600;
+      /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
       background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png");
       align-items: stretch;
+      overflow: hidden;
     }
 
     .controller {
@@ -160,6 +168,7 @@ watch(pageElement, () => {
       align-items: stretch;
       min-height: 20rem;
       min-width: 20rem;
+      z-index: 500;
     }
 
     .begin-edit {
@@ -175,6 +184,7 @@ watch(pageElement, () => {
       width: 4rem;
       height: 4rem;
       cursor: pointer;
+      z-index: 50;
     }
     .begin-edit svg {
       width: 2rem;
@@ -188,8 +198,10 @@ watch(pageElement, () => {
 
     .desk {
       flex-grow: 1;
-      overflow: hidden;
-      /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+      max-height: 100vh;
+      padding: var(--y-unit);
+      display:flex;
+      justify-content: center;
     }
 
     .page {
@@ -210,7 +222,7 @@ watch(pageElement, () => {
       /* aspect-ratio: 1 / 1.414; */
       /* overflow-y: auto; */
       /* overflow-x: hidden */
-      margin: var(--y-unit) auto;
+      /* margin: var(--y-unit) auto; */
     }
   }
 
