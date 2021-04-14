@@ -204,6 +204,10 @@ watch(pageElement, () => {
       justify-content: center;
     }
 
+    .page-holder:focus {
+      outline: none;
+    }
+
     .page {
       background: white;
       /* margin: 0.4rem auto; */
