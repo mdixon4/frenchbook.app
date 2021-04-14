@@ -134,6 +134,9 @@ watch(pageElement, () => {
     .begin-edit {
       display: none;
     }
+    .page {
+      transform: none !important;
+    }
   }
 
   @media screen {
