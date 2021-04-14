@@ -7,7 +7,7 @@
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
   </button>
   <div class="desk">
-    <div class="page" v-if="song">
+    <div class="page" v-if="song" ref="pageElement">
       <frenchy-header :metadata="song.metadata"></frenchy-header>
       <div class="song">
         <template v-for="(part, idx) in song.parts" :key="idx">
@@ -29,11 +29,13 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useRouteHash } from '@vueuse/router'
+import panzoom from 'panzoom'
 import base64url from 'base64url'
 import { songify } from './songify.js'
 import FrenchyStanza from './components/FrenchyStanza.vue'
 import FrenchyHeader from './components/FrenchyHeader.vue'
 
+const pageElement = ref(null)
 
 // convert a Unicode string to a string in which
 // each 16-bit unit occupies only one byte
@@ -82,6 +84,15 @@ let song = computed(() => {
 })
 
 const isEditing = ref(false)
+
+watch(pageElement, () => {
+  if (pageElement.value) {
+    panzoom(pageElement.value, {
+      bounds: true,
+      transformOrigin: {x: 0.5, y: 0.5}
+    })
+  }
+})
 
 </script>
 
@@ -177,6 +188,7 @@ const isEditing = ref(false)
 
     .desk {
       flex-grow: 1;
+      overflow: hidden;
       /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
     }
 
