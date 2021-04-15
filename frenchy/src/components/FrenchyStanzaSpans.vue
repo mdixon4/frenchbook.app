@@ -53,26 +53,31 @@ const bottomSpans = computed(
   .exterior {
     position: absolute;
     display: grid;
+    grid-auto-flow: dense;
   }
   .exterior.top {
     width: 100%;
     bottom: 100%;
     grid-template-columns: repeat(var(--stanza-width), 1fr);
+    align-items: flex-end;
   }
   .exterior.left {
     height: 100%;
     right: 100%;
-    grid-template-rows: repeat(var(--stanza-height), 1fr);
+    grid-template-rows: repeat(var(--stanza-height), minmax(0, 1fr));
+    justify-items: flex-end;
   }
   .exterior.right {
     height: 100%;
     left: 100%;
     grid-template-rows: repeat(var(--stanza-height), 1fr);
+    justify-items: flex-start;
   }
   .exterior.bottom {
     width: 100%;
     top: 100%;
     grid-template-columns: repeat(var(--stanza-width), 1fr);
+    align-items: flex-start;
   }
 
 </style>

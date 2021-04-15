@@ -1,5 +1,5 @@
 <template>
-  <div class="span" :style="{
+  <div ref="spanEl" class="span" :style="{
     '--start': span.start,
     '--end': span.end,
   }" :class="{
@@ -7,20 +7,39 @@
     'align-end': span.align === 'end',
     'align-middle': span.align === 'center'
   }">
-    <span class="span-start"></span>
-    <span class="span-text">{{ span.text }}</span>
-    <div class="span-end"></div>
+    <div class="span-inner">
+      <span class="span-start"></span>
+      <span class="span-text">{{ span.text }}</span>
+      <span class="span-end"></span>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    span: {
-      type: Object
-    }
+<script setup>
+import { defineProps, toRefs, ref, watch, nextTick } from 'vue'
+
+const props = defineProps({
+  span: {
+    type: Object
   }
+})
+const { span } = toRefs(props)
+const spanEl = ref(null)
+
+const fitText = () => {
+  if (spanEl.value.clientHeight >= spanEl.value.children[0].clientHeight) {
+    return
+  }
+  spanEl.value.style.width = `${spanEl.value.clientWidth + 5}px`
+  nextTick(fitText)
 }
+
+watch(spanEl, () => {
+  nextTick(() => {
+    fitText()
+  })
+})
+
 </script>
 
 <style>
@@ -37,8 +56,23 @@ export default {
   .exterior.right .span {
     grid-row-start: var(--start);
     grid-row-end: calc(var(--end) + 1);
+  }
+
+
+  .span-inner {
+    min-height: 100%;
+    width: 100%;
+  }
+
+  .exterior.left .span-inner,
+  .exterior.right .span-inner {
     display: flex;
     flex-direction: column;
+  }
+  .exterior.top .span-inner,
+  .exterior.bottom .span-inner {
+    display: flex;
+    flex-direction: row;
   }
 
   .exterior.top .span,
@@ -48,6 +82,7 @@ export default {
 
   .exterior .span-text {
     font-family: 'EB Garamond';
+    font-style: italic;
     line-height: 1;
   }
 

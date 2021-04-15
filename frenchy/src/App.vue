@@ -466,10 +466,17 @@ let song = {
           align: 'start'
         },
         { 
+          side: 'top',
+          start: 1,
+          end: 1,
+          text: 'Hello!',
+          align: 'center'
+        },
+        { 
           side: 'left',
           start: 2,
           end: 2,
-          text: 'This is totally optional',
+          text: 'This is totally optional, and most people won’t worry about it',
           align: 'center'
         },
         { 
@@ -534,7 +541,7 @@ watch(pageElement, () => {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&display=swap');
   @font-face {
     font-family: 'LJC';
     font-style: normal;
