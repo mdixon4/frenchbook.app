@@ -65,7 +65,6 @@ const fromUrlHash = base64String => {
 }
 
 
-
 let rawSongText = fromUrlHash(window.location.hash.substr(1))
 
 let songText = ref(rawSongText)
@@ -77,23 +76,455 @@ watch(songText, () => {
   }
 })
 
-let song = computed(() => {
-  try {
-    return songify(songText.value)
-  } catch {
-    return null
-  }
-})
+let song = {
+  metadata: {
+    title: 'Working on stanza annotations',
+    key: '',
+    number: '',
+    credits: ''
+  },
+  parts: [
+    {
+      id: 0,
+      type: 'stanza',
+      title: '',
+      classes: [],
+      lines: [
+        {
+          bars: [
+            {
+              id: 1,
+              textContent: ' F Dm7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'F',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'F',
+                    modifierSymbols: [],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'F',
+                    root: 'F',
+                    modifier: '',
+                    modifiers: [],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">F</span>',
+                  beats: '12'
+                },
+                {
+                  chord: 'Dm7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'D',
+                    modifierSymbols: [ 'm', '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'Dm7',
+                    root: 'D',
+                    modifier: 'm7',
+                    modifiers: [ 'm', '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">D</span><span class=\"modifier\">m<span class=\"mod-digit\">7</span></span>',
+                  beats: '34'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: true,
+              isRightmost: false,
+              isTopmost: true,
+              isBottommost: false
+            },
+            {
+              id: 2,
+              textContent: ' Gm7 C7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'Gm7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'G',
+                    modifierSymbols: [ 'm', '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'Gm7',
+                    root: 'G',
+                    modifier: 'm7',
+                    modifiers: [ 'm', '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">G</span><span class=\"modifier\">m<span class=\"mod-digit\">7</span></span>',
+                  beats: '12'
+                },
+                {
+                  chord: 'C7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'C',
+                    modifierSymbols: [ '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'C7',
+                    root: 'C',
+                    modifier: '7',
+                    modifiers: [ '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">C</span><span class=\"modifier\"><span class=\"mod-digit\">7</span></span>',
+                  beats: '34'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: false,
+              isTopmost: true,
+              isBottommost: false
+            },
+            {
+              id: 3,
+              textContent: ' F ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'F',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'F',
+                    modifierSymbols: [],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'F',
+                    root: 'F',
+                    modifier: '',
+                    modifiers: [],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">F</span>',
+                  beats: '1234'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: false,
+              isTopmost: true,
+              isBottommost: false
+            },
+            {
+              id: 4,
+              textContent: ' C7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'C7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'C',
+                    modifierSymbols: [ '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'C7',
+                    root: 'C',
+                    modifier: '7',
+                    modifiers: [ '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">C</span><span class=\"modifier\"><span class=\"mod-digit\">7</span></span>',
+                  beats: '1234'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: true,
+              isTopmost: true,
+              isBottommost: false
+            }
+          ],
+          align: 'left'
+        },
+        {
+          bars: [
+            {
+              id: 1,
+              textContent: ' F Dm7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'F',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'F',
+                    modifierSymbols: [],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'F',
+                    root: 'F',
+                    modifier: '',
+                    modifiers: [],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">F</span>',
+                  beats: '12'
+                },
+                {
+                  chord: 'Dm7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'D',
+                    modifierSymbols: [ 'm', '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'Dm7',
+                    root: 'D',
+                    modifier: 'm7',
+                    modifiers: [ 'm', '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">D</span><span class=\"modifier\">m<span class=\"mod-digit\">7</span></span>',
+                  beats: '34'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: true,
+              isRightmost: false,
+              isTopmost: false,
+              isBottommost: true
+            },
+            {
+              id: 2,
+              textContent: ' Gm7 C7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'Gm7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'G',
+                    modifierSymbols: [ 'm', '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'Gm7',
+                    root: 'G',
+                    modifier: 'm7',
+                    modifiers: [ 'm', '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">G</span><span class=\"modifier\">m<span class=\"mod-digit\">7</span></span>',
+                  beats: '12'
+                },
+                {
+                  chord: 'C7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'C',
+                    modifierSymbols: [ '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'C7',
+                    root: 'C',
+                    modifier: '7',
+                    modifiers: [ '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">C</span><span class=\"modifier\"><span class=\"mod-digit\">7</span></span>',
+                  beats: '34'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: false,
+              isTopmost: false,
+              isBottommost: true
+            },
+            {
+              id: 3,
+              textContent: ' F ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'F',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'F',
+                    modifierSymbols: [],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'F',
+                    root: 'F',
+                    modifier: '',
+                    modifiers: [],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">F</span>',
+                  beats: '1234'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: false,
+              isTopmost: false,
+              isBottommost: true
+            },
+            {
+              id: 4,
+              textContent: ' C7 ',
+              leftBarline: '|',
+              rightBarline: '|',
+              rhythm: null,
+              chords: [
+                {
+                  chord: 'C7',
+                  isStop: false,
+                  isDitto: false,
+                  parsedChord: {
+                    rootSymbols: 'C',
+                    modifierSymbols: [ '<span class=\"mod-digit\">7</span>' ],
+                    alterationSymbols: '',
+                    bassSymbols: '',
+                    raw: 'C7',
+                    root: 'C',
+                    modifier: '7',
+                    modifiers: [ '7' ],
+                    alterations: '',
+                    bass: ''
+                  },
+                  renderedChord: '<span class=\"root\">C</span><span class=\"modifier\"><span class=\"mod-digit\">7</span></span>',
+                  beats: '1234'
+                }
+              ],
+              annotation: '',
+              classes: [],
+              isLeftmost: false,
+              isRightmost: true,
+              isTopmost: false,
+              isBottommost: true
+            }
+          ],
+          align: 'left'
+        }
+      ],
+      layout: [ '1111', '1111' ],
+      exteriorSpans: [
+        { 
+          side: 'bottom',
+          start: 3,
+          end: 4,
+          text: 'Careful here',
+          align: 'end'
+        },
+        { 
+          side: 'top',
+          start: 2,
+          end: 4,
+          text: 'rit.',
+          align: 'start'
+        },
+        { 
+          side: 'left',
+          start: 2,
+          end: 2,
+          text: 'This is totally optional',
+          align: 'center'
+        },
+        { 
+          side: 'right',
+          start: 1,
+          end: 2,
+          text: '3×',
+          align: 'center'
+        },
+        { 
+          side: 'bottom',
+          start: 1,
+          end: 4,
+          text: 'Wow this spans it all',
+          align: 'center'
+        }
+      ],
+      borderCoordinates: [
+        [ 4, 0 ],
+        [ 4, 1 ],
+        [ 4, 1 ],
+        [ 4, 2 ],
+        [ 0, 2 ],
+        [ 0, 1 ],
+        [ 0, 1 ],
+        [ 0, 0 ]
+      ],
+      indent: 2,
+      width: 4,
+      height: 2
+    }
+  ]
+}
+
+// let song = computed(() => {
+//   try {
+//     return songify(songText.value)
+//   } catch {
+//     return null
+//   }
+// })
+
+
+
+// watch(song, () => {
+//   window.song = song
+// })
 
 const isEditing = ref(false)
-
-const pz = 
 
 watch(pageElement, () => {
   if (pageElement.value) {
     panzoom(pageElement.value, {
       bounds: true,
-      maxZoom: 3,
+      maxZoom: 4,
       minZoom: 0.25,
       // transformOrigin: {x: 0.5, y: 0.5}
     })
