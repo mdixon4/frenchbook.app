@@ -96,9 +96,6 @@ export default {
   /* outline: 1px dashed blue; */
   grid-area: content;
 }
-.stop .rendered-chord {
-  text-shadow: var(--stop-color) 1px 1px, var(--stop-color) -1px -1px;
-}
 
 
 .b1234 {

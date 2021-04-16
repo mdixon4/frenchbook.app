@@ -87,7 +87,7 @@ let song = {
     {
       id: 0,
       type: 'stanza',
-      title: '',
+      title: 'Verse',
       classes: [],
       lines: [
         {
@@ -150,7 +150,7 @@ let song = {
               textContent: ' Gm7 C7 ',
               leftBarline: '|',
               rightBarline: '|',
-              rhythm: null,
+              rhythm: "qry-ryQ",
               chords: [
                 {
                   chord: 'Gm7',
@@ -191,7 +191,6 @@ let song = {
                   beats: '34'
                 }
               ],
-              annotation: '',
               classes: [],
               isLeftmost: false,
               isRightmost: false,
@@ -203,7 +202,7 @@ let song = {
               textContent: ' F ',
               leftBarline: '|',
               rightBarline: '|',
-              rhythm: null,
+              rhythm: "q  ry-q  Q",
               chords: [
                 {
                   chord: 'F',
@@ -259,7 +258,7 @@ let song = {
                   beats: '1234'
                 }
               ],
-              annotation: '',
+              annotation: 'fast',
               classes: [],
               isLeftmost: false,
               isRightmost: true,
@@ -456,42 +455,59 @@ let song = {
           start: 3,
           end: 4,
           text: 'Careful here',
-          align: 'end'
+          align: 'end',
+          type: 'volta',
         },
         { 
           side: 'top',
           start: 2,
           end: 4,
-          text: 'rit.',
-          align: 'start'
+          text: 'cresc.',
+          align: 'start',
+          type: 'dotted',
         },
         { 
           side: 'top',
           start: 1,
           end: 1,
           text: 'Hello!',
-          align: 'center'
+          align: 'center',
+          type: 'volta-dashed'
         },
         { 
           side: 'left',
           start: 2,
           end: 2,
-          text: 'This is totally optional, and most people won’t worry about it',
-          align: 'center'
+          text: 'This is totally optional, and most people won’t worry about it, but in people won’t worry about it, but in people won’t worry about it, but in people won’t worry about it, but in case you do, here\'s a recipe',
+          align: 'center',
+          type: 'volta',
+          // type: null,
+          sideways: true
         },
         { 
           side: 'right',
           start: 1,
           end: 2,
-          text: '3×',
-          align: 'center'
+          text: 'Only under vocals, and then quietly',
+          align: 'center',
+          type: 'volta-dashed',
+          sideways: true
         },
         { 
           side: 'bottom',
           start: 1,
           end: 4,
           text: 'Wow this spans it all',
-          align: 'center'
+          align: 'center',
+          type: 'dotted'
+        },
+        { 
+          side: 'bottom',
+          start: 1,
+          end: 2,
+          text: ' q.  e-q  q_\\q  q  q  Q',
+          align: 'center',
+          type: 'rhythms'
         }
       ],
       borderCoordinates: [
@@ -541,7 +557,7 @@ watch(pageElement, () => {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,800;1,500;1,600&display=swap');
   @font-face {
     font-family: 'LJC';
     font-style: normal;
@@ -550,8 +566,10 @@ watch(pageElement, () => {
   }
 
   :root {
+    --font-size: 4.25mm;
     --bar-width: 23mm;
     --bar-height: 21mm;
+
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
     --x-page-margin: var(--x-unit);
@@ -563,7 +581,9 @@ watch(pageElement, () => {
     --stop-color: #DDD;
     --stroke-width: .5mm;
     --thick-stroke-width: 0.75mm;
+    --rhythm-font-size: 5mm;
   }
+
 
   @media print {
     .controller {
@@ -579,10 +599,10 @@ watch(pageElement, () => {
 
   @media screen {
     :root {
-      --bar-width: 5rem;
-      --bar-height: 4.5rem;
-      --stroke-width: 2px;
-      --thick-stroke-width: 3px;
+      /* --bar-width: 5rem;
+      --bar-height: 4.5rem; */
+      /* --stroke-width: 2px; */
+      /* --thick-stroke-width: 3px; */
     }
 
     /* body { display: flex; justify-content: center;} */
@@ -688,13 +708,8 @@ watch(pageElement, () => {
     box-sizing: border-box;
   }
   html, body {
-    /* background: white; */
     color: black;
-
-    /* font-family: 'Patrick Hand'; */
-    /* font-family: 'Century'; */
-    /* font-family: 'IM Fell DW Pica'; */
-    font-size: 16px;
+    font-size: var(--font-size);
     padding: 0px;
     margin: 0;
   }
@@ -703,7 +718,8 @@ watch(pageElement, () => {
     --page-width: calc(8 * var(--bar-width) + 2 * var(--x-page-margin));
     --page-height: calc(1.41 * var(--page-width));
     width: var(--page-width);
-    padding: var(--y-unit) var(--x-page-margin)
+    padding: var(--y-unit) var(--x-page-margin);
+    overflow: hidden;
   }
 
   .song {
@@ -724,18 +740,6 @@ watch(pageElement, () => {
     font-size: calc(20/16 * 1rem);
   }
 
-  .coda-here {
-    position: absolute;
-    display: flex;
-    align-items: start;
-    right: 100%;
-    flex-direction: column;
-    top: -8px;
-    filter: drop-shadow(white 0 1px) drop-shadow(white 0 -1px) drop-shadow(white 1px 0) drop-shadow(white -1px 0);
-  }
-  .coda-here .coda-arrow {
-    transform: rotate(90deg) scaleY(-1);
-  }
   
   
 

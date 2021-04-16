@@ -1,12 +1,12 @@
 <template>
   <div class="lily rendered-chord add-outline" :class="[ shape ]">
-    <span v-html="chord.renderedChord"></span>
-    <span class="outline" v-html="chord.renderedChord"></span>
+    <outlined-text :text="chord.renderedChord"></outlined-text>
   </div>
 </template>
 
 <script setup>
 import { computed, defineProps, toRefs } from 'vue'
+import OutlinedText from './OutlinedText.vue'
 
 
 const props = defineProps({
@@ -45,7 +45,6 @@ const shape = computed(() => {
 
 .rendered-chord .outline {
   user-select: none;
-  -webkit-text-stroke: 2px white;
   position: absolute;
   left: 0;
   z-index: -1;
