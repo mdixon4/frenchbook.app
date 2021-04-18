@@ -165,6 +165,43 @@ const parseLineData = rawLine => {
 }
 
 
+const parseStanzaAnnotation = lineText => {
+  /*
+  Lines like:
+  top (1, 3): Gradually getting faster .dotted
+  right: Ignore time signature
+  left (1): 1st time only .volta
+  */
+  lineText = lineText.trim()
+  let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
+  // Split at first colon:
+  let [placement, text] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
+  text = text.trim()
+  let side = placement.match(/((top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
+  let startMatch = placement.match(/\(\s*(\d+)/)
+  let start = startMatch && parseInt(startMatch[1], 10) || null
+  let endMatch = placement.match(/,\s*(\d+)\s*\)/)
+  let end = endMatch && parseInt(endMatch[1], 10) || start
+
+  // let alignment = classes.find(c => c.startsWith('align-'))
+  // if (!alignment) {
+  //   if (classes.includes('dotted') && (side === 'top' || side === 'bottom')) {
+  //     classes.push('align-start')
+  //   } else {
+  //     classes.push('align-middle')
+  //   }
+  // }
+
+  return {
+    classes,
+    side,
+    start,
+    end,
+    text
+  }
+}
+
+
 const isLineMusic = lineText => {
   // Line is music if it starts with | (optionally white-space indented)
   return /^\s*\|/.test(lineText)
@@ -221,6 +258,7 @@ const parseStanza = stanzaText => {
 
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
   
+  let annotations = []
   // The rest is the actual stanza body. Bundle up rhythm and annotation lines 
   // with the preceeding *actual* music line.
   let lines = rest.split(/\n+/)
@@ -236,7 +274,7 @@ const parseStanza = stanzaText => {
         return lines
       }
       if (isAnnotations(line)) {
-        lines[lines.length - 1].annotationText = line
+        annotations.push(parseStanzaAnnotation(line))
         return lines
       }
     }, [])
@@ -261,7 +299,8 @@ const parseStanza = stanzaText => {
     borderCoordinates,
     indent,
     width, 
-    height
+    height,
+    annotations
   }
 
 }

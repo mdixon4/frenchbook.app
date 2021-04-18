@@ -5,8 +5,13 @@ number:
 credits: Trenet/Lawrence, 1964
 ===
 
-Intro
+Intro .intro
 | F Dm7 | Gm7 C7 | F Dm7 | Gm7 C7 |
+| F Dm7 | Gm7 C7 | F Dm7 | Gm7 C7 |
+top (1, 3): "Gradually getting faster" .dotted
+right: "Ignore time signature"
+left (1): "1st time only" .volta
+
 
 | F Dm7 | Gm7 C7 | F Dm7 | Gm7 C7 | F A7 | Dm7 C7 |
 | F Dm7 | Bb  D7 | Gm7 C7 | Dm Bb | G7   | C   C7 |

@@ -31,17 +31,18 @@ const props = defineProps({
 const { stanza } = toRefs(props)
 
 const topSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'top') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'top') || []
 )
 const leftSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'left') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'left') || []
 )
 const rightSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'right') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'right') || []
 )
 const bottomSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'bottom') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'bottom') || []
 )
+console.log({ topSpans, leftSpans, rightSpans, bottomSpans })
 
 </script>
 

@@ -15,7 +15,7 @@
       </svg>
     </div>
 
-    <div class="stanza-title left">{{ stanza.title }}</div>
+    <div class="stanza-title">{{ stanza.title }}</div>
     <div class="coda-here">
       <svg class="coda-symbol" width="35" height="43" viewBox="0 0 35 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M16.704 23.424C16.752 24.192 16.848 25.536 16.944 27.504C16.992 28.992 17.04 29.856 17.04 30.288C17.04 30.672 16.944 30.528 16.464 30.528C15.072 30.528 14.304 28.608 14.256 24.816V23.04L15.12 22.896C15.696 22.8 16.08 22.752 16.32 22.752L16.656 22.704L16.704 23.424ZM21.12 24.336C21.12 25.92 21.072 27.072 20.88 27.696C20.688 28.32 20.304 28.944 19.68 29.472C19.248 29.808 19.056 30 19.008 30C18.96 30 18.912 29.472 18.864 28.416C18.816 27.36 18.768 26.112 18.672 24.72C18.576 23.328 18.576 22.656 18.576 22.656C18.576 22.656 18.912 22.56 19.536 22.464C20.16 22.368 20.592 22.272 20.736 22.272L21.12 22.224V24.336ZM16.08 11.04C16.128 11.184 16.128 11.568 16.176 12.24C16.224 12.912 16.272 14.304 16.416 16.464C16.512 18.096 16.56 19.104 16.56 19.536C16.56 19.92 16.272 19.824 15.312 19.92C14.496 20.016 14.064 20.016 14.016 19.968C13.968 19.92 13.968 19.056 13.968 17.328C13.968 15.6 13.968 14.448 14.112 13.92C14.4 12.72 14.784 11.856 15.312 11.328C15.744 10.848 16.032 10.752 16.08 11.04ZM18.672 10.608C19.488 10.992 20.112 12.048 20.448 13.776C20.592 14.592 20.736 16.032 20.832 18.144L20.88 19.152L20.16 19.2C19.632 19.248 19.248 19.344 18.912 19.44C18.576 19.536 18.384 19.536 18.384 19.536C18.384 19.536 18.288 18.192 18.144 15.504C18 12.816 17.952 11.328 17.952 10.992C17.952 10.656 18 10.512 18.096 10.464C18.192 10.416 18.336 10.464 18.672 10.608ZM15.984 0.191998C15.696 0.287996 15.552 0.383999 15.552 0.528C15.552 0.671999 15.6 1.92 15.744 4.224C15.888 6.528 15.936 7.68 15.936 7.68C15.936 7.68 15.648 7.776 15.168 8.016C11.568 9.696 8.736 12.624 6.768 16.8C6.192 18.048 5.76 19.488 5.424 21.12C5.376 21.264 4.464 21.456 2.688 21.744L0 22.176V22.944C0 23.424 0.0959978 23.856 0.287998 24.24C0.479999 24.624 0.623998 24.864 0.815998 25.056L1.104 25.344L3.264 24.864L5.376 24.384L5.424 24.72C5.808 27.072 6.768 28.896 8.304 30.288C10.272 32.112 12.864 33.12 15.984 33.36C16.8 33.408 17.184 33.456 17.232 33.504C17.328 33.6 17.472 36.096 17.712 40.992L17.76 42.384H18.288C18.624 42.384 18.912 42.336 19.152 42.288L19.488 42.144L19.44 40.128C19.392 38.736 19.344 37.248 19.248 35.616C19.152 33.984 19.152 33.168 19.152 33.12C19.152 33.072 19.296 32.976 19.632 32.832C21.408 32.208 23.184 30.96 24.96 29.136C27.168 26.88 28.752 24.336 29.712 21.456C29.808 21.168 29.904 21.024 29.952 20.976C30 20.928 30.72 20.832 32.16 20.544C33.6 20.256 34.416 20.112 34.56 20.064C34.704 20.016 34.752 19.872 34.704 19.584C34.56 18.672 34.272 17.952 33.936 17.424C33.792 17.184 33.696 17.088 33.552 17.136C33.408 17.184 32.88 17.328 31.872 17.52C30.864 17.712 30.384 17.808 30.384 17.808C30.384 17.808 30.288 17.328 30.24 16.416C30 13.776 29.136 11.52 27.6 9.744C26.544 8.544 25.2 7.68 23.568 7.248C22.752 7.056 21.888 6.96 21.024 6.96C20.16 6.96 19.248 7.056 18.384 7.248C18 7.344 17.808 7.392 17.808 7.344C17.808 7.296 17.712 6.192 17.568 3.936C17.424 1.68 17.376 0.431998 17.376 0.143997C17.376 -2.38419e-06 17.232 0 16.896 0C16.56 0 16.272 0.0959973 15.984 0.191998Z"/>
@@ -23,16 +23,16 @@
     </div>
 
     <div class="exterior top">
-      <frenchy-span v-for="span in topSpans" :key="span.text" :span="span"></frenchy-span>
+      <frenchy-span v-for="span in topSpans" :key="span.uuid" :span="span"></frenchy-span>
     </div>
     <div class="exterior left">
-      <frenchy-span v-for="span in leftSpans" :key="span.text" :span="span"></frenchy-span>
+      <frenchy-span v-for="span in leftSpans" :key="span.uuid" :span="span"></frenchy-span>
     </div>
     <div class="exterior right">
-      <frenchy-span v-for="span in rightSpans" :key="span.text" :span="span"></frenchy-span>
+      <frenchy-span v-for="span in rightSpans" :key="span.uuid" :span="span"></frenchy-span>
     </div>
     <div class="exterior bottom">
-      <frenchy-span v-for="span in bottomSpans" :key="span.text" :span="span"></frenchy-span>
+      <frenchy-span v-for="span in bottomSpans" :key="span.uuid" :span="span"></frenchy-span>
     </div>
   </div>
 </template>
@@ -50,16 +50,16 @@ const props = defineProps({
 const { stanza } = toRefs(props)
 
 const topSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'top') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'top') || []
 )
 const leftSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'left') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'left') || []
 )
 const rightSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'right') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'right') || []
 )
 const bottomSpans = computed(
-  () => stanza.value.exteriorSpans?.filter(span => span.side === 'bottom') || []
+  () => stanza.value.annotations?.filter(span => span.side === 'bottom') || []
 )
 
 </script>
@@ -86,7 +86,7 @@ const bottomSpans = computed(
     grid-area: top;
     align-self: flex-end;
     width: 100%;
-    grid-template-columns: repeat(var(--stanza-width), 1fr);
+    grid-template-columns: repeat(var(--stanza-width), minmax(0, 1fr));
     align-items: flex-end;
   }
   .exterior.left {
@@ -99,13 +99,13 @@ const bottomSpans = computed(
   .exterior.right {
     height: 100%;
     grid-area: right;
-    grid-template-rows: repeat(var(--stanza-height), 1fr);
+    grid-template-rows: repeat(var(--stanza-height), minmax(0, 1fr));
     justify-items: flex-start;
   }
   .exterior.bottom {
     width: 100%;
     grid-area: bottom;
-    grid-template-columns: repeat(var(--stanza-width), 1fr);
+    grid-template-columns: repeat(var(--stanza-width), minmax(0, 1fr));
     align-items: flex-start;
   }
 
@@ -122,7 +122,7 @@ const bottomSpans = computed(
     font-family: 'EB Garamond';
   }
 
-  .stanza-title.top {
+  .stanza-title {
     grid-area: top;
     align-self: flex-end;
     margin-bottom: calc(2 * var(--stroke-width));
@@ -131,6 +131,7 @@ const bottomSpans = computed(
     grid-area: left;
     justify-self: flex-end;
     margin-right: calc(2 * var(--stroke-width));
+    margin-bottom: 0;
   }
 
   .coda-here {
