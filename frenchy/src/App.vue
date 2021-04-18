@@ -7,6 +7,7 @@
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
   </button>
   <div class="desk">
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <div class="page-holder">
       <div class="page" v-if="song" ref="pageElement">
         <frenchy-header :metadata="song.metadata"></frenchy-header>
@@ -38,7 +39,7 @@ import FrenchyStanza from './components/FrenchyStanza.vue'
 import FrenchyHeader from './components/FrenchyHeader.vue'
 
 const pageElement = ref(null)
-
+const errorMessage = ref('')
 // convert a Unicode string to a string in which
 // each 16-bit unit occupies only one byte
 function toBinary(string) {
@@ -530,8 +531,10 @@ watch(songText, () => {
 
 let song = computed(() => {
   try {
+    errorMessage.value = ''
     return songify(songText.value)
-  } catch {
+  } catch (err) {
+    errorMessage.value = err
     return null
   }
 })
@@ -724,8 +727,8 @@ watch(pageElement, () => {
 
   .hr {
     margin: 0;
-    border: calc(var(--stroke-width) * 1) dashed var(--gridline-color);
-    border-top: 0;
+    border: 0;
+    border-bottom: calc(var(--stroke-width) * 0.5) dashed var(--gridline-color);
     align-self: stretch;
   }
 
@@ -742,13 +745,8 @@ watch(pageElement, () => {
     margin-right: -6px;
     margin-bottom: -4px;
   }
-  .coda-arrow {
+  .arrow {
     width: 24px;
-  }
-
-  .segno-here {
-    position: absolute;
-    right: 100%;
   }
   .segno-symbol {
     height: 24px;

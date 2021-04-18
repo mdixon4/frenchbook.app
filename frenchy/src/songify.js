@@ -146,13 +146,17 @@ const parseLineData = rawLine => {
   // if line starts with spaces, align right not left
   let align = /^\s+/.test(rawLine.text) ? 'right' : 'left'
 
-  let rhythmBars = rawLine.rhythms ? splitTextIntoBars(rawLine.rhythms) : null
+  let rhythmBars = rawLine.rhythmText ? splitTextIntoBars(rawLine.rhythmText) : null
   
   let bars = splitTextIntoBars(rawLine.text).map((bar, idx) => {
+    let rhythmText = (rhythmBars?.length > idx) ? rhythmBars[idx].textContent : ''
+    if (rhythmText.trim().length === 0) {
+      rhythmText = ''
+    }
     return {
       id: idx + 1,
       ...bar, //leftBarline, rightBarline, textContent
-      rhythm: (rhythmBars?.length > idx) ? rhythmBars[idx].textContent : null,
+      rhythm: rhythmText,
       ...parseBarContent(bar.textContent.trim())
     }
   })
@@ -176,7 +180,7 @@ const parseStanzaAnnotation = lineText => {
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
   // Split at first colon:
   let [placement, text] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
-  text = text.trim()
+  text = text.trim().replace(/\\n/g, '<br>')
   let side = placement.match(/((top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
   let startMatch = placement.match(/\(\s*(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null
@@ -254,6 +258,39 @@ const extractStanzaMetadata = stanzaText => {
 }
 
 
+const getWayfinding = (lines) => {
+
+  console.log(lines)
+  let toCodaBar = lines.map(
+    (line, idx) => line.bars.map((b, barIdx) => ({ ...b, lineNo: idx + 1, barNo: barIdx + 1 }))
+  ).flat().find(bar => bar.classes?.includes('to-coda'))
+  if (!toCodaBar) return []
+
+  let position = null
+  if (toCodaBar.classes.includes('to-right')) {
+    position = 'to-right'
+  } else if (toCodaBar.classes.includes('to-bottom')) {
+    position = 'to-bottom'
+  } else if (toCodaBar.isRightmost && !toCodaBar.isBottommost) {
+    position = 'to-right'
+  } else if (toCodaBar.isRightmost && lines[toCodaBar.lineNo - 1] < 8) {
+    position = 'to-right'
+  } else if (toCodaBar.isBottommost) {
+    position = 'to-bottom'
+  }
+  console.log({ toCodaBar, position })
+  return [
+    {
+      type: 'to-coda',
+      position,
+      lineNo: toCodaBar.lineNo,
+      barNo: toCodaBar.barNo
+    }
+  ]
+
+}
+
+
 const parseStanza = stanzaText => {
 
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
@@ -291,6 +328,8 @@ const parseStanza = stanzaText => {
   
   let borderCoordinates = getBorderCoordinates(layout)
 
+  let wayfinding = getWayfinding(lines)
+
   return {
     title,
     classes,
@@ -300,7 +339,8 @@ const parseStanza = stanzaText => {
     indent,
     width, 
     height,
-    annotations
+    annotations,
+    wayfinding
   }
 
 }
@@ -376,6 +416,8 @@ export const songify = (songText) => {
       ...parsePart
     }))
   
+  console.log({ parts })
+
   return {
     metadata,
     parts,
