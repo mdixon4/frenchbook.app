@@ -54,7 +54,7 @@ const props = defineProps({
 const { stanza } = toRefs(props)
 
 const firstLineIndent = computed(() => {
-  return stanza.value.layout[0].indexOf('1')
+  return stanza.value.layout[0]?.indexOf('1') || 0
 })
 
 const topSpans = computed(

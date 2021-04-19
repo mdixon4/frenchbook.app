@@ -54,12 +54,15 @@ const props = defineProps({
 })
 
 const stanzaBorderPath = computed(() => {
-  return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
+  if (props.stanza.lines.length) {
+    return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
+  }
+  return ''
 })
 
 const stanzaBorderViewBox = computed(() => {
-  let width = props.stanza.width * 100
-  let height = props.stanza.height * 100
+  let width = Math.max(props.stanza.width * 100, 0)
+  let height = Math.max(props.stanza.height * 100, 0)
   return `0 0 ${width} ${height}`
 })
 

@@ -278,7 +278,6 @@ const getWayfinding = (lines) => {
   } else if (toCodaBar.isBottommost) {
     position = 'to-bottom'
   }
-  console.log({ toCodaBar, position })
   return [
     {
       type: 'to-coda',
