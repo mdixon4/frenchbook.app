@@ -2,10 +2,10 @@
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
   }" :class="stanza.classes">
-    <div class="stanza-break"></div>
+    <!-- <div class="stanza-break"></div> -->
     <div class="stanza-music">
       <frenchy-stanza-exteriors :stanza="stanza"></frenchy-stanza-exteriors>
-      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
+      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="[ line.classes, { 'align-right': line.align === 'right' }]">
         <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
           <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
         </div>
@@ -38,7 +38,7 @@
         <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
       </svg>
     </div>
-    <div class="stanza-break"></div>
+    <!-- <div class="stanza-break"></div> -->
   </div>
 </template>
 
@@ -158,7 +158,9 @@ const stanzaBorderViewBox = computed(() => {
     align-items: start;
     page-break-inside: avoid;
     left: calc(var(--indent, var(--default-indent)) * var(--bar-width));
-    margin-top: calc(var(--downdent, 0) * var(--bar-height));
+    /* margin-top: calc(var(--downdent, 1) * var(--y-unit)); */
+    margin-top: calc(var(--y-unit) / 2);
+    margin-bottom: calc(var(--y-unit) / 2);
   }
 
 
@@ -185,6 +187,28 @@ const stanzaBorderViewBox = computed(() => {
   .line-text.align-right {
     align-self: end;
   }
+  .line.indent-1 {
+    left: calc(1 * var(--bar-width))
+  }
+  .line.indent-2 {
+    left: calc(2 * var(--bar-width))
+  }
+  .line.indent-3 {
+    left: calc(3 * var(--bar-width))
+  }
+  .line.indent-4 {
+    left: calc(4 * var(--bar-width))
+  }
+  .line.indent-5 {
+    left: calc(5 * var(--bar-width))
+  }
+  .line.indent-6 {
+    left: calc(6 * var(--bar-width))
+  }
+  .line.indent-7 {
+    left: calc(7 * var(--bar-width))
+  }
+
   .bar {
     width: var(--bar-width);
     height: var(--bar-height);

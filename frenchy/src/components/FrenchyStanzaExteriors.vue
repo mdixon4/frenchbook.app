@@ -124,7 +124,6 @@ const bottomSpans = computed(
 
 
 
-
   .stanza-title {
     white-space: nowrap;
     z-index: 50;
@@ -163,9 +162,16 @@ const bottomSpans = computed(
     grid-column: calc(1 + var(--first-line-indent));
     grid-row: 2;
     justify-self: flex-end;
-    align-self: center;
-    transform:  translateX(0) translateY(-4px) scaleX(-1) rotateZ(90deg);
+    align-self: flex-start;
+    /* margin-top: -1ch; */
+    /* margin-right: -0.5ch; */
+    transform:  scaleX(-1) rotateZ(90deg);
   }
+  .title-left .coda-arrow {
+    align-self: center;
+    margin-top: -1ch;
+  }
+
   .arrow-top .coda-arrow {
     grid-column: calc(2 + var(--first-line-indent));
     grid-row: 1;
@@ -176,5 +182,14 @@ const bottomSpans = computed(
   .no-symbol .coda-here {
     display: none;
   }
+  .stanza + .stanza.coda .coda-here {
+    /* By default, don't show the coda symbol if the coda directly follows another stanza */
+    display: none;
+  }
+  .stanza + .stanza.coda.with-symbol .coda-here {
+    /* By default, don't show the coda symbol if the coda directly follows another stanza */
+    display: unset;
+  }
+
 
 </style>

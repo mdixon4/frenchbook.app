@@ -104,13 +104,18 @@ const totalPerspectiveVortexForBars = (lines, layout) => {
 }
 
 
+
 const formulateLayout = (stanzaLines) => {
   let maxWidth = Math.max(...stanzaLines.map(line => line.bars?.length || 0))
   let layout = stanzaLines.map(line => { 
+    console.log({ indent: line.indent })
+    let indent = line.indent || (line.align === 'left' ? 0 : Math.max(maxWidth - line.bars.length, 0))
+    let off = '0'.repeat(indent)
     let on = '1'.repeat(line.bars?.length || 0)
-    let off = '0'.repeat(Math.max(maxWidth - line.bars.length, 0))
-    return line.align === 'right' ? `${off}${on}` : `${on}${off}`
+    let offAgain = '0'.repeat(Math.max(maxWidth - line.bars.length - indent, 0))
+    return [off, on, offAgain].join('')
   })
+  console.log(layout)
   let indent = (MAX_BARS_PER_LINE - maxWidth) / 2
   return {
     layout,
@@ -124,6 +129,7 @@ const formulateLayout = (stanzaLines) => {
 const splitTextIntoBars = rawText => {
   let bars = rawText.match(globalBarlineRegex)
     .reduce((bars, barText, idx) => {
+      console.log(barText, idx)
       let [,barline,,textContent] = barText.match(barlineRegex)
       if (idx > 0) {
         bars[idx - 1].rightBarline = barline
@@ -131,8 +137,7 @@ const splitTextIntoBars = rawText => {
       if (textContent.length) {
         bars.push({
           textContent,
-          leftBarline: barline,
-          rightBarline: '|'
+          leftBarline: barline
         })
       }
       return bars
@@ -143,27 +148,44 @@ const splitTextIntoBars = rawText => {
 
 const parseLineData = rawLine => {
 
+  
+  let classes = rawLine.text.split('|').slice(-1)[0].match(classesRegex)?.map(c => c.substr(1)) || []
+  let indent = parseInt(classes.find(c => c.startsWith('indent-'))?.replace('indent-', '') || NaN, 10) || null
+
   // if line starts with spaces, align right not left
-  let align = /^\s+/.test(rawLine.text) ? 'right' : 'left'
+  let align = indent !== null 
+    ? 'left' // align left if there's an indent class!
+    : /^\s+/.test(rawLine.text) ? 'right' : 'left'
 
   let rhythmBars = rawLine.rhythmText ? splitTextIntoBars(rawLine.rhythmText) : null
   
-  let bars = splitTextIntoBars(rawLine.text).map((bar, idx) => {
+  let bars = splitTextIntoBars(rawLine.text).map((bar, idx, allBars) => {
     let rhythmText = (rhythmBars?.length > idx) ? rhythmBars[idx].textContent : ''
     if (rhythmText.trim().length === 0) {
       rhythmText = ''
     }
+
+    if (!bar.rightBarline) {
+      // This bar is the last bar, and it isn't closed. We shouldn't count it if it's just classes
+      if (!bar.textContent.replace(classesRegex, '').trim().length) {
+        return null
+      }
+      bar.rightBarline = '|'
+    }
+    
     return {
       id: idx + 1,
       ...bar, //leftBarline, rightBarline, textContent
       rhythm: rhythmText,
       ...parseBarContent(bar.textContent.trim())
     }
-  })
+  }).filter(Boolean)
 
   return {
     bars,
-    align
+    align,
+    indent,
+    classes
   }
 
 }
@@ -260,33 +282,37 @@ const extractStanzaMetadata = stanzaText => {
 
 const getWayfinding = (lines) => {
 
-  console.log(lines)
-  let toCodaBar = lines.map(
+  let bars = lines.map(
     (line, idx) => line.bars.map((b, barIdx) => ({ ...b, lineNo: idx + 1, barNo: barIdx + 1 }))
-  ).flat().find(bar => bar.classes?.includes('to-coda'))
-  if (!toCodaBar) return []
+  ).flat()
 
-  let position = null
-  if (toCodaBar.classes.includes('to-right')) {
-    position = 'to-right'
-  } else if (toCodaBar.classes.includes('to-bottom')) {
-    position = 'to-bottom'
-  } else if (toCodaBar.isRightmost && !toCodaBar.isBottommost) {
-    position = 'to-right'
-  } else if (toCodaBar.isRightmost && lines[toCodaBar.lineNo - 1] < 8) {
-    position = 'to-right'
-  } else if (toCodaBar.isBottommost) {
-    position = 'to-bottom'
-  }
-  return [
-    {
-      type: 'to-coda',
-      position,
-      lineNo: toCodaBar.lineNo,
-      barNo: toCodaBar.barNo
+  let wayfindingBars = bars.filter(bar => bar.classes?.includes('to-coda') || bar.classes?.includes('to-segno'))
+
+  return wayfindingBars.map(bar => {
+    let position = null
+    if (bar.classes.includes('to-right')) {
+      position = 'to-right'
+    } else if (bar.classes.includes('to-bottom')) {
+      position = 'to-bottom'
+    } else if (bar.isRightmost && !bar.isBottommost) {
+      position = 'to-right'
+    } else if (bar.isRightmost && lines[bar.lineNo - 1] < 8) {
+      position = 'to-right'
+    } else if (bar.isBottommost) {
+      position = 'to-bottom'
     }
-  ]
-
+    
+    return {
+      type: bar.classes?.includes('to-coda') 
+        ? 'to-coda' 
+        : bar.classes?.includes('to-segno')
+          ? 'to-segno'
+          : null,
+      position,
+      lineNo: bar.lineNo,
+      barNo: bar.barNo
+    }
+  })
 }
 
 

@@ -709,6 +709,7 @@ watch(pageElement, () => {
     font-size: var(--font-size);
     padding: 0px;
     margin: 0;
+    font-family: 'EB Garamond';
   }
 
   .page {
@@ -726,7 +727,7 @@ watch(pageElement, () => {
   }
 
   .hr {
-    margin: 0;
+    margin: calc(0.25 * var(--y-unit));
     border: 0;
     border-bottom: calc(var(--stroke-width) * 0.5) dashed var(--gridline-color);
     align-self: stretch;
