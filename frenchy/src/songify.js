@@ -51,9 +51,11 @@ const parseBarContent = barText => {
     ? [ '1234' ]
     : chords.length === 2
       ? [ '12', '34' ]
-      : chords.length === 4
-        ? [ '1', '2', '3', '4' ]
-        : undefined
+      : chords.length === 3
+        ? [ '1', '2', '34' ]
+        : chords.length === 4
+          ? [ '1', '2', '3', '4' ]
+          : undefined
 
   chords = chords.map((c, idx) => ({
     ...c, 
@@ -108,14 +110,12 @@ const totalPerspectiveVortexForBars = (lines, layout) => {
 const formulateLayout = (stanzaLines) => {
   let maxWidth = Math.max(...stanzaLines.map(line => line.bars?.length || 0))
   let layout = stanzaLines.map(line => { 
-    console.log({ indent: line.indent })
     let indent = line.indent || (line.align === 'left' ? 0 : Math.max(maxWidth - line.bars.length, 0))
     let off = '0'.repeat(indent)
     let on = '1'.repeat(line.bars?.length || 0)
     let offAgain = '0'.repeat(Math.max(maxWidth - line.bars.length - indent, 0))
     return [off, on, offAgain].join('')
   })
-  console.log(layout)
   let indent = (MAX_BARS_PER_LINE - maxWidth) / 2
   return {
     layout,
@@ -129,7 +129,6 @@ const formulateLayout = (stanzaLines) => {
 const splitTextIntoBars = rawText => {
   let bars = rawText.match(globalBarlineRegex)
     .reduce((bars, barText, idx) => {
-      console.log(barText, idx)
       let [,barline,,textContent] = barText.match(barlineRegex)
       if (idx > 0) {
         bars[idx - 1].rightBarline = barline
@@ -336,7 +335,11 @@ const parseStanza = stanzaText => {
         return lines
       }
       if (isAnnotations(line)) {
-        annotations.push(parseStanzaAnnotation(line))
+        try {
+          annotations.push(parseStanzaAnnotation(line))
+        } catch (err) {
+          console.warn(err)
+        }
         return lines
       }
     }, [])
@@ -354,6 +357,10 @@ const parseStanza = stanzaText => {
   let borderCoordinates = getBorderCoordinates(layout)
 
   let wayfinding = getWayfinding(lines)
+  
+  // let layoutHintClasses = {
+  //   'no-top-business': (title === '' || classes.includes('title-left')) && !annotations.some(a => annotation.side === 'top') && (classes.includes('wayfinding')))
+  // }
 
   return {
     title,
@@ -441,8 +448,6 @@ export const songify = (songText) => {
       ...parsePart
     }))
   
-  console.log({ parts })
-
   return {
     metadata,
     parts,

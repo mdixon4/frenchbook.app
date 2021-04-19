@@ -16,7 +16,6 @@
 <script setup>
 import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted } from 'vue'
 
-console.log('Setting up span')
 const props = defineProps({
   span: {
     type: Object

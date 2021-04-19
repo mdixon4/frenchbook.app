@@ -1,6 +1,8 @@
 <template>
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
+    'has-title': stanza.title.length,
+    'has-top-matter': stanza.annotations.some(a => a.side === 'top')
   }" :class="stanza.classes">
     <!-- <div class="stanza-break"></div> -->
     <div class="stanza-music">
@@ -163,6 +165,9 @@ const stanzaBorderViewBox = computed(() => {
     margin-bottom: calc(var(--y-unit) / 2);
   }
 
+  .song .stanza.no-top-annotations.no-top-title:first-child {
+    margin-top: 0;
+  }
 
   .stanza-break {
     position: relative;
@@ -188,26 +193,76 @@ const stanzaBorderViewBox = computed(() => {
     align-self: end;
   }
   .line.indent-1 {
-    left: calc(1 * var(--bar-width))
+    left: calc(1 * var(--bar-width));
   }
   .line.indent-2 {
-    left: calc(2 * var(--bar-width))
+    left: calc(2 * var(--bar-width));
   }
   .line.indent-3 {
-    left: calc(3 * var(--bar-width))
+    left: calc(3 * var(--bar-width));
   }
   .line.indent-4 {
-    left: calc(4 * var(--bar-width))
+    left: calc(4 * var(--bar-width));
   }
   .line.indent-5 {
-    left: calc(5 * var(--bar-width))
+    left: calc(5 * var(--bar-width));
   }
   .line.indent-6 {
-    left: calc(6 * var(--bar-width))
+    left: calc(6 * var(--bar-width));
   }
   .line.indent-7 {
-    left: calc(7 * var(--bar-width))
+    left: calc(7 * var(--bar-width));
   }
+  
+  .stanza.indent-0 {
+    left: 0;
+  }
+  .stanza.indent-0-5 {
+    left: calc(0.5 * var(--bar-width));
+  }
+  .stanza.indent-1 {
+    left: calc(1 * var(--bar-width));
+  }
+  .stanza.indent-1-5 {
+    left: calc(1.5 * var(--bar-width));
+  }
+  .stanza.indent-2 {
+    left: calc(2 * var(--bar-width));
+  }
+  .stanza.indent-2-5 {
+    left: calc(2.5 * var(--bar-width));
+  }
+  .stanza.indent-3 {
+    left: calc(3 * var(--bar-width));
+  }
+  .stanza.indent-3-5 {
+    left: calc(3.5 * var(--bar-width));
+  }
+  .stanza.indent-4 {
+    left: calc(4 * var(--bar-width));
+  }
+  .stanza.indent-4-5 {
+    left: calc(4.5 * var(--bar-width));
+  }
+  .stanza.indent-5 {
+    left: calc(5 * var(--bar-width));
+  }
+  .stanza.indent-5-5 {
+    left: calc(5.5 * var(--bar-width));
+  }
+  .stanza.indent-6 {
+    left: calc(6 * var(--bar-width));
+  }
+  .stanza.indent-6-5 {
+    left: calc(6.5 * var(--bar-width));
+  }
+  .stanza.indent-7 {
+    left: calc(7 * var(--bar-width));
+  }
+  .stanza.indent-7-5 {
+    left: calc(7.5 * var(--bar-width));
+  }
+
 
   .bar {
     width: var(--bar-width);

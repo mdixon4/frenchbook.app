@@ -42,7 +42,6 @@ const rightSpans = computed(
 const bottomSpans = computed(
   () => stanza.value.annotations?.filter(span => span.side === 'bottom') || []
 )
-console.log({ topSpans, leftSpans, rightSpans, bottomSpans })
 
 </script>
 

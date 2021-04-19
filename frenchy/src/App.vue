@@ -535,9 +535,12 @@ let song = computed(() => {
     return songify(songText.value)
   } catch (err) {
     errorMessage.value = err
+    console.error(err)
     return null
   }
 })
+
+window.song = song
 
 const isEditing = ref(false)
 
@@ -563,9 +566,12 @@ watch(pageElement, () => {
   }
 
   :root {
+    --root-bar-width: 23mm;
+    --root-bar-height: 21mm;
+
     --font-size: 4.25mm;
-    --bar-width: 23mm;
-    --bar-height: 21mm;
+    --bar-width: var(--root-bar-width);
+    --bar-height: var(--root-bar-height);
 
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
