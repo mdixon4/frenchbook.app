@@ -1,5 +1,6 @@
 import markdownit from 'markdown-it'
 import { renderChord } from './chord_renderer.js'
+import { replaceSnippets } from './snippets.js';
 
 const MAX_BARS_PER_LINE = 8
 
@@ -189,6 +190,13 @@ const parseLineData = rawLine => {
 
 }
 
+const parseInlineMarkdown = text => {
+  return markdownit({
+    typographer: true,
+    html: true
+  }).renderInline(text)
+}
+
 
 const parseStanzaAnnotation = lineText => {
   /*
@@ -202,6 +210,8 @@ const parseStanzaAnnotation = lineText => {
   // Split at first colon:
   let [placement, text] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
   text = text.trim().replace(/\\n/g, '<br>')
+  text = parseInlineMarkdown(text)
+  text = replaceSnippets(text)
   let side = placement.match(/((top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
   let startMatch = placement.match(/\(\s*(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null

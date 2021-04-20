@@ -33,6 +33,11 @@ const span = toRef(props, 'span')
     font-style: italic;
     line-height: 1;
   }
+  .exterior .span-text strong {
+    font-style: normal;
+    font-size: calc(18/16 * 1em);
+  }
+
   .exterior .span.rhythms .span-text {
     font-family: 'Rhythms';
     font-style: normal;
