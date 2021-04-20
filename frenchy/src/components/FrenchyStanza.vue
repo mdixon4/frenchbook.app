@@ -18,26 +18,9 @@
           </div>
         </div>
       </div>
-      <svg class="stanza-border-b" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <mask :id="`stanza-border-eraser-mask-b-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path>
-        </mask>
-        <mask :id="`stanza-mask-b-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <!-- <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path> -->
-          <!-- <path class="mask-stroke-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="white"></path> -->
-          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="0" fill="black"></path> -->
-        </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath"></path>
-        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
-      </svg>
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <mask :id="`stanza-mask-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" stroke-width="white" fill="black"></path> -->
-        </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
       </svg>
     </div>
     <!-- <div class="stanza-break"></div> -->
@@ -72,78 +55,30 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
-  /* .bar.is-topmost .top-barline {
-    stroke: white;
-    stroke-width: calc(var(--stroke-width) / 2);
-  }
-  .bar.is-bottommost .bottom-barline {
-    display: none;
-  }
-  .bar.is-rightmost .right-barline {
-    display: none;
-  }
-  .bar.is-leftmost .left-barline {
-    display: none;
-  } */
-
-  .stanza-border, .stanza-border-b {
+  .stanza-border {
     position: absolute;
     inset: 0;
     height: 100%;
     width: 100%;
     overflow: visible;
     pointer-events: none;
-    /* opacity: 1; */
+    /* background: orange; */
   }
-
-  .stanza-border-b {
+  .stanza-border .border-stroke-gap {
     display: none;
   }
-  .stanza.b .stanza-border-b {
-    display: block;
-  }
-  .stanza.b .stanza-border {
-    display: none;
-  }
-
-  /* .stanza-border { fill: transparent; } */
-
   .stanza-border .border-stroke {
     fill: transparent;
     stroke: var(--gridline-color);
-    /* stroke: var(--gridline-color); */
     stroke-width: var(--thick-stroke-width);
   }
-
-
-  .stanza-border-b .border-stroke {
-    fill: transparent;
-    stroke: var(--gridline-color);
-    /* stroke: bl; */
-    /* stroke: blue; */
-    stroke-width: var(--thick-stroke-width);
-    /* stroke-width: 10px; */
-  }
-  .stanza-border-b .border-stroke-gap {
+  .stanza.b .border-stroke-gap {
+    display: unset;
     fill: transparent;
     stroke: white;
-    stroke-width: calc(var(--stroke-width) * 0.5);
-    stroke-width: calc(var(--stroke-width) * .75);
+    stroke-width: calc(var(--stroke-width) * .5);
   }
-
-  .stanza.b .mask-stroke-gap {
-    stroke-width: 2px;
-    /* stroke-width: calc(var(--thick-stroke-width) / 2 + var(--stroke-width) / 2); */
-  }
-  /* .stanza.b .mask-stroke-inner {
-    stroke-width: calc(1 * var(--stroke-width));
-  }
-  .mask-stroke-inner {
-    stroke-width: var(--stroke-width);
-  } */
-  
   .stanza-border { z-index: 40 }
-
 
 
   .stanza-music {
