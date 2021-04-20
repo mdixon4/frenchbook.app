@@ -58,12 +58,8 @@ defineProps({
   }
 
   .number {
-    font-family: 'Arial Narrow';
-    font-weight: bold;
-    /* padding: 0.5rem; */
+    font-family: 'Open Sans Condensed';
     font-size: 1.8rem;
-    /* line-height: 100%; */
-    color: red;
   }
   
 

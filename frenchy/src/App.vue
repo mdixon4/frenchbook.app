@@ -557,6 +557,7 @@ watch(pageElement, () => {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&family=Oswald:wght@500&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,800;1,500;1,600&display=swap');
   @font-face {
     font-family: 'LJC';
