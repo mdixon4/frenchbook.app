@@ -111,6 +111,11 @@ const shape = computed(() => {
   /* margin: 0 -0.08em; */
 }
 
+.mod-plus {
+  transform: translateY(-0.3em);
+  margin: 0 -0.1em 0 0;
+}
+
 .left-triangle .bass-slash {
   position: absolute;
   left: 0.4em;

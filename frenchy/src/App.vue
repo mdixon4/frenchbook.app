@@ -734,7 +734,7 @@ watch(pageElement, () => {
   }
 
   .hr {
-    margin: calc(0.25 * var(--y-unit));
+    margin: calc(0.25 * var(--y-unit)) 0;
     border: 0;
     border-bottom: calc(var(--stroke-width) * 0.5) dashed var(--gridline-color);
     align-self: stretch;

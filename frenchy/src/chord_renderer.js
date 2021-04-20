@@ -95,6 +95,7 @@ const MODIFIER_SYMBOLS = {
   halfdim: '<span class="mod-symbol">@</span>',
   // '^': '<span class="mod-symbol mod-triangle">&#xe18a;</span>',
   '^': '<span class="mod-symbol mod-triangle">^</span>',
+  '+': '<span class="mod-symbol mod-plus">+</span>',
   // dim: '<span class="mod-symbol">º</span>',
   dim: '<span class="mod-symbol">°</span>',
   '1': '<span class="mod-digit">1</span>',
@@ -191,7 +192,7 @@ const catchHalfDim = chord => {
 
 const chordParserRegex = regex`^
   (?<root>[A-G](#|b)?)
-  (?<modifier>(m|M|ma|mi|\^|MI|Maj|dim|halfdim|Ø|sus|o|0)?\d*)?
+  (?<modifier>(m|M|ma|mi|\^|MI|Maj|dim|halfdim|Ø|sus|o|0|\+)?\d*)?
   (?<alterations>.*?)
   (/(?<bass>[A-G](#|b)?))?
 $`
@@ -200,13 +201,14 @@ const modifierRegex = regex`^
   (mi|m|min|minor|Mi|-)?
   (M|Ma|ma|maj|MA|MAJ|major|\^)?
   (dim|o|halfdim|0)?
+  (\+)?
   (\d+)?
 $`
 
 
 const tokeniseModifier = modifier => {
   let matches = (modifier || '').match(modifierRegex)
-  if (matches.length) {
+  if (matches && matches.length) {
     return matches.slice(1).filter(Boolean)
   }
   return []

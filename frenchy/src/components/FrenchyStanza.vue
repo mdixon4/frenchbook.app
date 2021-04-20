@@ -76,7 +76,7 @@ const stanzaBorderViewBox = computed(() => {
     display: unset;
     fill: transparent;
     stroke: white;
-    stroke-width: calc(var(--stroke-width) * .5);
+    stroke-width: calc(var(--stroke-width) * .75); /* Looks too wide on screen, but just right on pdf */
   }
   .stanza-border { z-index: 40 }
 
