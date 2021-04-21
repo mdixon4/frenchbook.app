@@ -69,6 +69,9 @@ export default {
   inset: 0;
   display: flex;
 }
+.beat.stop {
+  --text-outline-color: var(--stop-color);
+}
 
 
 

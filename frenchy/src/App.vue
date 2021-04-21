@@ -11,7 +11,10 @@
     <div class="page-holder">
       <div class="page" v-if="song" ref="pageElement">
         <frenchy-header :metadata="song.metadata"></frenchy-header>
-        <div class="song">
+        <div class="song" :style="{
+          '--bar-width': `calc(${song.metadata.barWidth || 1} * var(--root-bar-width))`,
+          '--bar-height': `calc(${song.metadata.barHeight || 1} * var(--root-bar-height))`
+        }">
           <template v-for="(part, idx) in song.parts" :key="idx">
             <template v-if="part.type === 'hr'"><hr class="hr"></template>
             <template v-if="part.type === 'stanza'">
@@ -586,6 +589,7 @@ watch(pageElement, () => {
     --stroke-width: .5mm;
     --thick-stroke-width: 0.75mm;
     --rhythm-font-size: 5mm;
+    --text-outline-color: white;
   }
 
 
@@ -734,11 +738,18 @@ watch(pageElement, () => {
   }
 
   .hr {
-    margin: calc(0.25 * var(--y-unit)) 0;
+    margin: calc(1 * var(--y-unit)) 0 calc(0.5 * var(--y-unit)) 0;
+    /* margin-top: calc(var(--y-unit)); */
     border: 0;
     border-bottom: calc(var(--stroke-width) * 0.5) dashed var(--gridline-color);
     align-self: stretch;
   }
+  /* .hr:after {
+    display: block;
+    content: '';
+    background: red;
+    height: 1em;
+  } */
 
   .non-music {
     white-space: pre;

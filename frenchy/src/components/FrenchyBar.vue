@@ -6,9 +6,11 @@
     'is-bottommost': barData.isBottommost,
     'is-leftmost': barData.isLeftmost,
     'is-ditto': isDitto,
-    'has-annotation': hasAnnotation,
+    'has-bottom-annotation': hasBottomAnnotation,
+    'has-top-annotation': hasTopAnnotation,
     'has-rhythm': hasRhythm,
-    'is-slashed': isSlashed
+    'is-slashed': isSlashed,
+    'is-empty': isEmpty
   }, ...barData.classes]">
     <svg class="shading" viewBox="0 0 100 100" preserveAspectRatio="none">
       <g >
@@ -62,7 +64,7 @@
     <div class="chords" :class="{ slash: isSlashed }">
       <frenchy-beat :key="chord.beats" v-for="chord in chords" :beats="chord.beats" :chord="chord" :isStop="chord.isStop" :isSlashed="isSlashed"></frenchy-beat>
     </div>
-    <div class="annotation">{{ barData.annotation }}</div>
+    <div v-for="annotation in barData.annotations" :key="annotation.text" class="annotation" :class="[ `annotation-${annotation.position}`, `annotation-${annotation.align}` ]">{{ annotation.text }}</div>
     <outlined-text class="rhythm" :text="barData.rhythm"></outlined-text>
   </div>
 </template>
@@ -89,6 +91,14 @@ export default {
     chords () {
       return this.barData.chords
     },
+    numChords () {
+      return this.chords.length
+    },
+    isEmpty () {
+      return this.numChords === 0 || (
+        this.numChords === 1 && this.chords[0].chord === ''
+      )
+    },
     isSlashed () {
       return this.blocks === '╱'
     },
@@ -103,8 +113,11 @@ export default {
         '123-4': '┌'
       }[this.chords.map(c => c.beats).join('-')]
     },
-    hasAnnotation () {
-      return this.barData.annotation?.length
+    hasBottomAnnotation () {
+      return this.barData.annotations.some(a => a.position === 'bottom')
+    },
+    hasTopAnnotation () {
+      return this.barData.annotations.some(a => a.position === 'top')
     },
     hasRhythm () {
       return this.barData.rhythm?.length
@@ -138,9 +151,12 @@ export default {
     align-items: center;
     justify-content: center;
   }
-  .bar.has-annotation > .chords,
+  .bar.has-top-annotation > .chords {
+    top: 10%;
+  }
+  .bar.has-bottom-annotation > .chords,
   .bar.has-rhythm > .chords {
-    height: 90%;
+    bottom: 10%;
     /* background: paleturquoise; */
   }
   .bar.is-slashed.has-rhythm > .chords {
@@ -149,14 +165,34 @@ export default {
 
   .bar > .annotation {
     position: absolute;
-    bottom: 0.15em;
+    bottom: 0;
     line-height: 0.9;
     width: 100%;
+    padding: 0.15em;
     text-align: center;
     font-family: 'EB Garamond';
     font-weight: 700;
     /* font-style: italic; */
   }
+  .bar > .annotation-top {
+    top: 0;
+  }
+  .bar > .annotation-left {
+    text-align: left;
+  }
+  .bar > .annotation-right {
+    text-align: right;
+  }
+
+  .bar.is-empty {
+    display: flex;
+  }
+  .bar.is-empty > .annotation {
+    position: relative;
+    align-self: center;
+    bottom: 0;
+  }
+
   .bar > .rhythm {
     font-size: var(--rhythm-font-size);
     position: absolute;

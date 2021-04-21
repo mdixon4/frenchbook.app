@@ -96,8 +96,15 @@ const stanzaBorderViewBox = computed(() => {
     page-break-inside: avoid;
     left: calc(var(--indent, var(--default-indent)) * var(--bar-width));
     /* margin-top: calc(var(--downdent, 1) * var(--y-unit)); */
-    margin-top: calc(var(--y-unit) / 2);
-    margin-bottom: calc(var(--y-unit) / 2);
+    margin-top: calc(var(--y-unit));
+    margin-bottom: 0;
+  }
+
+  .stanza.flush {
+    margin-top: 0;
+  }
+  .stanza.tight {
+    margin-top: calc(0.5 * var(--y-unit));
   }
 
   .song .stanza.no-top-annotations.no-top-title:first-child {

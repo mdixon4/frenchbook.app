@@ -22,7 +22,7 @@ const props = defineProps({
 .outlined-text .outline {
   user-select: none;
   inset: 0;
-  -webkit-text-stroke: var(--stroke-width) white;
+  -webkit-text-stroke: var(--stroke-width) var(--text-outline-color);
   position: absolute;
   z-index: -1;
   left: 0;

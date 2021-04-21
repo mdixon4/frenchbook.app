@@ -22,6 +22,7 @@ const regex = ({raw}, ...interpolations) => (
 
 
 const quotedRegex = /\"([^\"]*)\"/
+const globalQuotedRegex = new RegExp(quotedRegex.source, 'g')
 const classesRegex = /\B\.\S+/g
 const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
 const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
@@ -29,8 +30,21 @@ const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 
 const parseBarContent = barText => {
 
-  let annotationMatch = barText.match(quotedRegex)
-  let annotation = annotationMatch ? annotationMatch[1] : ''
+  let annotationMatches = Array.from(barText.matchAll(globalQuotedRegex) || [])
+  let annotations = annotationMatches.map(match => {
+    let text = match[1]
+    let position = match.index === 0 ? 'top' : 'bottom'
+    let align = text.startsWith(' ') && !text.endsWith(' ')
+      ? 'right'
+      : text.endsWith(' ') && !text.startsWith(' ')
+        ? 'left'
+        : 'center'
+    return {
+      text,
+      position,
+      align
+    }
+  })
   barText = barText.replace(quotedRegex, ' ')
   let classes = barText.match(classesRegex)?.map(c => c.substr(1)) || []
   barText = barText.replace(classesRegex, ' ')
@@ -74,7 +88,7 @@ const parseBarContent = barText => {
 
   return {
     chords,
-    annotation,
+    annotations,
     classes
   }
 }
