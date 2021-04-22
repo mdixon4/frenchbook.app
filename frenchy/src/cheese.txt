@@ -1,6 +1,9 @@
 title: Cheese
 number: 185
 credits: Dixon, 2019
+
+barHeight: 0.78
+barWidth: 16/17
 =====
 
 .flush .indent-0-5
@@ -14,7 +17,7 @@ left: **Verse** (vocal only) .sideways .align-start
 | F7 | - | - | - | Bb | - | - | - |
 top: **Chorus** (open for solos) .align-start
 
-.b .flush .indent-0-5
+.b .flush .indent-0-5 .shadow
 | F7 | - | - | - | Bb | - | - | - |
 | F7 | - | - | - | Bb | - | - | - |
 | Eb | Ebm | Bb | - | Eb | C7 | F7 C+7 | F7 |
@@ -27,18 +30,8 @@ right (2): \coda \n \right-down
 
 .indent-0-5
 | Eb | - | C7/E | - | Bb/F | - | G7 | - |
-| "French! " . C7. | "Swiss! " . C7. | "...or Lebanese!" . | . F7 - - | Bb | F7 |
+| "French! " . C7. | "Swiss! " . C7. | "...or Lebanese!" . | . F7 - -| Bb | F7|
 | Bb | - | Bbdim | - | C7 | F7 | Bb | - |
-top: \left-down \coda .align-start
+topleft: \coda
+left: \down-right .align-start
 
-
-====
-
-.song {
-  --bar-height: calc(0.78 * var(--root-bar-height));
-  --bar-width: calc(16/17 * var(--root-bar-width))
-}
-
-.b {
-  z-index: 41;
-}

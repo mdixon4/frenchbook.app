@@ -226,7 +226,7 @@ const parseStanzaAnnotation = lineText => {
   text = text.trim().replace(/\\n/g, '<br>')
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
-  let side = placement.match(/((top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
+  let side = placement.match(/((topleft)|(topright)|(bottomleft)|(bottomright)|(top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
   let startMatch = placement.match(/\(\s*(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null
   let endMatch = placement.match(/,\s*(\d+)\s*\)/)

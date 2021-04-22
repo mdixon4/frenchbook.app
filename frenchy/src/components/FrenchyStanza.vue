@@ -21,6 +21,17 @@
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
         <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
         <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        <template v-if="stanza.classes.includes('shadow')">
+        <defs>
+          <mask :id="`mask${randomId}`">
+            <rect x="-999" y="-999" width="9999" height="9999" fill="white"></rect>
+            <path class="shadow-mask" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" fill="black"></path>
+          </mask>
+        </defs>
+        <g :mask="`url(#mask${randomId})`">
+          <path class="shadow-fill" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        </g>
+        </template>
       </svg>
     </div>
     <!-- <div class="stanza-break"></div> -->
@@ -37,6 +48,8 @@ const props = defineProps({
     type: Object
   }
 })
+
+const randomId = Math.round(Math.random() * 100_000)
 
 const stanzaBorderPath = computed(() => {
   if (props.stanza.lines.length) {
@@ -55,7 +68,7 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
-  .stanza-border {
+  .stanza-border, .stanza-shadow {
     position: absolute;
     inset: 0;
     height: 100%;
@@ -79,8 +92,15 @@ const stanzaBorderViewBox = computed(() => {
     stroke-width: calc(var(--stroke-width) * .75); /* Looks too wide on screen, but just right on pdf */
   }
   .stanza-border { z-index: 40 }
-
-
+  .stanza.shadow .stanza-border { z-index: 41 }
+  .stanza.shadow .shadow-mask {
+    stroke-width: var(--thick-stroke-width);
+    stroke: black;
+  }
+  .stanza.shadow .shadow-fill {
+    transform: translate(calc(2 * var(--thick-stroke-width)), calc(2 * var(--thick-stroke-width)));
+    fill: var(--gridline-color, black);
+  }
   .stanza-music {
     position: relative;
   }

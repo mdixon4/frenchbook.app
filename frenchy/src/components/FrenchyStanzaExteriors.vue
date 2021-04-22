@@ -25,6 +25,18 @@
 
     <frenchy-wayfinding v-for="wayfinding in stanza.wayfinding" :key="wayfinding.type" :wayfinding="wayfinding" :stanza="stanza"></frenchy-wayfinding>
 
+    <div class="exterior topleft">
+      <frenchy-span v-for="span in topleftSpans" :key="span.uuid" :span="span"></frenchy-span>
+    </div>
+    <div class="exterior topright">
+      <frenchy-span v-for="span in toprightSpans" :key="span.uuid" :span="span"></frenchy-span>
+    </div>
+    <div class="exterior bottomleft">
+      <frenchy-span v-for="span in bottomleftSpans" :key="span.uuid" :span="span"></frenchy-span>
+    </div>
+    <div class="exterior bottomright">
+      <frenchy-span v-for="span in bottomrightSpans" :key="span.uuid" :span="span"></frenchy-span>
+    </div>
     <div class="exterior top">
       <frenchy-span v-for="span in topSpans" :key="span.uuid" :span="span"></frenchy-span>
     </div>
@@ -68,6 +80,18 @@ const rightSpans = computed(
 )
 const bottomSpans = computed(
   () => stanza.value.annotations?.filter(span => span.side === 'bottom') || []
+)
+const topleftSpans = computed(
+  () => stanza.value.annotations?.filter(span => span.side === 'topleft') || []
+)
+const toprightSpans = computed(
+  () => stanza.value.annotations?.filter(span => span.side === 'topright') || []
+)
+const bottomleftSpans = computed(
+  () => stanza.value.annotations?.filter(span => span.side === 'bottomleft') || []
+)
+const bottomrightSpans = computed(
+  () => stanza.value.annotations?.filter(span => span.side === 'bottomright') || []
 )
 
 </script>
@@ -120,7 +144,26 @@ const bottomSpans = computed(
     grid-template-columns: repeat(var(--stanza-width), minmax(0, 1fr));
     align-items: flex-start;
   }
-
+  .exterior.topleft {
+    grid-area: topleft;
+    align-self: flex-end;
+    justify-self: flex-end;
+  }
+  .exterior.topright {
+    grid-area: topright;
+    align-self: flex-end;
+    justify-self: flex-start;
+  }
+  .exterior.bottomleft {
+    grid-area: bottomleft;
+    align-self: flex-start;
+    justify-self: flex-end;
+  }
+  .exterior.bottomright {
+    grid-area: topright;
+    align-self: flex-start;
+    justify-self: flex-start;
+  }
 
 
 
