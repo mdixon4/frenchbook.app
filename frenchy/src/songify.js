@@ -23,7 +23,8 @@ const regex = ({raw}, ...interpolations) => (
 
 const quotedRegex = /\"([^\"]*)\"/
 const globalQuotedRegex = new RegExp(quotedRegex.source, 'g')
-const classesRegex = /\B\.\S+/g
+const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
+// const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
 const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 
@@ -142,6 +143,7 @@ const formulateLayout = (stanzaLines) => {
 
 
 const splitTextIntoBars = rawText => {
+
   let bars = rawText.match(globalBarlineRegex)
     .reduce((bars, barText, idx) => {
       let [,barline,,textContent] = barText.match(barlineRegex)
@@ -162,9 +164,13 @@ const splitTextIntoBars = rawText => {
 
 const parseLineData = rawLine => {
 
-  
   let classes = rawLine.text.split('|').slice(-1)[0].match(classesRegex)?.map(c => c.substr(1)) || []
-  let indent = parseInt(classes.find(c => c.startsWith('indent-'))?.replace('indent-', '') || NaN, 10) || null
+  
+  let beforeFirstBar = rawLine.text.split(barlineRegex)[0]
+  let indent = beforeFirstBar.match(/(\s|^)(>+)(\s|$)/)?.[2]?.length || null
+  if (indent) {
+    classes.push(`indent-${indent}`)
+  }
 
   // if line starts with spaces, align right not left
   let align = indent !== null 
@@ -212,6 +218,85 @@ const parseInlineMarkdown = text => {
 }
 
 
+const parseAlignmentClues = text => {
+
+  text = text.trim()
+
+  if (text.endsWith('...') && text.startsWith('...')) {
+    return {
+      align: 'middle',
+      style: 'dotted',
+      text: text.replace(/(^\.\.\.|\.\.\.$)/g, '').trim()
+    }
+  }
+  if (text.startsWith('...')) {
+    return {
+      align: 'end',
+      style: 'dotted',
+      text: text.replace(/(^\.\.\.|\.\.\.$)/g, '').trim()
+    }
+  }
+  if (text.endsWith('...')) {
+    return {
+      align: 'start',
+      style: 'dotted',
+      text: text.replace(/(^\.\.\.|\.\.\.$)/g, '').trim()
+    }
+  }
+  
+  if (text.endsWith('---') && text.startsWith('---')) {
+    return {
+      align: 'middle',
+      style: 'volta-dashed',
+      text: text.replace(/(^---|---$)/g, '').trim()
+    }
+  }
+  if (text.startsWith('---')) {
+    return {
+      align: 'end',
+      style: 'volta-dashed',
+      text: text.replace(/(^---|---$)/g, '').trim()
+    }
+  }
+  if (text.endsWith('---')) {
+    return {
+      align: 'start',
+      style: 'volta-dashed',
+      text: text.replace(/(^---|---$)/g, '').trim()
+    }
+  }
+
+  if (text.endsWith('___') && text.startsWith('___')) {
+    return {
+      align: 'middle',
+      style: 'volta',
+      text: text.replace(/(^___|___$)/g, '').trim()
+    }
+  }
+  if (text.startsWith('___')) {
+    return {
+      align: 'end',
+      style: 'volta',
+      text: text.replace(/(^___|___$)/g, '').trim()
+    }
+  }
+  if (text.endsWith('___')) {
+    return {
+      align: 'start',
+      style: 'volta',
+      text: text.replace(/(^___|___$)/g, '').trim()
+    }
+  }
+
+  return {
+    align: 'middle',
+    style: '',
+    text: text
+  }
+
+}
+
+
 const parseStanzaAnnotation = lineText => {
   /*
   Lines like:
@@ -221,15 +306,20 @@ const parseStanzaAnnotation = lineText => {
   */
   lineText = lineText.trim()
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
+  console.log(lineText, classes)
   // Split at first colon:
-  let [placement, text] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
+  let [placement, rawText] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
+  if (!rawText) return {}
+  let { align, style, text } = parseAlignmentClues(rawText)
   text = text.trim().replace(/\\n/g, '<br>')
+  
+
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
   let side = placement.match(/((topleft)|(topright)|(bottomleft)|(bottomright)|(top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
-  let startMatch = placement.match(/\(\s*(\d+)/)
+  let startMatch = placement.match(/\W(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null
-  let endMatch = placement.match(/,\s*(\d+)\s*\)/)
+  let endMatch = placement.match(/\W\d+\D(\d+)/)
   let end = endMatch && parseInt(endMatch[1], 10) || start
 
   // let alignment = classes.find(c => c.startsWith('align-'))
@@ -240,6 +330,7 @@ const parseStanzaAnnotation = lineText => {
   //     classes.push('align-middle')
   //   }
   // }
+  classes.push(`align-${align}`, style)
 
   return {
     classes,
@@ -252,8 +343,8 @@ const parseStanzaAnnotation = lineText => {
 
 
 const isLineMusic = lineText => {
-  // Line is music if it starts with | (optionally white-space indented)
-  return /^\s*\|/.test(lineText)
+  // line is music if it has | character (unescaped)
+  return /(?<!\\)\|/.test(lineText)
 }
 
 const isRhythms = lineText => {
