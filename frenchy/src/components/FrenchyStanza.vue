@@ -154,26 +154,50 @@ const stanzaBorderViewBox = computed(() => {
   .line-text.align-right {
     align-self: end;
   }
+  .line.indent-0-5 {
+    left: calc(0.5 * var(--bar-width));
+  }
   .line.indent-1 {
     left: calc(1 * var(--bar-width));
+  }
+  .line.indent-1-5 {
+    left: calc(1.5 * var(--bar-width))
   }
   .line.indent-2 {
     left: calc(2 * var(--bar-width));
   }
+  .line.indent-2-5 {
+    left: calc(2.5 * var(--bar-width))
+  }
   .line.indent-3 {
     left: calc(3 * var(--bar-width));
+  }
+  .line.indent-3-5 {
+    left: calc(3.5 * var(--bar-width))
   }
   .line.indent-4 {
     left: calc(4 * var(--bar-width));
   }
+  .line.indent-4-5 {
+    left: calc(4.5 * var(--bar-width))
+  }
   .line.indent-5 {
     left: calc(5 * var(--bar-width));
+  }
+  .line.indent-5-5 {
+    left: calc(5.5 * var(--bar-width))
   }
   .line.indent-6 {
     left: calc(6 * var(--bar-width));
   }
+  .line.indent-6-5 {
+    left: calc(6.5 * var(--bar-width))
+  }
   .line.indent-7 {
     left: calc(7 * var(--bar-width));
+  }
+  .line.indent-7-5 {
+    left: calc(7.5 * var(--bar-width))
   }
   
   .stanza.indent-0 {

@@ -170,6 +170,14 @@ const parseLineData = rawLine => {
   let indent = beforeFirstBar.match(/(\s|^)(>+)(\s|$)/)?.[2]?.length || null
   if (indent) {
     classes.push(`indent-${indent}`)
+  } else {
+    let indentClass = classes.find(c => c.startsWith('indent-'))
+    let indentFromClass = indentClass && indentClass.match(/indent-(?<digits>\d+(\-\d+)?)/)?.groups?.digits?.replace('-', '.')
+    console.log({ indentFromClass })
+    if (indentFromClass) {
+      indent = parseFloat(indentFromClass, 10) || null
+      console.log(indent)
+    }
   }
 
   // if line starts with spaces, align right not left
@@ -241,6 +249,28 @@ const parseAlignmentClues = text => {
       align: 'start',
       style: 'dotted',
       text: text.replace(/(^\.\.\.|\.\.\.$)/g, '').trim()
+    }
+  }
+
+  if (text.endsWith('<<<') && text.startsWith('>>>')) {
+    return {
+      align: 'middle',
+      style: '',
+      text: text.replace(/(^\>\>\>|\<\<\<$)/g, '').trim()
+    }
+  }
+  if (text.startsWith('>>>')) {
+    return {
+      align: 'end',
+      style: '',
+      text: text.replace(/(^\>\>\>|\<\<\<$)/g, '').trim()
+    }
+  }
+  if (text.endsWith('<<<')) {
+    return {
+      align: 'start',
+      style: '',
+      text: text.replace(/(^\>\>\>|\<\<\<$)/g, '').trim()
     }
   }
   
