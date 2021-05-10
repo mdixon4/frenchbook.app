@@ -1,0 +1,29 @@
+
+credits: Me
+title: It Don't Mean a Thing
+number: 182
+
+===
+
+Verse .tight
+| Gm "/G /F" | Eb7 D7 | Gm "/G /F" | Ehalfdim Eb7 | Gm "/G /F" | Ehalfdim - Eb7 D+7 | Gm | - |
+| Gm "/G /F" | Eb7 D7 | Gm "/G /F" | Ehalfdim Eb7 | Gm "/G /F" | Ehalfdim Eb7 | A7/E Eb7 | D7 |
+
+Chorus
+| Gm "/G /F♯" | - "/F /E" | Eb7 D7 | Gm |
+| C7 | F7sus4 | Bb6 | D+7 |
+
+.tight
+| Gm "/G /F♯" | - "/F /E" | Eb7 D7 | Gm |
+| C7 | F7sus4 | Bb6 | Bb |
+
+.b .tight
+| Bb7 | - | Eb | - |
+| C7 | - | F7 | D7 |
+
+
+.tight
+| Gm "/G /F♯" | - "/F /E" | Eb7 D7 | Gm |
+| C7 | F7sus4 | Bb6 | Bb D7 |
+bottom: >>>Repeat last 4 to tag
+
