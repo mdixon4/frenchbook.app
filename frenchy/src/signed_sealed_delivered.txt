@@ -1,0 +1,48 @@
+
+credits: Me
+title: Signed, Sealed, Delivered
+number: 191
+
+===
+
+Verse .tight .verse
+| Bb | - | Gm7 | - | Bb | - | Gm7 | Fm7/C |
+| Eb7 | - | Cm7/F| - | Bb "Bass Riff Only" .smaller-text | - | - | - |
+| Bb | - | Gm7 | - | Bb | - | Gm7 | Fm7/C |
+| Eb7 | - | Cm7/F | - | Bb "Riff!" | - | - | - |
+
+
+Chorus .b
+| Bb | Ab/C | Eb | Eb/F - - Bb |
+| Bb | Ab/C | Eb | Eb/F F7 |
+right 1,2: ___Play **3 times** \nin last chorus___
+
+.flush
+| Bb | Ab/C | Eb | Eb/F - - Bb |
+| Bb "Riff!" | - | - | - |
+| Bb "Riff!" | - | - | - |
+right 5: >>>\coda \n \right-down
+
+---
+
+.tight
+| Bb "Riff!" | - | - | - |
+Left: \coda  \down-right<<<
+Bottom 2,4: rit...
+
+"
+TODO: Add picture of riff.
+"
+
+
+===
+.hr {
+margin: calc(0.5 * var(--y-unit)) 0 0;
+}
+.b {
+z-index:90;
+}
+.smaller-text .annotation {
+font-size: 0.8em;
+line-height: 1.4;
+}

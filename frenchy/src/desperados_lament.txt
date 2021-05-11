@@ -1,0 +1,42 @@
+
+credits: Me
+title: Desperado's Lament
+number: 181
+barHeight: 0.89
+===
+
+.flush
+| F Dm | G7 C7 | F Dm | C7. |
+left: **Intro**
+
+Vocals .tight
+| F | F7 | Bb | Gm | F | Dm | Gm | C7 |
+| F | F7 | Bb | Gm | F Dm | G7 C7 | F | - |
+| A7 | - | Dm7 | - | G7 | - | C7 | - |
+| F | F7 | Bb | Gm | F Dm | G7 C7 .to-coda || F | F7 "To B♭" |
+
+Instrumental
+| Bb | Bb7 | Eb | Cm | Bb | Gm | Cm | F7 |
+| Bb | Bb7 | Eb | Cm | Bb Gm | C7 F7 | Bb | - |
+| D7 | - | Gm7 | - | C7 | - | F7 | - |
+| Bb | Bb7 | Eb | Cm | Bb Gm | C7 F7 | Bb | - "RepeatInstr"|
+
+Bridge .tight .cosy-title
+| Bb | Bdim | Cm7 | C#dim | Db7 | Ddim | Eb | C7 "Back to Vox"|
+
+.coda .indent-4 .tight
+>>| F | G7 |
+| F Dm | G7 C7 | " \fermata " F |
+left 2: Slow!
+
+
+
+===
+.cosy-title .stanza-title {
+margin-bottom: -0.01em
+}
+
+.wayfinding-diagram {
+margin-top: -0.4em;
+margin-right: -0.8em;
+}

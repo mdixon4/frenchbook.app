@@ -58,7 +58,6 @@ const snippetList = {
 
 export const replaceSnippets = text => {
   return text.replace(snippetRegex, (match, p1, p2) => {
-    console.log(p2)
     return snippetList[p2] || match
   })
 }

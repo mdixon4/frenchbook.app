@@ -64,7 +64,7 @@
     <div class="chords" :class="{ slash: isSlashed }">
       <frenchy-beat :key="chord.beats" v-for="chord in chords" :beats="chord.beats" :chord="chord" :isStop="chord.isStop" :isSlashed="isSlashed"></frenchy-beat>
     </div>
-    <div v-for="annotation in barData.annotations" :key="annotation.text" class="annotation" :class="[ `annotation-${annotation.position}`, `annotation-${annotation.align}` ]">{{ annotation.text }}</div>
+    <div v-for="annotation in barData.annotations" :key="annotation.text" class="annotation" :class="[ `annotation-${annotation.position}`, `annotation-${annotation.align}` ]" v-html="annotation.text"></div>
     <outlined-text class="rhythm" :text="barData.rhythm"></outlined-text>
   </div>
 </template>

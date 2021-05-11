@@ -1,0 +1,46 @@
+
+credits: Me
+title: Li'l Lonnie May
+number: 175
+barHeight: 0.89
+===
+
+Intro .tight
+| Adim | Bbm. | Adim | Bbm. | Adim | - | F7. | .
+
+Verse .indent-2
+| Bbm | Gbdim | - | Bbm |
+| Bbm | Gbdim | - | Bbm |
+| Gbdim | Bbm | Gbdim | Bbm |
+| Bbm | Gbdim | - | Bbm Edim | Gbdim | Bbm " to Tag "|
+| Bbm | Gbdim | - | Bbm |
+| Bbm | Gbdim | - | Bbm |
+
+.to-bridge .indent-7
+| Bbm Ab7 " to Bridge" |
+topleft: \right-down \n 2<sup>nd</sup> X  
+left: \down-right <<<
+
+
+Bridge .bridge
+| Db Dbdim | Cdim Bbm | Ebm7 Bb7 | Ebm Eb7 | Ab Adim | Edim Ab+ | Db Dbdim | Db F7 |
+
+Open for Solos
+| Bbm | - | Ebm7 | - | Gbdim | - | Bbm | F7 |
+| Bbm | - | Ebm7 | - | Edim | -  | F7 | - "to Verse"|
+
+Tag .coda .indent-1
+| Adim | Bbm. | Adim | Bbm. | Adim | - | Bbm |
+top 7: \fermata
+top 5,6: rit...
+
+===
+
+.to-bridge {
+ margin-top: calc(-1.25 * var(--bar-height));
+margin-bottom: calc(1.25 * var(--y-unit));
+}
+
+.bridge {
+margin-top: 0;
+}

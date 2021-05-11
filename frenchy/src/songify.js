@@ -40,6 +40,7 @@ const parseBarContent = barText => {
       : text.endsWith(' ') && !text.startsWith(' ')
         ? 'left'
         : 'center'
+    text = replaceSnippets(text)
     return {
       text,
       position,
@@ -173,10 +174,8 @@ const parseLineData = rawLine => {
   } else {
     let indentClass = classes.find(c => c.startsWith('indent-'))
     let indentFromClass = indentClass && indentClass.match(/indent-(?<digits>\d+(\-\d+)?)/)?.groups?.digits?.replace('-', '.')
-    console.log({ indentFromClass })
     if (indentFromClass) {
       indent = parseFloat(indentFromClass, 10) || null
-      console.log(indent)
     }
   }
 
@@ -336,7 +335,6 @@ const parseStanzaAnnotation = lineText => {
   */
   lineText = lineText.trim()
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
-  console.log(lineText, classes)
   // Split at first colon:
   let [placement, rawText] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
   if (!rawText) return {}
@@ -470,14 +468,14 @@ const parseStanza = stanzaText => {
   let lines = rest.split(/\n+/)
     .filter(line => line.trim().length)
     .reduce((lines, line) => {
+      if (isRhythms(line)) {
+        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i)
+        return lines
+      }
       if (isLineMusic(line)) {
         return [...lines, {
           text: line
         }]
-      }
-      if (isRhythms(line)) {
-        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i)
-        return lines
       }
       if (isAnnotations(line)) {
         try {

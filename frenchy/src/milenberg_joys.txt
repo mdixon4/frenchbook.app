@@ -1,0 +1,34 @@
+
+credits: Me
+title: Milenberg Joys
+number: 176
+barHeight: 0.9
+===
+
+.flush .indent-1
+| Bb. | . | A7 | F7 |
+rhythms: | | | eqe-ryq | q.  e H |
+left: **Intro**
+
+Verse .tight
+| Bb | - | - | F7 | F7 | - | - | Bb F7 |
+| Bb | - | Bb7 | Eb | Eb Bbdim | Bb G7 | C7 | F7|
+| Bb. | . | Bb | F7 | F7 | - | Bb. | . |
+| Bb. | . | Bb7 | Eb | Eb Bbdim | Bb G7 | C7 F7 | Bb |
+
+.tight .indent-2
+| F7 "Roll..." | - | - | F7. |
+left: **Bridge**
+
+Chorus (open) .tight
+| Bb | Bb F7 | Bb | Bb F7 | Bb | - | F7 | - |
+| F7 | - | - | - | - | - | Bb. | . |
+| Bb | Bb F7 | Bb | Bb F7 | Bb | Bb7 | Eb | - |
+| Eb | Gdim | Bb | G7 | C7 | F7 .to-coda | Bb | - |
+
+
+.coda
+ | Bb A7 | Ab7 G7 |
+rhythms: | h    h | q.   e-h |
+| C7 | F7 | Bb A7 | Ab7 G7 | C7 | F7 | Bb | - |
+rhythms: | | | h    h | q.   e-h |
