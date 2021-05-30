@@ -80,6 +80,10 @@ watch(songText, () => {
   }
 })
 
+window.setSongText = window.setSongText || ((newSongText) => {
+  songText.value = newSongText
+})
+
 // let song = {
 //   metadata: {
 //     title: 'Working on stanza annotations',
