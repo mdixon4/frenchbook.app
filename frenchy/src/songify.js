@@ -29,6 +29,13 @@ const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
 const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 
 
+// const replacePitches = text => text
+//   .replaceAll(new RegExp("[A-G][b#]?(?:(?:5|dim(5|7)?|aug5?|\\+5?|-5?)|(?:(?:mi?n?)?(?:(?:4|6|7|9|11|13|6\\/9)|(?:maj?|Ma?j?)?(?:6|7|9|11|13))?)(?:\\((?:[b-](5|6|9|13)|[#+](4|5|9|11))\\)|(?:[b-](5|6|9|13)|[#+](4|5|9|11)))*(?:sus(2|4|24|2sus4)?)?(?:\\((?:[b-](5|6|9|13)|[#+](4|5|9|11))\\)|(?:[b-](5|6|9|13)|[#+](4|5|9|11)))*(?:add[b#]?(?:2|4|6|7|9|11|13))?)(?:\\/[A-G][b#]?)?(?=$| )", 'g'), '[[CHAORD]]')
+
+const replacePitches = text => text
+  .replaceAll(/\b([A-G])(?:#)(?:\b|(?<=#))/g, '$1♯')
+  .replaceAll(/\b([A-G])b\b/g, '$1♭')
+
 const parseBarContent = barText => {
 
   let annotationMatches = Array.from(barText.matchAll(globalQuotedRegex) || [])
@@ -41,6 +48,7 @@ const parseBarContent = barText => {
         ? 'left'
         : 'center'
     text = replaceSnippets(text)
+    text = replacePitches(text)
     return {
       text,
       position,
@@ -344,6 +352,7 @@ const parseStanzaAnnotation = lineText => {
 
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
+  text = replacePitches(text)
   let side = placement.match(/((topleft)|(topright)|(bottomleft)|(bottomright)|(top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
   let startMatch = placement.match(/\W(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null

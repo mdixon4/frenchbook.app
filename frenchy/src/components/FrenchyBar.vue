@@ -172,6 +172,7 @@ export default {
     text-align: center;
     font-family: 'EB Garamond';
     font-weight: 700;
+    white-space: pre;
     /* font-style: italic; */
   }
   .bar > .annotation-top {

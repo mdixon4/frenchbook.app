@@ -96,6 +96,20 @@ const MODIFIER_SYMBOLS = {
   // '^': '<span class="mod-symbol mod-triangle">&#xe18a;</span>',
   '^': '<span class="mod-symbol mod-triangle">^</span>',
   '+': '<span class="mod-symbol mod-plus">+</span>',
+  '7sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '9sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '11sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '13sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '7sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '9sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '11sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '13sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '7sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '9sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '11sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '13sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '69': '<span class="mod-stack"><span class="mod-digit">6</span><span class="mod-digit">9</span></span>',
+  '6/9': '<span class="mod-stack"><span class="mod-digit">6</span><span class="mod-digit">9</span></span>',
   // dim: '<span class="mod-symbol">º</span>',
   dim: '<span class="mod-symbol">°</span>',
   '1': '<span class="mod-digit">1</span>',
@@ -182,7 +196,6 @@ const preParser = chordText => {
 const catchHalfDim = chord => {
   // if (chord.formatted.descriptor === 'mi7' && chord.formatted.chordChanges.includes('b5')) {
   if (chord.input.descriptor === 'Ø') {
-    console.log('HALFDIM!')
     chord.formatted.chordChanges = chord.formatted.chordChanges.filter(cc => cc !== 'b5')
     chord.formatted.descriptor = 'Ø'
   }
@@ -192,7 +205,7 @@ const catchHalfDim = chord => {
 
 const chordParserRegex = regex`^
   (?<root>[A-G](#|b)?)
-  (?<modifier>(m|M|ma|mi|\^|MI|Maj|dim|halfdim|Ø|sus|o|0|\+)?\d*)?
+  (?<modifier>(maj|ma|mi|m|MI|Maj|M|\^|dim|halfdim|Ø|(\d?sus\d*)|o|0|\+)?\d*)?
   (?<alterations>.*?)
   (/(?<bass>[A-G](#|b)?))?
 $`
@@ -202,6 +215,7 @@ const modifierRegex = regex`^
   (M|Ma|ma|maj|MA|MAJ|major|\^)?
   (dim|o|halfdim|0)?
   (\+)?
+  (\d*sus\d?)?
   (\d+)?
 $`
 
@@ -272,6 +286,7 @@ export const renderChord = chordText => {
   if (chord.alterations) outputStr += `<span class="alterations">${ chord.alterationSymbols }</span>`
   if (chord.bass) outputStr += `<span class="bass-slash">/</span><span class="bass">${ chord.bassSymbols }</span>`
 
+  console.log(chord.modifier)
   return {
     parsedChord: chord,
     renderedChord: outputStr

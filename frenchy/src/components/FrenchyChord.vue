@@ -39,9 +39,37 @@ const shape = computed(() => {
   font-size: calc(var(--chord-size) * 1.3);
 }
 .lily .mod-digit {
-  transform: translateY(-0.3em) scale(0.65);
-  margin: 0 -0.25em 0 -0.1em;
+  transform: translateY(-0.7em);
+  font-size: 0.65em;
+  /* margin: 0 -0.25em 0 -0.1em; */
 }
+
+.root {
+  display: inline-block;
+}
+.modifier {
+  display: inline-block;
+
+}
+.lily .mod-stack .mod-digit:first-child {
+  transform: translateY(-0.7em);
+  font-size: 0.65em;
+}
+.lily .mod-stack .mod-digit:not(:first-child) {
+  transform: translateY(0.3em);
+}
+
+.lily .mod-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.lily .mod-stack .mod-sus {
+  font-size: 0.65em;
+}
+
+
+
 
 .rendered-chord .outline {
   user-select: none;
