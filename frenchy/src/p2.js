@@ -1,3 +1,4 @@
+import { get } from '@vueuse/shared'
 import { match, parse } from 'reghex'
 import { process } from './p3.js'
 
@@ -170,7 +171,7 @@ const musicline = match('musicline', x => {
 (:${br} ${rhythmline})?
 `
 
-const generaltext = match('generaltext')`
+const generaltext = match('generaltext', x => x.join(''))`
 ( ${spaces} | ${quoted} | ${specialtoken} | ${specialcharacter} | ${classname} | ${nonbarlinecharacter} )+
 `
 
@@ -191,7 +192,12 @@ const coordinates = match(`coordinates`)`
   ( ${/\(/} ${number} :${spaces}? :${/\,/}? ${number}? ${/\)/} )
 `
 
-const metadatum = match(`metadatum`)`
+const metadatum = match(`metadatum`, x => {
+  return {
+    keyword: getItemByTag(x, 'keyword'),
+    coordinates: getItemByTag(x, 'coordinates'),
+    
+})`
 ${keyword} :${spaces}? ${coordinates}? :${spaces}? :${/\:/} ${generaltext}
 `
 
@@ -224,15 +230,15 @@ ${/$/}
 `
 
 const SONG = `
-So\\ng
-| Am | - | \\coda -  | E7 | .classic-rock
+Song
+| Am | - | -  || E7 | .classic-rock
 rhythms: |q q qq| q q q q| | |
 `
 
 
 let song = parse(songstructure)(SONG)
-process(song)
-// console.log(JSON.stringify(process(song), null, 2))
+// process(song)
+console.log(JSON.stringify(process(song), null, 2))
 
 
 

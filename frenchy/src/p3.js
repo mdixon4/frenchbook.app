@@ -66,7 +66,9 @@ const PROCESSORS = {
 
 export const process = obj => {
   if (obj.tag) {
-    Array.from(obj).forEach(o => process(o))
+    Array.from(obj).forEach((o, idx) => {
+      obj[idx] = process(o)
+    })
     let processor = PROCESSORS[obj.tag]
     if (processor) return processor(obj)
     return obj
