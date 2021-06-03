@@ -4,9 +4,7 @@
     '--stanza-height': stanza.height,
     '--first-line-indent': firstLineIndent
   }">
-    <div class="stanza-title" v-if="stanza.title.trim().length">
-      <mark class="on-white" v-html="stanza.title"></mark>
-    </div>
+    <div class="stanza-title" v-if="stanza.title.trim().length" v-html="stanza.title"></div>
 
     <div v-if="stanza.classes.includes('coda')" class="coda-here">
       <svg class="coda-symbol" width="35" height="43" viewBox="0 0 35 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

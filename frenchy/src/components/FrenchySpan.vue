@@ -6,7 +6,7 @@
     <div class="span-inner">
       <span class="span-start"></span>
       <span class="span-text" ref="textEl">
-        <mark class="on-white"><span v-html="span.text"></span></mark>
+        <span v-html="span.text"></span>
       </span>
       <span class="span-end"></span>
     </div>
