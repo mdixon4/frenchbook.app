@@ -1,10 +1,12 @@
 <template>
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
-    'has-title': stanza.title.length,
+    '--top-margin': stanza.topMargin
+  }" :class="[{
+    'has-title': stanza.title.length > 0,
     'has-top-matter': stanza.annotations.some(a => a.side === 'top')
-  }" :class="stanza.classes">
-    <!-- <div class="stanza-break"></div> -->
+  }, stanza.classes ]">
+    <!-- <div class=  "stanza-break"></div> -->
     <div class="stanza-music">
       <frenchy-stanza-exteriors :stanza="stanza"></frenchy-stanza-exteriors>
       <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="[ line.classes, { 'align-right': line.align === 'right' }]">
@@ -105,9 +107,6 @@ const stanzaBorderViewBox = computed(() => {
     position: relative;
   }
 
-
-
-
   .stanza {
     position: relative;
     display: flex;
@@ -116,7 +115,7 @@ const stanzaBorderViewBox = computed(() => {
     page-break-inside: avoid;
     left: calc(var(--indent, var(--default-indent)) * var(--bar-width));
     /* margin-top: calc(var(--downdent, 1) * var(--y-unit)); */
-    margin-top: calc(var(--y-unit));
+    margin-top: calc(var(--top-margin)/2 * var(--y-unit));
     margin-bottom: 0;
   }
 

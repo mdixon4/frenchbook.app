@@ -423,6 +423,7 @@ const extractStanzaMetadata = stanzaText => {
   // Classes will be words starting with .
   let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
   let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
+  title = parseInlineMarkdown(title)
   return {
     title,
     classes,
@@ -539,22 +540,43 @@ const parseMarkdown = markdownText => {
 }
 
 
+const formatDecimalWithHyphen = num => {
+  console.log(num)
+  console.log(num.toString().replace('.', '-'))
+  return num.toString().replace('.', '-')
+}
+
+
 const parsePart = partText => {
   // If it's just one line, of 3 or more dashes, treat as a horizontal line
-  if (partText.match(/^\-\-\-+$/)) {
+  // Allow classnames here though
+  if (partText.replace(classesRegex, '').match(/^[\s>]*\-\-+[\s<]*$/)) {
+    let indentLeft = partText.match(/^\s*(>+)/)?.[1]?.length || 0
+    let indentRight = partText.match(/(<+)\s*$/)?.[1]?.length || 0
+    let width = Math.max(16 - indentLeft - indentRight, 0)
+    let indentClasses = [
+      indentLeft ? `indent-${formatDecimalWithHyphen(indentLeft/2)}` : '',
+      indentRight ? `width-${formatDecimalWithHyphen(width/2)}` : ''
+    ].filter(Boolean)
+    
     return {
-      type: 'hr'
+      type: 'hr',
+      classes: [
+        indentClasses,
+        partText.match(classesRegex)?.map(c => c.substr(1)) || []
+      ]
     }
   }
 
   // If the first and last non-whitespace character of the part is double quote, 
   // treat as plain text / markdown
-  let plainText = partText.match(/^\s*\"(.*)\"\s*$/s)
+  let plainText = partText.replace(classesRegex, '').match(/^\s*\"(.*)\"\s*$/s)
   if (plainText) {
     return {
       type: 'plain-text',
       text: plainText[1],
-      html: parseMarkdown(plainText[1])
+      html: parseMarkdown(plainText[1]),
+      classes: partText.match('classesRegex')?.map(c => c.substr(1)) || []
     }
   }
 
@@ -583,12 +605,65 @@ const parseFrontMatter = frontMatter => {
 }
 
 
-export const songify = (songText) => {
-  if (!/^\=+$/m.test(songText)) {
-    throw new Error('Song file does not include ===== separator')
+const handleInterpartSpacing = (parts, metadata) => {
+  // Default to "2", unless we change it later
+  parts.forEach(p => p.topMargin = 2)
+
+  // For the first stanza, add space before only if
+  // There's a title (but it's not a side title) or
+  // there is a top annotation
+  if (parts[0]?.type === 'stanza') {
+    if (parts[0].title && !parts[0].classes.includes('title-left')) {
+      parts[0].topMargin = 1
+    }
+    else if (parts[0].annotations.some(a => a.side?.startsWith('top'))) {
+      console.log(parts[0].annotations)
+      parts[0].topMargin = 1
+    }
+    else {
+      parts[0].topMargin = 0
+    }
   }
 
+  // Loop through each part. If there's a class, apply that.
+  // If it's a HR, apply the class from the next stanza if it doesn't have its own
+  parts.forEach((p, idx, parts) => {
+    if (p.classes.includes('flush')) {
+      p.topMargin = 0
+    }
+    else if (p.classes.includes('tight')) {
+      p.topMargin = 1
+    }
+    else if (p.classes.includes('comfortable')) {
+      p.topMargin = 2
+    }
+    else if (p.classes.includes('roomy')) {
+      p.topMargin = 4
+    }
+    else if (p.type === 'hr') {
+      let nextClasses = parts[idx + 1]?.classes || []
+      if (nextClasses.includes('flush')) {
+        p.topMargin = 0
+      } else if (nextClasses.includes('tight')) {
+        p.topMargin = 1
+      } else if (nextClasses.includes('comfortable')) {
+        p.topMargin = 2
+      } else if (nextClasses.includes('roomy')) {
+        p.topMargin = 4
+      }
+    }
+  })
+
+  return parts
+}
+
+
+export const songify = (songText) => {
   let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/^=+$/m)
+  if (songMatter === undefined) {
+    songMatter = frontMatter
+    frontMatter = ''
+  }
   let metadata = parseFrontMatter(frontMatter)
 
   let parts = songMatter.split(/^$/m)
@@ -599,6 +674,8 @@ export const songify = (songText) => {
       id: idx,
       ...parsePart
     }))
+
+  parts = handleInterpartSpacing(parts, metadata)
   
   return {
     metadata,

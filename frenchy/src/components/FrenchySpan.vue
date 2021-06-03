@@ -6,7 +6,7 @@
     <div class="span-inner">
       <span class="span-start"></span>
       <span class="span-text" ref="textEl">
-        <span v-html="span.text"></span>
+        <mark class="on-white"><span v-html="span.text"></span></mark>
       </span>
       <span class="span-end"></span>
     </div>
@@ -148,7 +148,7 @@ const span = toRef(props, 'span')
 
   .exterior.top {
     text-align: center;
-    margin-bottom: calc(2 * var(--stroke-width));
+    margin-bottom: calc(1 * var(--stroke-width));
   }
   .exterior.left {
     text-align: right;
@@ -160,7 +160,7 @@ const span = toRef(props, 'span')
   }
   .exterior.bottom {
     text-align: center;
-    margin-top: calc(2 * var(--stroke-width));
+    margin-top: calc(1 * var(--stroke-width));
   }
 
 

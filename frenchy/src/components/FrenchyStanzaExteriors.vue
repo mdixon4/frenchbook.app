@@ -4,8 +4,9 @@
     '--stanza-height': stanza.height,
     '--first-line-indent': firstLineIndent
   }">
-
-    <div class="stanza-title">{{ stanza.title }}</div>
+    <div class="stanza-title">
+      <mark class="on-white" v-html="stanza.title"></mark>
+    </div>
 
     <div v-if="stanza.classes.includes('coda')" class="coda-here">
       <svg class="coda-symbol" width="35" height="43" viewBox="0 0 35 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +55,7 @@
 
 <script setup>
 import { computed, defineProps, toRefs } from 'vue'
+import OutlinedText from './OutlinedText.vue'
 import FrenchySpan from './FrenchySpan.vue'
 import FrenchyWayfinding from './FrenchyWayfinding.vue'
 
@@ -142,7 +144,9 @@ const bottomrightSpans = computed(
     width: 100%;
     grid-area: bottom;
     grid-template-columns: repeat(var(--stanza-width), minmax(0, 1fr));
+    grid-auto-rows: min-content;
     align-items: flex-start;
+    justify-content: flex-start;
   }
   .exterior.topleft {
     grid-area: topleft;
@@ -174,19 +178,33 @@ const bottomrightSpans = computed(
     font-size: calc(18/16 * 1rem);
     line-height: 1.1;
     font-family: 'EB Garamond';
-    margin: calc(2 * var(--stroke-width));
-  }
-
-  .stanza-title {
+    margin: calc(1 * var(--stroke-width)) 0;
     grid-column: calc(2 + var(--first-line-indent));
     grid-row: 1;
     align-self: flex-end;
   }
+
+  .stanza-title em {
+    font-weight: initial;
+    font-size: calc(16/18 * 1em);
+  }
   .title-left .stanza-title {
     grid-column: calc(1 + var(--first-line-indent));
+    margin: 0 calc(2 * var(--stroke-width));
     grid-row: 2;
     align-self: flex-start;
     justify-self: flex-end;
+  }
+  .title-sideways .stanza-title {
+    grid-column: calc(1 + var(--first-line-indent));
+    margin: 0 calc(2 * var(--stroke-width));
+    grid-row: 2;
+    align-self: flex-start;
+    justify-self: flex-end;
+    writing-mode: vertical-rl;
+    /* text-align: center; */
+    transform: rotate(180deg);
+    /* width: max-content; */
   }
 
   .coda-here {
@@ -234,5 +252,19 @@ const bottomrightSpans = computed(
     display: unset;
   }
 
+  .on-white {
+    background-color: transparent;
+    position: relative;
+  }
+  .on-white::after {
+    position: absolute;
+    height: 0.75em;
+    top: 0.25em;
+    inset-inline: -0.5ch;
+    /* inset: 2px; */
+    background: white;
+    content: ' ';
+    z-index: -1;
+  }
 
 </style>

@@ -286,7 +286,6 @@ export const renderChord = chordText => {
   if (chord.alterations) outputStr += `<span class="alterations">${ chord.alterationSymbols }</span>`
   if (chord.bass) outputStr += `<span class="bass-slash">/</span><span class="bass">${ chord.bassSymbols }</span>`
 
-  console.log(chord.modifier)
   return {
     parsedChord: chord,
     renderedChord: outputStr
