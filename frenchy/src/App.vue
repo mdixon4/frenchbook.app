@@ -868,5 +868,15 @@ watch(pageElement, () => {
   .segno-symbol {
     height: 24px;
   }
+  .caesura-symbol {
+    font-style: normal;
+    font-weight: normal;
+    transform: scale(2) translateY(0.13em);
+    position: relative;
+    display: inline-block;
+    padding: 0 0.2em 0 0.4em;
+    /* background: blue; */
+  }
+
 
 </style>
