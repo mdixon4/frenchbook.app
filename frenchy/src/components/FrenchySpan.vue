@@ -163,7 +163,9 @@ const span = toRef(props, 'span')
     text-align: center;
     margin-top: calc(1 * var(--stroke-width));
   }
-
+  .exterior.bottom .span-text span {
+    display: flex;
+  }
 
 
   .exterior.top :is(.volta, .volta-dashed) .span-start {

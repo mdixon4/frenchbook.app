@@ -621,6 +621,13 @@ watch(pageElement, () => {
 
     /* body { display: flex; justify-content: center;} */
 
+    .absolute {
+      position: absolute;
+    }
+    .teeny {
+      font-size: 0.8em;
+    }
+
     #app {
       display: flex;
       flex-direction: row;
@@ -741,6 +748,7 @@ watch(pageElement, () => {
     display: flex;
     flex-direction: column;
     align-items: start;
+    position: relative;
   }
 
   .hr {

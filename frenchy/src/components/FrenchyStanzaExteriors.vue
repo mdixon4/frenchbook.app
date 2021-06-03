@@ -4,7 +4,7 @@
     '--stanza-height': stanza.height,
     '--first-line-indent': firstLineIndent
   }">
-    <div class="stanza-title">
+    <div class="stanza-title" v-if="stanza.title.trim().length">
       <mark class="on-white" v-html="stanza.title"></mark>
     </div>
 
