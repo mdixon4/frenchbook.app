@@ -233,9 +233,9 @@ const parseInlineMarkdown = text => {
 }
 
 
-const parseAlignmentClues = text => {
+const parseAlignmentClues = inputText => {
 
-  text = text.trim()
+  let text = inputText.trim()
 
   if (text.endsWith('...') && text.startsWith('...')) {
     return {
@@ -277,7 +277,7 @@ const parseAlignmentClues = text => {
     return {
       align: 'start',
       style: '',
-      text: text.replace(/(^\>\>\>|\<\<\<$)/g, '').trim()
+      text: inputText.replace(/\s?\<\<\<\s*$/g, '')
     }
   }
   
@@ -328,7 +328,7 @@ const parseAlignmentClues = text => {
   return {
     align: 'middle',
     style: '',
-    text: text
+    text: inputText
   }
 
 }
@@ -344,11 +344,11 @@ const parseStanzaAnnotation = lineText => {
   lineText = lineText.trim()
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
   // Split at first colon:
-  let [placement, rawText] = lineText.replace(classesRegex, '').split(/:(.+)/).slice(0, -1)
+  let [placement, rawText] = lineText.replace(classesRegex, '').split(/:\s?(.+)/).slice(0, -1)
   if (!rawText) return {}
   let { align, style, text } = parseAlignmentClues(rawText)
-  text = text.trim().replace(/\\n/g, '<br>')
-  
+  text = text.replace(/\\n/g, '<br>')
+  console.log({ text })
 
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)

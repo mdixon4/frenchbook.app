@@ -32,6 +32,7 @@ const span = toRef(props, 'span')
     font-family: 'EB Garamond';
     font-style: italic;
     line-height: 1;
+    white-space: pre-wrap;
   }
   .exterior .span-text strong {
     font-style: normal;

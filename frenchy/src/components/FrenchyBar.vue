@@ -10,7 +10,8 @@
     'has-top-annotation': hasTopAnnotation,
     'has-rhythm': hasRhythm,
     'is-slashed': isSlashed,
-    'is-empty': isEmpty
+    'is-empty': isEmpty,
+    'is-whole-bar-stop': isWholeBarStop
   }, ...barData.classes]">
     <svg class="shading" viewBox="0 0 100 100" preserveAspectRatio="none">
       <g >
@@ -121,6 +122,9 @@ export default {
     },
     hasRhythm () {
       return this.barData.rhythm?.length
+    },
+    isWholeBarStop () {
+      return (this.blocks === '' && this.stopOn(1))
     }
 
   },
@@ -206,6 +210,9 @@ export default {
     font-family: 'Rhythms';
     font-weight: normal;
     /* font-style: italic; */
+  }
+  .bar.is-whole-bar-stop {
+    --text-outline-color: var(--stop-color);
   }
 
 
