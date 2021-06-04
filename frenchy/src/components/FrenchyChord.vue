@@ -64,8 +64,9 @@ const shape = computed(() => {
   flex-direction: column;
 }
 
-.lily .mod-stack .mod-sus {
+.lily .mod-sus {
   font-size: 0.65em;
+  margin-left: -0.1em;
 }
 
 
