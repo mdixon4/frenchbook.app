@@ -63,7 +63,7 @@ defineProps({
   }
   
 
-  .title {
+  .title-bar .title {
     /* font-family: 'Century'; */
     font-family: 'EB Garamond';
     /* font-family: 'IM Fell DW Pica'; */

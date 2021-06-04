@@ -134,18 +134,20 @@ const totalPerspectiveVortexForBars = (lines, layout) => {
 
 const formulateLayout = (stanzaLines) => {
   let maxWidth = Math.max(...stanzaLines.map(line => line.bars?.length || 0))
+  let fullWidth = Math.max(...stanzaLines.map(line => ((line.bars?.length || 0) + (line.indent || 0))))
   let layout = stanzaLines.map(line => { 
     let indent = line.indent || (line.align === 'left' ? 0 : Math.max(maxWidth - line.bars.length, 0))
     let off = '0'.repeat(indent)
     let on = '1'.repeat(line.bars?.length || 0)
-    let offAgain = '0'.repeat(Math.max(maxWidth - line.bars.length - indent, 0))
+    let offAgain = '0'.repeat(Math.max(fullWidth - line.bars.length - indent, 0))
     return [off, on, offAgain].join('')
   })
-  let indent = (MAX_BARS_PER_LINE - maxWidth) / 2
+  let indent = (MAX_BARS_PER_LINE - fullWidth) / 2
   return {
     layout,
     indent,
     width: maxWidth,
+    fullWidth: fullWidth,
     height: stanzaLines.length
   }
 }
@@ -348,12 +350,11 @@ const parseStanzaAnnotation = lineText => {
   if (!rawText) return {}
   let { align, style, text } = parseAlignmentClues(rawText)
   text = text.replace(/\\n/g, '<br>')
-  console.log({ text })
 
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
   text = replacePitches(text)
-  let side = placement.match(/((topleft)|(topright)|(bottomleft)|(bottomright)|(top)|(left)|(right)|(bottom))/i)[0].toLowerCase()
+  let side = placement.match(/\b((top-left)|(top-right)|(bottom-left)|(bottom-right)|(top)|(left)|(right)|(bottom))\b/i)[0].toLowerCase()
   let startMatch = placement.match(/\W(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null
   let endMatch = placement.match(/\W\d+\D(\d+)/)
@@ -467,12 +468,89 @@ const getWayfinding = (lines) => {
   })
 }
 
+const leftIndent = layoutLine => layoutLine.indexOf('1') || 0
+const rightIndent = layoutLine => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
+const rowsSpannedByAnnotation = (layout, annotation) => Number.isInteger(annotation.start) ? layout.slice(annotation.start - 1, annotation.end) : layout
+const lastOfArray = arr => arr.slice(-1)[0]
+
+window.rowsSpannedByAnnotation = rowsSpannedByAnnotation
+window.rightIndent = rightIndent
+
+const locateAnnotations = (annotations, layout) => {
+  annotations = annotations.map(a => {
+    if (a.side === 'top-left') {
+      return {
+        ...a,
+        inset: leftIndent(layout[0] || '') || 0
+      }
+    }
+    if (a.side === 'left') {
+      return {
+        ...a,
+        inset: Math.min(...rowsSpannedByAnnotation(layout, a).map(leftIndent)) || 0
+      }
+    }
+    if (a.side === 'bottom-left') {
+      return {
+        ...a,
+        inset: leftIndent(lastOfArray(layout) || '') || 0
+      }
+    }
+    if (a.side === 'top-right') {
+      return {
+        ...a,
+        inset: rightIndent(layout[0] || '') || 0
+      }
+    }
+    if (a.side === 'right') {
+      return {
+        ...a,
+        inset: Math.min(...rowsSpannedByAnnotation(layout, a).map(rightIndent)) || 0
+      }
+    }
+    if (a.side === 'bottom-right') {
+      return {
+        ...a,
+        inset: rightIndent(lastOfArray(layout) || '') || 0
+      }
+    }
+
+    return { 
+      ...a,
+      inset: 0
+    }
+  })
+
+  return annotations
+}
+
+const convertTitleToAnnotation = (title, classes, layout) => {
+  if (!title || title.trim().length === 0) {
+    return null
+  }
+
+  return {
+    side: classes.includes('title-left') ? 'left' : 'top',
+    start: (leftIndent(layout[0] || '') || 0) + 1,
+    end: 1,
+    classes: [
+      'align-start', 
+      'flow',
+      'title',
+      ...classes.includes('title-sideways') ? ['sideways'] : []
+    ],
+    text: title
+  }
+
+}
+
 
 const parseStanza = stanzaText => {
 
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
   
   let annotations = []
+
   // The rest is the actual stanza body. Bundle up rhythm and annotation lines 
   // with the preceeding *actual* music line.
   let lines = rest.split(/\n+/)
@@ -503,7 +581,7 @@ const parseStanza = stanzaText => {
   lines = lines.map(line => parseLineData(line))
 
   // Get the basic layout of the stanza
-  let { layout, indent, width, height } = formulateLayout(lines)
+  let { layout, indent, width, fullWidth, height } = formulateLayout(lines)
   // Total perspective vortex
   lines = totalPerspectiveVortexForBars(lines, layout)
   
@@ -514,6 +592,11 @@ const parseStanza = stanzaText => {
   // let layoutHintClasses = {
   //   'no-top-business': (title === '' || classes.includes('title-left')) && !annotations.some(a => annotation.side === 'top') && (classes.includes('wayfinding')))
   // }
+  let titleAnnotation = convertTitleToAnnotation(title, classes, layout)
+  if (titleAnnotation) {
+    annotations.push(titleAnnotation)
+  }
+  annotations = locateAnnotations(annotations, layout)
 
   return {
     title,
@@ -523,6 +606,7 @@ const parseStanza = stanzaText => {
     borderCoordinates,
     indent,
     width, 
+    fullWidth,
     height,
     annotations,
     wayfinding
@@ -541,8 +625,6 @@ const parseMarkdown = markdownText => {
 
 
 const formatDecimalWithHyphen = num => {
-  console.log(num)
-  console.log(num.toString().replace('.', '-'))
   return num.toString().replace('.', '-')
 }
 
@@ -610,14 +692,9 @@ const handleInterpartSpacing = (parts, metadata) => {
   parts.forEach(p => p.topMargin = 2)
 
   // For the first stanza, add space before only if
-  // There's a title (but it's not a side title) or
   // there is a top annotation
   if (parts[0]?.type === 'stanza') {
-    if (parts[0].title && !parts[0].classes.includes('title-left')) {
-      parts[0].topMargin = 1
-    }
-    else if (parts[0].annotations.some(a => a.side?.startsWith('top'))) {
-      console.log(parts[0].annotations)
+    if (parts[0].annotations.some(a => a.side?.startsWith('top'))) {
       parts[0].topMargin = 1
     }
     else {

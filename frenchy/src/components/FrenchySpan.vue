@@ -2,6 +2,7 @@
   <div ref="spanEl" class="span" :style="{
     '--start': span.start,
     '--end': span.end,
+    '--grid-span': gridSpan
   }" :class="span.classes">
     <div class="span-inner">
       <span class="span-start"></span>
@@ -14,7 +15,7 @@
 </template>
 
 <script setup>
-import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted } from 'vue'
+import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted, computed } from 'vue'
 
 const props = defineProps({
   span: {
@@ -22,7 +23,52 @@ const props = defineProps({
   }
 })
 
+const spanEl = ref(null)
+const gridSpan = ref(1)
+
 const span = toRef(props, 'span')
+
+
+
+const isOverflowing = () => {
+  return isSideways
+}
+
+const growSpan = async () => {
+  let tryTaller = async () => {
+    if (spanEl.value.scrollHeight > spanEl.value.clientHeight) {
+      console.log(`Height ${gridSpan.value} not big enough`)
+      if (gridSpan.value < 10) {
+        gridSpan.value = gridSpan.value + 1
+        await nextTick()
+        await tryTaller()
+      }
+    }
+  }
+  let tryWider = async () => {
+    if (spanEl.value.scrollWidth > spanEl.value.clientWidth) {
+      console.log(`Width ${gridSpan.value} not big enough`)
+      if (gridSpan.value < 10) {
+        gridSpan.value = gridSpan.value + 1
+        await nextTick()
+        await tryWider()
+      }
+    }
+  }
+
+  if (span.value.classes?.includes('flow')) {
+    gridSpan.value = 1
+    await nextTick()
+    if (span.value.classes?.includes('sideways')) {
+      await tryTaller()
+    } else {
+      await tryWider()
+    }
+  }
+}
+
+onMounted(growSpan)
+watch(span, growSpan)
 
 </script>
 
@@ -37,6 +83,18 @@ const span = toRef(props, 'span')
   .exterior .span-text strong {
     font-style: normal;
     font-size: calc(18/16 * 1em);
+  }
+  .exterior .title {
+    font-style: normal;
+    font-size: calc(18/16 * 1em);
+    font-weight: bold;
+  }
+  .exterior .title em {
+    font-size: calc(16/18 * 1em);
+    font-weight: normal;
+  }
+  .exterior .flow {
+    white-space: nowrap;
   }
 
   .exterior .span.rhythms .span-text {
@@ -53,6 +111,12 @@ const span = toRef(props, 'span')
     grid-column-end: calc(var(--end, -2) + 1);
     /* display: flex;
     flex-direction: row; */
+  }
+  .exterior.top .span.flow {
+    grid-column-end: calc(var(--start, 1) + var(--grid-span, 0));
+  }
+  .exterior.left .span.flow {
+    grid-row-end: calc(var(--start, 1) + var(--grid-span, 0));
   }
 
   .exterior.left .span,
