@@ -30,7 +30,7 @@ type UnparsedMusicLine = {
 
 type MusicLine = {
   bars: Array<Bar>
-  indent: number
+  indent: number | null
   align: string
   classes: Array<string>
 }
@@ -172,7 +172,7 @@ const parseBarContent = (barText: string): BarContent => {
         ? [ '1', '2', '34' ]
         : chords.length === 4
           ? [ '1', '2', '3', '4' ]
-          : undefined
+          : Array.from(Array(chords.length), (_, idx) => (idx + 1).toString())
 
   chords = chords.map((c, idx) => ({
     ...c, 
@@ -245,10 +245,9 @@ const formulateLayout = (stanzaLines: Array<MusicLine>): StanzaLayout => {
 
 
 const splitTextIntoBars = (rawText: string): Array<Bar> => {
-
   let bars = rawText.match(globalBarlineRegex)
-    .reduce((bars: Array<Bar>, barText, idx) => {
-      let [,barline,,textContent] = barText.match(barlineRegex)
+    ?.reduce((bars: Array<Bar>, barText, idx) => {
+      let [,barline,,textContent] = barText.match(barlineRegex) as Array<string>
       if (idx > 0) {
         bars[idx - 1].rightBarline = barline
       }
@@ -260,7 +259,7 @@ const splitTextIntoBars = (rawText: string): Array<Bar> => {
         })
       }
       return bars
-    }, [])
+    }, []) || []
   return bars
 }
 
@@ -289,7 +288,7 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
   let rhythmBars = rawLine.rhythmText ? splitTextIntoBars(rawLine.rhythmText) : null
   
   let bars = splitTextIntoBars(rawLine.text).map((bar, idx, allBars) => {
-    let rhythmText = (rhythmBars?.length > idx) ? rhythmBars[idx].textContent : ''
+    let rhythmText = ((rhythmBars?.length || 0) > idx) ? rhythmBars?.[idx].textContent || '' : ''
     if (rhythmText.trim().length === 0) {
       rhythmText = ''
     }
@@ -308,7 +307,7 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
       rhythm: rhythmText,
       ...parseBarContent(bar.textContent.trim())
     }
-  }).filter(Boolean)
+  }).filter(Boolean) as Array<Bar>
 
   return {
     bars,
@@ -448,7 +447,7 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
   text = replacePitches(text)
-  let side = placement.match(/\b((top-left)|(top-right)|(bottom-left)|(bottom-right)|(top)|(left)|(right)|(bottom))\b/i)[0].toLowerCase()
+  let side = (placement.match(/\b((top-left)|(top-right)|(bottom-left)|(bottom-right)|(top)|(left)|(right)|(bottom))\b/i) || [''])[0].toLowerCase()
   let startMatch = placement.match(/\W(\d+)/)
   let start = startMatch && parseInt(startMatch[1], 10) || null
   let endMatch = placement.match(/\W\d+\D(\d+)/)
@@ -558,7 +557,7 @@ const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, posi
 
 const leftIndent = (layoutLine: string): number => layoutLine.indexOf('1') || 0
 const rightIndent = (layoutLine: string): number => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
-const rowsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => Number.isInteger(annotation.start) ? layout.slice(annotation.start - 1, annotation.end) : layout
+const rowsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => layout.slice((annotation.start || 1) - 1, (annotation.end || layout.length))
 const lastOfArray = (arr: Array<any>): any => arr.slice(-1)[0]
 
 const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>) => {
