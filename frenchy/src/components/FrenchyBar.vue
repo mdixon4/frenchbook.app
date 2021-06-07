@@ -140,6 +140,20 @@ export default {
 </script>
 
 <style>
+
+
+  g.borders path {
+    stroke-width: var(--stroke-width);
+    stroke: var(--gridline-color);
+    stroke-linecap: square;
+  }
+
+  g.borders-internal path {
+    stroke-width: var(--stroke-width);
+    stroke: var(--gridline-color);
+  }
+
+
   .shading {
     position: absolute;
     inset: 0;

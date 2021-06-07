@@ -32,10 +32,9 @@ defineProps({
   .header {
     display: flex;
     justify-content: space-between;
-    font-family: 'Century';
-    font-family: 'EB Garamond';
     margin: 0 0;
-    border-bottom: calc(1.5 * var(--stroke-width)) solid black
+    border-bottom: var(--thick-stroke-width) solid var(--gridline-color);
+    font: var(--serif-font);
   }
 
   .credits {
@@ -50,27 +49,21 @@ defineProps({
     display: grid;
     grid-template-columns: max-content auto max-content;
     align-items: center;
-    border: var(--stroke-width) px solid var(--gridline-color);
     margin: 0 auto calc(var(--y-unit) / 2);
     padding: 0rem 0.2rem;
     line-height: 1;
-    border-bottom: calc(1.5 * var(--stroke-width)) solid black
+    border-bottom: var(--thick-stroke-width) solid var(--gridline-color);
   }
 
   .number {
     font-family: 'Open Sans Condensed';
     font-size: 1.8rem;
   }
-  
 
   .title-bar .title {
-    /* font-family: 'Century'; */
-    font-family: 'EB Garamond';
-    /* font-family: 'IM Fell DW Pica'; */
+    font-family: var(--serif-font);
     text-align: center;
-    /* padding: 0.5rem; */
     font-size: 2.2rem;
-    /* line-height: ; */
   }
 
 </style>

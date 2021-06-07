@@ -1,7 +1,8 @@
 <template>
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
-    '--top-margin': stanza.topMargin
+    '--top-margin': stanza.topMargin,
+    '--height': stanza.lines.length
   }" :class="[{
     'has-title': stanza.title.length > 0,
     'has-top-matter': stanza.annotations.some(a => a.side === 'top')
@@ -41,7 +42,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
+import { defineProps, computed, ref } from 'vue'
 import FrenchyBar from './FrenchyBar.vue'
 import FrenchyStanzaExteriors from './FrenchyStanzaExteriors.vue'
 
@@ -50,6 +51,8 @@ const props = defineProps({
     type: Object
   }
 })
+
+// const stanza = computed(() => props.part)
 
 const randomId = Math.round(Math.random() * 100_000)
 
@@ -73,7 +76,7 @@ const stanzaBorderViewBox = computed(() => {
   .stanza-border, .stanza-shadow {
     position: absolute;
     inset: 0;
-    height: 100%;
+    height: calc(var(--height) * var(--bar-height));
     width: 100%;
     overflow: visible;
     pointer-events: none;

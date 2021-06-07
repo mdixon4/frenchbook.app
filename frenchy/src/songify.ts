@@ -23,6 +23,11 @@ type Bar = {
   isBottommost?: boolean
 }
 
+type UnparsedMusicLine = {
+  rhythmText: string
+  text: string
+}
+
 type MusicLine = {
   bars: Array<Bar>
   indent: number
@@ -322,7 +327,9 @@ const parseInlineMarkdown = (text: string): string => {
 }
 
 
-const parseAlignmentClues = (inputText: string): Partial<Annotation> => {
+type PartialAnnotation = Pick<Annotation, 'align' | 'style' | 'text'>
+
+const parseAlignmentClues = (inputText: string): PartialAnnotation => {
 
   let text = inputText.trim()
 
@@ -447,14 +454,6 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   let endMatch = placement.match(/\W\d+\D(\d+)/)
   let end = endMatch && parseInt(endMatch[1], 10) || start
 
-  // let alignment = classes.find(c => c.startsWith('align-'))
-  // if (!alignment) {
-  //   if (classes.includes('dotted') && (side === 'top' || side === 'bottom')) {
-  //     classes.push('align-start')
-  //   } else {
-  //     classes.push('align-middle')
-  //   }
-  // }
   classes.push(`align-${align}`, style)
 
   return {
@@ -463,7 +462,7 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
     start,
     end,
     text,
-    style: null,
+    style,
     align
   }
 }
@@ -491,12 +490,12 @@ const getBorderCoordinates = (lineLayout: Array<string>): Array<[number, number]
   // coordinates.push([ lineLayout[0].indexOf(1), 0 ])
   // Do the right end first
   for (let lineIdx = 0; lineIdx < lineLayout.length; lineIdx += 1) {
-    let rightEdge = lineLayout[lineIdx].lastIndexOf('1')
+    let rightEdge = Math.max(lineLayout[lineIdx].lastIndexOf('1'),-1)
     coordinates.push([ rightEdge + 1, lineIdx ], [ rightEdge + 1, lineIdx + 1 ])
   }
   // Do the left end, but in reverse
   for (let lineIdx = lineLayout.length - 1; lineIdx > -1; lineIdx -= 1) {
-    let leftEdge = lineLayout[lineIdx].indexOf('1')
+    let leftEdge = Math.max(lineLayout[lineIdx].indexOf('1'), 0)
     coordinates.push([ leftEdge, lineIdx + 1 ], [ leftEdge, lineIdx ])
   }
   return coordinates
@@ -531,10 +530,10 @@ const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, posi
   let wayfindingBars = bars.filter(bar => bar.classes?.includes('to-coda') || bar.classes?.includes('to-segno'))
 
   return wayfindingBars.map(bar => {
-    let position = null
-    if (bar.classes.includes('to-right')) {
+    let position = ''
+    if (bar.classes?.includes('to-right')) {
       position = 'to-right'
-    } else if (bar.classes.includes('to-bottom')) {
+    } else if (bar.classes?.includes('to-bottom')) {
       position = 'to-bottom'
     } else if (bar.isRightmost && !bar.isBottommost) {
       position = 'to-right'
@@ -549,7 +548,7 @@ const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, posi
         ? 'to-coda' 
         : bar.classes?.includes('to-segno')
           ? 'to-segno'
-          : null,
+          : '',
       position,
       lineNo: bar.lineNo,
       barNo: bar.barNo
@@ -610,7 +609,7 @@ const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>
   return annotations
 }
 
-const convertTitleToAnnotation = (title: string, classes: Array<string>, layout: Array<string>): Annotation => {
+const convertTitleToAnnotation = (title: string, classes: Array<string>, layout: Array<string>): Annotation | null => {
   if (!title || title.trim().length === 0) {
     return null
   }
@@ -626,7 +625,7 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
       ...classes.includes('title-sideways') ? ['sideways'] : []
     ],
     text: title,
-    align: null,
+    align: 'start',
     style: ''
   }
 
@@ -638,38 +637,35 @@ const parseStanza = (stanzaText: string): Stanza => {
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
   
   let annotations: Array<Annotation> = []
+  let rawLines: Array<UnparsedMusicLine> = []
 
   // The rest is the actual stanza body. Bundle up rhythm and annotation lines 
   // with the preceeding *actual* music line.
-  let lines = rest.split(/\n+/)
+  rest.split(/\n+/)
     .filter(line => line.trim().length)
-    .reduce((lines, line) => {
+    .forEach(line => {
       if (isRhythms(line)) {
-        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i, '')
-        return lines
+        rawLines[rawLines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i, '')
       }
-      if (isLineMusic(line)) {
-        return [...lines, {
-          text: line
-        }]
+
+      else if (isLineMusic(line)) {
+        rawLines.push({
+          text: line,
+          rhythmText: ''
+        })
       }
-      if (isAnnotations(line)) {
-        try {
-          let annotation = parseStanzaAnnotation(line)
-          if (annotation) {
-            annotations.push(annotation)
-          }
-        } catch (err) {
-          console.warn(err)
-        }
-        return lines
+
+      else if (isAnnotations(line)) {
+        let annotation = parseStanzaAnnotation(line)
+        if (annotation) annotations.push(annotation)
       }
-    }, [])
+
+    })
 
   // Now that the lines are bundled:
   // { text, rhythmText, annotationText }
   // ...we can parse and organise the data
-  lines = lines.map(line => parseLineData(line))
+  let lines = rawLines.map(line => parseLineData(line))
 
   // Get the basic layout of the stanza
   let { layout, indent, width, fullWidth, height } = formulateLayout(lines)
@@ -755,10 +751,7 @@ const parsePart = (partText: string): SongPart => {
   }
 
   // Otherwise, treat it as a stanza
-  return {
-    type: 'stanza',
-    ...parseStanza(partText)
-  }
+  return parseStanza(partText)
 }
 
 
