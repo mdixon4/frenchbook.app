@@ -39,7 +39,7 @@ import { ref, computed, watchEffect, watch } from 'vue'
 import { useRouteHash } from '@vueuse/router'
 import panzoom from 'panzoom'
 import base64url from 'base64url'
-import { songify } from './songify.js'
+import { songify } from './songify.ts'
 import FrenchyStanza from './components/FrenchyStanza.vue'
 import FrenchyHeader from './components/FrenchyHeader.vue'
 

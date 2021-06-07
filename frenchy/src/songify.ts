@@ -1,24 +1,110 @@
 import markdownit from 'markdown-it'
-import { renderChord } from './chord_renderer.js'
-import { replaceSnippets } from './snippets.js';
+import { renderChord } from './chord_renderer'
+import { replaceSnippets } from './snippets';
+
+
+
+type BarContent = {
+  chords: Array<{}>,
+  annotations: Array<{}>,
+  classes: Array<string>
+}
+
+
+type Bar = {
+  leftBarline: string
+  rightBarline: string | undefined
+  textContent: string
+  classes?: Array<string>
+  
+  isLeftmost?: boolean
+  isRightmost?: boolean
+  isTopmost?: boolean
+  isBottommost?: boolean
+}
+
+type MusicLine = {
+  bars: Array<Bar>
+  indent: number
+  align: string
+  classes: Array<string>
+}
+
+type AnnotationLine = string
+
+type Line = MusicLine | AnnotationLine
+
+type StanzaLayout = {
+  layout: Array<string>
+  indent: number
+  width: number
+  fullWidth: number
+  height: number
+}
+
+type Annotation = {
+  align: 'start' | 'middle' | 'end'
+  style: 'dotted' | 'volta' | 'volta-dashed' | ''
+  side: string
+  text: string
+  classes: Array<string>
+  start: number | null
+  end: number | null
+}
+
+type TextBlock = {
+  type: 'plain-text'
+  topMargin?: number
+  classes: Array<string>
+  text: string
+  html: string
+}
+
+
+type Stanza = {
+  type: 'stanza'
+  topMargin?: number
+  classes: Array<string>
+  title: {}
+  lines: Array<MusicLine>
+  layout: Array<string>
+  borderCoordinates: Array<[number, number]>
+  indent: number
+  width: number
+  fullWidth: number
+  height: number
+  annotations: Array<Annotation>
+  wayfinding: Array<{ type: string|null, position: string, lineNo: number, barNo: number }>
+}
+
+type HR = {
+  type: 'hr'
+  topMargin?: number
+  classes: Array<string>
+}
+
+type MetaData = {
+  [key: string]: string
+}
+
+type SongPart = Stanza | TextBlock | HR
+
+type Song = {
+  metadata: MetaData
+  parts: Array<SongPart>
+  css: string
+}
+
+
+
+
+
+
+
+
 
 const MAX_BARS_PER_LINE = 8
 
-//build regexes without worrying about
-// - double-backslashing
-// - adding whitespace for readability
-// - adding in comments
-let clean = (piece) => (piece
-  .replace(/((^|\n)(?:[^\/\\]|\/[^*\/]|\\.)*?)\s*\/\*(?:[^*]|\*[^\/])*(\*\/|)/g, '$1')
-  .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
-  .replace(/\n\s*/g, '')
-);
-const regex = ({raw}, ...interpolations) => (
-  new RegExp(interpolations.reduce(
-      (regex, insert, index) => (regex + insert + clean(raw[index + 1])),
-      clean(raw[0])
-  ))
-);
 
 
 const quotedRegex = /\"([^\"]*)\"/
@@ -32,11 +118,11 @@ const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
 // const replacePitches = text => text
 //   .replaceAll(new RegExp("[A-G][b#]?(?:(?:5|dim(5|7)?|aug5?|\\+5?|-5?)|(?:(?:mi?n?)?(?:(?:4|6|7|9|11|13|6\\/9)|(?:maj?|Ma?j?)?(?:6|7|9|11|13))?)(?:\\((?:[b-](5|6|9|13)|[#+](4|5|9|11))\\)|(?:[b-](5|6|9|13)|[#+](4|5|9|11)))*(?:sus(2|4|24|2sus4)?)?(?:\\((?:[b-](5|6|9|13)|[#+](4|5|9|11))\\)|(?:[b-](5|6|9|13)|[#+](4|5|9|11)))*(?:add[b#]?(?:2|4|6|7|9|11|13))?)(?:\\/[A-G][b#]?)?(?=$| )", 'g'), '[[CHAORD]]')
 
-const replacePitches = text => text
+const replacePitches = (text: string): string => text
   .replaceAll(/\b([A-G])(?:#)(?:\b|(?<=#))/g, '$1♯')
   .replaceAll(/\b([A-G])b\b/g, '$1♭')
 
-const parseBarContent = barText => {
+const parseBarContent = (barText: string): BarContent => {
 
   let annotationMatches = Array.from(barText.matchAll(globalQuotedRegex) || [])
   let annotations = annotationMatches.map(match => {
@@ -65,7 +151,8 @@ const parseBarContent = barText => {
     .map(c => ({
       chord: c.replace(/\.$/, ''),
       isStop: /\.$/.test(c),
-      isDitto: c === '-'
+      isDitto: c === '-',
+      beats: ''
     }))
     .map(c => ({
       ...c,
@@ -105,8 +192,7 @@ const parseBarContent = barText => {
 
 
 
-
-const totalPerspectiveVortexForBars = (lines, layout) => {
+const totalPerspectiveVortexForBars = (lines: Array<MusicLine>, layout: Array<string>) => {
   return lines.map((line, lineIdx) => {
     let lineLayout = layout[lineIdx]
     return {
@@ -132,7 +218,7 @@ const totalPerspectiveVortexForBars = (lines, layout) => {
 
 
 
-const formulateLayout = (stanzaLines) => {
+const formulateLayout = (stanzaLines: Array<MusicLine>): StanzaLayout => {
   let maxWidth = Math.max(...stanzaLines.map(line => line.bars?.length || 0))
   let fullWidth = Math.max(...stanzaLines.map(line => ((line.bars?.length || 0) + (line.indent || 0))))
   let layout = stanzaLines.map(line => { 
@@ -153,10 +239,10 @@ const formulateLayout = (stanzaLines) => {
 }
 
 
-const splitTextIntoBars = rawText => {
+const splitTextIntoBars = (rawText: string): Array<Bar> => {
 
   let bars = rawText.match(globalBarlineRegex)
-    .reduce((bars, barText, idx) => {
+    .reduce((bars: Array<Bar>, barText, idx) => {
       let [,barline,,textContent] = barText.match(barlineRegex)
       if (idx > 0) {
         bars[idx - 1].rightBarline = barline
@@ -164,7 +250,8 @@ const splitTextIntoBars = rawText => {
       if (textContent.length) {
         bars.push({
           textContent,
-          leftBarline: barline
+          leftBarline: barline,
+          rightBarline: undefined // We will set it when we parse the next bar, or when we tidy up the line as a whole
         })
       }
       return bars
@@ -173,7 +260,7 @@ const splitTextIntoBars = rawText => {
 }
 
 
-const parseLineData = rawLine => {
+const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine  => {
 
   let classes = rawLine.text.split('|').slice(-1)[0].match(classesRegex)?.map(c => c.substr(1)) || []
   
@@ -185,7 +272,7 @@ const parseLineData = rawLine => {
     let indentClass = classes.find(c => c.startsWith('indent-'))
     let indentFromClass = indentClass && indentClass.match(/indent-(?<digits>\d+(\-\d+)?)/)?.groups?.digits?.replace('-', '.')
     if (indentFromClass) {
-      indent = parseFloat(indentFromClass, 10) || null
+      indent = parseFloat(indentFromClass) || null
     }
   }
 
@@ -227,7 +314,7 @@ const parseLineData = rawLine => {
 
 }
 
-const parseInlineMarkdown = text => {
+const parseInlineMarkdown = (text: string): string => {
   return markdownit({
     typographer: true,
     html: true
@@ -235,7 +322,7 @@ const parseInlineMarkdown = text => {
 }
 
 
-const parseAlignmentClues = inputText => {
+const parseAlignmentClues = (inputText: string): Partial<Annotation> => {
 
   let text = inputText.trim()
 
@@ -336,7 +423,7 @@ const parseAlignmentClues = inputText => {
 }
 
 
-const parseStanzaAnnotation = lineText => {
+const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   /*
   Lines like:
   top (1, 3): Gradually getting faster .dotted
@@ -347,7 +434,7 @@ const parseStanzaAnnotation = lineText => {
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
   // Split at first colon:
   let [placement, rawText] = lineText.replace(classesRegex, '').split(/:\s?(.+)/).slice(0, -1)
-  if (!rawText) return {}
+  if (!rawText) return undefined
   let { align, style, text } = parseAlignmentClues(rawText)
   text = text.replace(/\\n/g, '<br>')
 
@@ -375,30 +462,32 @@ const parseStanzaAnnotation = lineText => {
     side,
     start,
     end,
-    text
+    text,
+    style: null,
+    align
   }
 }
 
 
-const isLineMusic = lineText => {
+const isLineMusic = (lineText: string): boolean => {
   // line is music if it has | character (unescaped)
   return /(?<!\\)\|/.test(lineText)
 }
 
-const isRhythms = lineText => {
+const isRhythms = (lineText: string): boolean => {
   // Start with "rhythms"?
   return /^\s*rhythms\b/i.test(lineText)
 }
 
-const isAnnotations = lineText => {
+const isAnnotations = (lineText: string): boolean  => {
   // If we're testing this, we can assume it *IS* an annotation line.
   return true
 }
 
 
 
-const getBorderCoordinates = lineLayout => {
-  let coordinates = []
+const getBorderCoordinates = (lineLayout: Array<string>): Array<[number, number]> => {
+  let coordinates: Array<[number, number]> = []
   // coordinates.push([ lineLayout[0].indexOf(1), 0 ])
   // Do the right end first
   for (let lineIdx = 0; lineIdx < lineLayout.length; lineIdx += 1) {
@@ -413,7 +502,7 @@ const getBorderCoordinates = lineLayout => {
   return coordinates
 }
 
-const extractStanzaMetadata = stanzaText => {
+const extractStanzaMetadata = (stanzaText: string): { title: string, classes: Array<string>, rest: string } => {
   let firstLine = stanzaText.split(/\n+/).filter(line => line.length)[0]
   // If the first line is music, we have no metadata
   if (isLineMusic(firstLine)) return {
@@ -433,7 +522,7 @@ const extractStanzaMetadata = stanzaText => {
 }
 
 
-const getWayfinding = (lines) => {
+const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, position: string, lineNo: number, barNo: number }> => {
 
   let bars = lines.map(
     (line, idx) => line.bars.map((b, barIdx) => ({ ...b, lineNo: idx + 1, barNo: barIdx + 1 }))
@@ -449,7 +538,7 @@ const getWayfinding = (lines) => {
       position = 'to-bottom'
     } else if (bar.isRightmost && !bar.isBottommost) {
       position = 'to-right'
-    } else if (bar.isRightmost && lines[bar.lineNo - 1] < 8) {
+    } else if (bar.isRightmost && lines[bar.lineNo - 1].bars.length < 8) {
       position = 'to-right'
     } else if (bar.isBottommost) {
       position = 'to-bottom'
@@ -468,15 +557,12 @@ const getWayfinding = (lines) => {
   })
 }
 
-const leftIndent = layoutLine => layoutLine.indexOf('1') || 0
-const rightIndent = layoutLine => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
-const rowsSpannedByAnnotation = (layout, annotation) => Number.isInteger(annotation.start) ? layout.slice(annotation.start - 1, annotation.end) : layout
-const lastOfArray = arr => arr.slice(-1)[0]
+const leftIndent = (layoutLine: string): number => layoutLine.indexOf('1') || 0
+const rightIndent = (layoutLine: string): number => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
+const rowsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => Number.isInteger(annotation.start) ? layout.slice(annotation.start - 1, annotation.end) : layout
+const lastOfArray = (arr: Array<any>): any => arr.slice(-1)[0]
 
-window.rowsSpannedByAnnotation = rowsSpannedByAnnotation
-window.rightIndent = rightIndent
-
-const locateAnnotations = (annotations, layout) => {
+const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>) => {
   annotations = annotations.map(a => {
     if (a.side === 'top-left') {
       return {
@@ -524,7 +610,7 @@ const locateAnnotations = (annotations, layout) => {
   return annotations
 }
 
-const convertTitleToAnnotation = (title, classes, layout) => {
+const convertTitleToAnnotation = (title: string, classes: Array<string>, layout: Array<string>): Annotation => {
   if (!title || title.trim().length === 0) {
     return null
   }
@@ -539,17 +625,19 @@ const convertTitleToAnnotation = (title, classes, layout) => {
       'title',
       ...classes.includes('title-sideways') ? ['sideways'] : []
     ],
-    text: title
+    text: title,
+    align: null,
+    style: ''
   }
 
 }
 
 
-const parseStanza = stanzaText => {
+const parseStanza = (stanzaText: string): Stanza => {
 
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
   
-  let annotations = []
+  let annotations: Array<Annotation> = []
 
   // The rest is the actual stanza body. Bundle up rhythm and annotation lines 
   // with the preceeding *actual* music line.
@@ -557,7 +645,7 @@ const parseStanza = stanzaText => {
     .filter(line => line.trim().length)
     .reduce((lines, line) => {
       if (isRhythms(line)) {
-        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i)
+        lines[lines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i, '')
         return lines
       }
       if (isLineMusic(line)) {
@@ -599,6 +687,7 @@ const parseStanza = stanzaText => {
   annotations = locateAnnotations(annotations, layout)
 
   return {
+    type: 'stanza',
     title,
     classes,
     lines,
@@ -615,7 +704,7 @@ const parseStanza = stanzaText => {
 }
 
 
-const parseMarkdown = markdownText => {
+const parseMarkdown = (markdownText: string): string => {
   return markdownit({
     typographer: true,
     linkify: true,
@@ -624,12 +713,12 @@ const parseMarkdown = markdownText => {
 }
 
 
-const formatDecimalWithHyphen = num => {
+const formatDecimalWithHyphen = (num: number): string => {
   return num.toString().replace('.', '-')
 }
 
 
-const parsePart = partText => {
+const parsePart = (partText: string): SongPart => {
   // If it's just one line, of 3 or more dashes, treat as a horizontal line
   // Allow classnames here though
   if (partText.replace(classesRegex, '').match(/^[\s>]*\-\-+[\s<]*$/)) {
@@ -644,8 +733,8 @@ const parsePart = partText => {
     return {
       type: 'hr',
       classes: [
-        indentClasses,
-        partText.match(classesRegex)?.map(c => c.substr(1)) || []
+        ...indentClasses,
+        ...partText.match(classesRegex)?.map(c => c.substr(1)) || []
       ]
     }
   }
@@ -670,11 +759,11 @@ const parsePart = partText => {
 }
 
 
-const parseFrontMatter = frontMatter => {
+const parseFrontMatter = (frontMatter: string): MetaData => {
   let metadata = frontMatter.split(/\n+/)
     .filter(item => /\:/.test(item))
     .map(item => item.split(/([^:]*)\:(.*)/))
-    .reduce((acc, item) => {
+    .reduce((acc: MetaData, item) => {
       acc[item[1].trim()] = item[2].trim()
       return acc
     }, {})
@@ -687,7 +776,7 @@ const parseFrontMatter = frontMatter => {
 }
 
 
-const handleInterpartSpacing = (parts, metadata) => {
+const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Array<SongPart> => {
   // Default to "2", unless we change it later
   parts.forEach(p => p.topMargin = 2)
 
@@ -735,7 +824,7 @@ const handleInterpartSpacing = (parts, metadata) => {
 }
 
 
-export const songify = (songText) => {
+export const songify = (songText: string): Song => {
   let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/^=+$/m)
   if (songMatter === undefined) {
     songMatter = frontMatter
@@ -747,10 +836,6 @@ export const songify = (songText) => {
     .filter(part => part.trim().length)
     .map(part => part.replace(/^\n|\n$/g, ''))
     .map(parsePart)
-    .map((parsePart, idx) => ({
-      id: idx,
-      ...parsePart
-    }))
 
   parts = handleInterpartSpacing(parts, metadata)
   
