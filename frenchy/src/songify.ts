@@ -655,7 +655,10 @@ const parseStanza = (stanzaText: string): Stanza => {
       }
       if (isAnnotations(line)) {
         try {
-          annotations.push(parseStanzaAnnotation(line))
+          let annotation = parseStanzaAnnotation(line)
+          if (annotation) {
+            annotations.push(annotation)
+          }
         } catch (err) {
           console.warn(err)
         }
