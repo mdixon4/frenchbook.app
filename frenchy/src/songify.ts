@@ -2,14 +2,22 @@ import markdownit from 'markdown-it'
 import { renderChord } from './chord_renderer'
 import { replaceSnippets } from './snippets';
 
+import { Chord } from './chord_renderer'
 
+type PreparedChord = {
+  parsedChord: Chord
+  renderedChord: string
+  chord: string
+  isStop: boolean
+  isDitto: boolean
+  beats: string
+}
 
 type BarContent = {
   chords: Array<{}>,
   annotations: Array<{}>,
   classes: Array<string>
 }
-
 
 type Bar = {
   leftBarline: string
@@ -186,7 +194,7 @@ const parseBarContent = (barText: string): BarContent => {
       chords.push(c)
     }
     return chords
-  }, [])
+  }, [] as Array<PreparedChord>)
 
   return {
     chords,

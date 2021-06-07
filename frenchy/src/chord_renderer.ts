@@ -1,6 +1,6 @@
 
 
-interface Chord {
+export interface Chord {
   input?: {
     descriptor: string
   }
