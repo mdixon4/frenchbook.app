@@ -55,6 +55,12 @@ let song = computed(() => {
     font-weight: normal;
     src: url('./assets/lilyjazz-chord.otf') format('opentype');
   }
+  @font-face {
+    font-family: 'MuseJazz';
+    font-style: normal;
+    font-weight: normal;
+    src: url('./assets/MuseJazz.otf') format('opentype');
+  }
 
   :root {
     --root-bar-width: 23mm;
@@ -77,7 +83,7 @@ let song = computed(() => {
     --rhythm-font-size: 5mm;
     --text-outline-color: white;
 
-    --serif-font: 'EB Garamond';
+    --serif-font: 'EB Garamond', 'MuseJazz';
   }
 
   /* Utility Classes */
@@ -186,7 +192,76 @@ let song = computed(() => {
     font-size: var(--font-size);
     padding: 0px;
     margin: 0;
-    font-family: 'EB Garamond';
+    font-family: var(--serif-font);
+  }
+
+
+
+  [data-outline] {
+    display: inline-block;
+  }
+
+  [data-outline]::before {
+    content: attr(data-outline);
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    -webkit-text-stroke: var(--stroke-width) var(--text-outline-color);
+  }
+
+  .smufl-symbol {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.7em;
+    line-height: 0;
+    position: relative;
+  }
+
+  .smufl-symbol.coda {
+    bottom: -0.2em;
+    font-size: 1.5em;
+  }
+  .smufl-symbol.segno {
+    bottom: -0.2em;
+    font-size: 1.5em;
+  }
+  .smufl-symbol.caesura {
+    bottom: -0.1em;
+  }
+  .smufl-symbol.fermata {
+    bottom: -0.1em;
+  }
+  .smufl-symbol.fermata-up {
+    bottom: 0.55em;
+  }
+
+  .unicode-symbol {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 2.1em;
+    line-height: 0;
+    position: relative;
+  }
+  .unicode-symbol.fermata {
+    bottom: -0.4em;
+  }
+  .unicode-symbol.fermata-up {
+    bottom: 0.2em;
+  }
+  .unicode-symbol.down-right {
+    bottom: -0.18em;
+  }
+  .unicode-symbol.left-down {
+    bottom: -0.1em;
+  }
+  .unicode-symbol.right-down {
+    bottom: -0.18em;
+  }
+
+  .unicode-symbol.mirror {
+    transform: scaleX(-1);
+    background: lightskyblue;
+    display: inline-block;
   }
 
 </style>

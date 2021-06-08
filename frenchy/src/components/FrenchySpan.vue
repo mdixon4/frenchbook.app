@@ -7,6 +7,7 @@
     <div class="span-inner">
       <span class="span-start"></span>
       <span class="span-text" ref="textEl">
+        <strong>&ZeroWidthSpace;</strong>
         <span v-html="span.text"></span>
       </span>
       <span class="span-end"></span>
@@ -73,12 +74,12 @@ watch(span, growSpan)
 </script>
 
 <style>
-
   .exterior .span {
-    font-family: 'EB Garamond';
+    font-family: var(--serif-font);
     font-style: italic;
-    line-height: 1;
+    line-height: calc(18/16 * 1rem);
     white-space: pre-wrap;
+    z-index: 41;
   }
   .exterior .span-text strong {
     font-style: normal;
@@ -109,8 +110,6 @@ watch(span, growSpan)
   .exterior.bottom .span {
     grid-column-start: var(--start, 1);
     grid-column-end: calc(var(--end, -2) + 1);
-    /* display: flex;
-    flex-direction: row; */
   }
   .exterior.top .span.flow {
     grid-column-end: calc(var(--start, 1) + var(--grid-span, 0));
@@ -123,8 +122,6 @@ watch(span, growSpan)
   .exterior.right .span {
     grid-row-start: var(--start, 1);
     grid-row-end: calc(var(--end, -2) + 1);
-    /* display: flex;
-    flex-direction: column; */
   }
 
   .span-inner {
@@ -149,7 +146,7 @@ watch(span, growSpan)
   }
   .exterior.right .span-inner,
   .exterior.bottom .span-inner {
-    align-items: flex-start;
+    /* align-items: flex-start; */
   }
 
 
@@ -227,8 +224,11 @@ watch(span, growSpan)
     text-align: center;
     margin-top: calc(1 * var(--stroke-width));
   }
-  .exterior.bottom .span-text span {
-    display: flex;
+  .exterior.top-left,
+  .exterior.top-right,
+  .exterior.bottom-left,
+  .exterior.bottom-right {
+    margin: calc(1 * var(--stroke-width)) calc(2 * var(--stroke-width))
   }
 
 
@@ -319,5 +319,19 @@ watch(span, growSpan)
     margin-top: 0.5ch;
   }
 
-    
+  .exterior.bottom svg.right-down, 
+  .exterior.bottom-right svg.right-down {
+    position: relative;
+    bottom: 0.45em;
+  }
+  .exterior.top svg.left-down,
+  .exterior.top svg.right-down {
+    position: relative;
+    bottom: 0.4em;
+  }
+  .exterior.top svg.down-right {
+    position: relative;
+    bottom: -0.15em;
+  }
+
 </style>

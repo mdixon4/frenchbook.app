@@ -188,7 +188,7 @@ export default {
     width: 100%;
     padding: 0.15em;
     text-align: center;
-    font-family: 'EB Garamond';
+    font-family: var(--serif-font);
     font-weight: 700;
     white-space: pre;
     /* font-style: italic; */
@@ -236,45 +236,5 @@ export default {
   .rhythm { 
     z-index: 1;
   }
-/*
-  .beat {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    font-size: 30px;
-  }
-
-  .bar > .chords {
-    
-  }
-
-  .bar > .chords.slash {
-    // background-image: linear-gradient(-45deg, white 0%, white calc(50% - 1px), black calc(50% - 1px), black calc(50% + 2px), white calc(50% + 2px));
-  }
-  .bar > .chords.slash > .onetwo,
-  .bar > .chords > .onetwothree {
-    display: flex;
-    justify-content: flex-start;
-  }
-  .bar > .chords.slash > .threefour,
-  .bar > .chords > .twothreefour {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .bar > .chords.slash > .onetwo,
-  .bar > .chords.slash > .threefour {
-    border: 0;
-  }
-  .bar > .chords.slash > .onetwo > .chord,
-  .bar > .chords.slash > .threefour > .chord,
-  .bar > .chords > .onetwothree > .chord,
-  .bar > .chords > .twothreefour > .chord {
-    flex-basis: 50%;
-    flex-shrink: 0;
-    text-align: center;
-  }
-    
-*/
-
 
 </style>
