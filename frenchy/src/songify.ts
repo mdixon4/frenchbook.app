@@ -444,7 +444,6 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   right: Ignore time signature
   left (1): 1st time only .volta
   */
-  lineText = lineText.trim()
   let classes = lineText.match(classesRegex)?.map(c => c.substr(1)) || []
   // Split at first colon:
   let [placement, rawText] = lineText.replace(classesRegex, '').split(/:\s?(.+)/).slice(0, -1)
@@ -452,8 +451,8 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   let { align, style, text } = parseAlignmentClues(rawText)
   text = text.replace(/\\n/g, '<br>')
 
-  text = parseInlineMarkdown(text)
   text = replaceSnippets(text)
+  text = parseInlineMarkdown(text)
   text = replacePitches(text)
   let side = (placement.match(/\b((top-left)|(top-right)|(bottom-left)|(bottom-right)|(top)|(left)|(right)|(bottom))\b/i) || [''])[0].toLowerCase()
   let startMatch = placement.match(/\W(\d+)/)

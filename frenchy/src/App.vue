@@ -83,7 +83,7 @@ let song = computed(() => {
     --rhythm-font-size: 5mm;
     --text-outline-color: white;
 
-    --serif-font: 'EB Garamond', 'MuseJazz';
+    --serif-font: 'EB Garamond';
   }
 
   /* Utility Classes */
@@ -212,6 +212,7 @@ let song = computed(() => {
   .smufl-symbol {
     font-style: normal;
     font-weight: normal;
+    font-family: 'MuseJazz';
     font-size: 1.7em;
     line-height: 0;
     position: relative;

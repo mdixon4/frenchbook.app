@@ -8,7 +8,7 @@ let clean = (piece: string): string => (piece
   .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
   .replace(/\n\s*/g, '')
 );
-const regex = ({raw}: {raw: string}, ...interpolations: Array<string>) => (
+export const regex = ({raw}: {raw: string}, ...interpolations: Array<string>) => (
   new RegExp(interpolations.reduce(
       (regex, insert, index) => (regex + insert + clean(raw[index + 1])),
       clean(raw[0])

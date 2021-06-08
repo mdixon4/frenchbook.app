@@ -1,6 +1,15 @@
-const snippetRegex = /(^|\s)\\(\S+)/g
+import { regex } from './util'
 
-const snippetList: { [key: string]: string }= {
+// Match either a space, backslash, lowercase-word, or end-of-string that 
+// follows one or three backslashes, or the start of the string, or just one 
+// character after the start of the string
+const snippetRegex = /(?:(?<=(?:.[^\\]|\\\\))|^|(?<=^.))\\( |\\|[a-z-]+|$)/g
+
+
+const snippetList: { [key: string]: string } = {
+  '': `&ZeroWidthSpace;`,
+  '\\': '&#92;',
+  ' ': `&nbsp;`,
   'caesura': `<span class="smufl-symbol caesura">&#xE4D1;</span>`,
   'coda': `<span class="smufl-symbol coda" data-outline="&#xE049;">&#xE049;</span>`,
   'segno': `<span class="smufl-symbol segno" data-outline="&#xE04A;">&#xE04A;</span>`,
@@ -29,6 +38,6 @@ const snippetList: { [key: string]: string }= {
 
 export const replaceSnippets = (text: string) => {
   return text.replace(snippetRegex, (match, p1, p2) => {
-    return snippetList[p2] || match
+    return snippetList[p1] || match
   })
 }
