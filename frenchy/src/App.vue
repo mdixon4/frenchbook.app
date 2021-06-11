@@ -63,22 +63,34 @@ let song = computed(() => {
   }
 
   :root {
-    --root-bar-width: 23mm;
-    --root-bar-height: 21mm;
+    --page-width: 210mm;
+    --page-height: 297mm;
+
+    --root-bar-width: 22mm;
+    --page-columns: 8;
+    --x-page-margin: calc(
+      calc(var(--page-width) - var(--page-columns) * var(--root-bar-width))
+      / 2
+    );
+    
+
+    --top-page-margin: 10mm;
+    --bottom-page-margin: 10mm;
+    --root-bar-height: 20mm;
+    --header-height: 16mm;
+
     --font-size: 4.25mm;
     --bar-width: var(--root-bar-width);
     --bar-height: var(--root-bar-height);
-
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
-    --x-page-margin: var(--x-unit);
 
     --row-gap: var(--y-unit);
     --col-gap: var(--x-unit);
 
     --gridline-color: black;
     --stop-color: #DDD;
-    --stroke-width: .5mm;
+    --stroke-width: .25mm;
     --thick-stroke-width: 0.75mm;
     --rhythm-font-size: 5mm;
     --text-outline-color: white;
@@ -108,6 +120,10 @@ let song = computed(() => {
   }
 
   @media screen {
+    :root {
+      --stroke-width: .5mm;
+    }
+
     #app {
       display: flex;
       flex-direction: row;
@@ -173,11 +189,10 @@ let song = computed(() => {
 
     .page {
       background: white;
-      background-image: 
+      /* background-image: 
         linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
       background-size: var(--page-width) calc(var(--page-height) + 1px);
-      min-height: var(--page-height);
-      background-repeat: repeat;
+      background-repeat: repeat; */
       border: 1px solid black;
       box-shadow: 4px 4px black;
     }

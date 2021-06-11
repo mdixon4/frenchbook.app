@@ -122,12 +122,12 @@ const stanzaBorderViewBox = computed(() => {
     margin-bottom: 0;
   }
 
-  .stanza.flush {
+  /* .stanza.flush {
     margin-top: 0;
   }
   .stanza.tight {
     margin-top: calc(0.5 * var(--y-unit));
-  }
+  } */
 
   .song .stanza.no-top-annotations.no-top-title:first-child {
     margin-top: 0;

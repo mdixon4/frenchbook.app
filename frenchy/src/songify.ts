@@ -146,6 +146,7 @@ const parseBarContent = (barText: string): BarContent => {
       : text.endsWith(' ') && !text.startsWith(' ')
         ? 'left'
         : 'center'
+    text = text.replace(/\\n/g, '<br>')
     text = replaceSnippets(text)
     text = replacePitches(text)
     return {
@@ -562,12 +563,15 @@ const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, posi
   })
 }
 
+const transposeLayout = (layout: Array<string>): Array<string> => Array.from(layout[0]).map((_, colIdx) => layout.map(layoutLine => layoutLine[colIdx]).join(''))
 const leftIndent = (layoutLine: string): number => layoutLine.indexOf('1') || 0
 const rightIndent = (layoutLine: string): number => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
 const rowsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => layout.slice((annotation.start || 1) - 1, (annotation.end || layout.length))
+const colsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => layout.map(layoutLine => layoutLine.substr((annotation.start || 1 ) - 1, (annotation.end || layoutLine.length)))
 const lastOfArray = (arr: Array<any>): any => arr.slice(-1)[0]
 
 const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>) => {
+
   annotations = annotations.map(a => {
     if (a.side === 'top-left') {
       return {
@@ -605,6 +609,18 @@ const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>
         inset: rightIndent(lastOfArray(layout) || '') || 0
       }
     }
+    if (a.side === 'top') {
+      return {
+        ...a,
+        inset: Math.min(...rowsSpannedByAnnotation(transposeLayout(layout), a).map(leftIndent)) || 0
+      }
+    }
+    if (a.side === 'bottom') {
+      return {
+        ...a,
+        inset: Math.min(...rowsSpannedByAnnotation(transposeLayout(layout), a).map(rightIndent)) || 0
+      }
+    }
 
     return { 
       ...a,
@@ -623,7 +639,7 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
   return {
     side: classes.includes('title-left') ? 'left' : 'top',
     start: (leftIndent(layout[0] || '') || 0) + 1,
-    end: 1,
+    end: (leftIndent(layout[0] || '') || 0) + 1,
     classes: [
       'align-start', 
       'flow',
@@ -782,15 +798,10 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   // Default to "2", unless we change it later
   parts.forEach(p => p.topMargin = 2)
 
-  // For the first stanza, add space before only if
-  // there is a top annotation
+  // For the first stanza, default to a smaller top-margin, 
+  // because there's already a margin on the song itself.
   if (parts[0]?.type === 'stanza') {
-    if (parts[0].annotations.some(a => a.side?.startsWith('top'))) {
-      parts[0].topMargin = 1
-    }
-    else {
-      parts[0].topMargin = 0
-    }
+    parts[0].topMargin = 1
   }
 
   // Loop through each part. If there's a class, apply that.
@@ -801,6 +812,9 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
     }
     else if (p.classes.includes('tight')) {
       p.topMargin = 1
+    }
+    else if (p.classes.includes('cosy')) {
+      p.topMargin = 1.5
     }
     else if (p.classes.includes('comfortable')) {
       p.topMargin = 2
@@ -814,6 +828,8 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
         p.topMargin = 0
       } else if (nextClasses.includes('tight')) {
         p.topMargin = 1
+      } else if (nextClasses.includes('cosy')) {
+        p.topMargin = 1.5
       } else if (nextClasses.includes('comfortable')) {
         p.topMargin = 2
       } else if (nextClasses.includes('roomy')) {

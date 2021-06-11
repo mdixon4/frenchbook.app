@@ -1,5 +1,11 @@
 <template>
   <div class="page" v-if="song" ref="pageElement">
+    <div class="rule top-margin"></div>
+    <div class="rule bottom-margin"></div>
+    <div class="rule left-margin"></div>
+    <div class="rule right-margin"></div>
+    <div class="rule page-break"></div>
+
     <frenchy-header :metadata="song.metadata"></frenchy-header>
     <div class="song" :style="{
       '--bar-width': `calc(${song.metadata.barWidth || 1} * var(--root-bar-width))`,
@@ -24,6 +30,9 @@ import FrenchyStanza from './FrenchyStanza.vue'
 import FrenchyHr from './FrenchyHr.vue'
 import FrenchyTextBlock from './FrenchyTextBlock.vue'
 
+const pageWidth = ref(210)
+const pageHeight = ref(297)
+
 const pageElement = ref(null)
 
 const props = defineProps({
@@ -46,11 +55,51 @@ watch(pageElement, () => {
 
 <style>
   .page {
-    --page-width: calc(8 * var(--bar-width) + 2 * var(--x-page-margin));
-    --page-height: calc(1.41 * var(--page-width));
     width: var(--page-width);
-    padding: var(--y-unit) var(--x-page-margin);
+    min-height: var(--page-height);
+    padding: var(--top-page-margin) var(--x-page-margin) 0;
     overflow: hidden;
+  }
+
+  .rule { display: none; }
+  @media screen {
+    .rule {
+      display: block;
+      position: absolute;
+      background: red;
+      opacity: 0.25;
+    }
+    .rule.top-margin {
+      width: 100%;
+      height: 3px;
+      left: 0;
+      top: calc(var(--top-page-margin) - 1px);
+    }
+    .rule.bottom-margin {
+      width: 100%;
+      height: 3px;
+      left: 0;
+      top: calc(var(--page-height) - var(--bottom-page-margin) - 1px);
+    }
+    .rule.left-margin {
+      height: 100%;
+      width: 3px;
+      top: 0;
+      left: calc(var(--x-page-margin) - 1px);
+    }
+    .rule.right-margin {
+      height: 100%;
+      width: 3px;
+      top: 0;
+      left: calc(var(--page-width) - var(--x-page-margin) - 1px);
+    }
+    .rule.page-break {
+      width: 100%;
+      height: 3px;
+      left: 0;
+      top: calc(var(--page-height) - 1px);
+      background: blue;
+    }
   }
 
   .song {
@@ -58,7 +107,9 @@ watch(pageElement, () => {
     flex-direction: column;
     align-items: start;
     position: relative;
+    margin-top: calc(var(--y-unit) / 2);
   }
+
 
 
 

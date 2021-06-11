@@ -71,9 +71,11 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
     grid-auto-flow: dense;
   }
   .exterior.top {
-    grid-area: top;
-    align-self: flex-end;
     width: 100%;
+    grid-column-start: top-start;
+    grid-column-end: top-end;
+    grid-row: calc(var(--inset, 0) + 1);
+    align-self: flex-end;
     grid-template-columns: repeat(var(--stanza-full-width), minmax(0, 1fr));
     align-items: flex-end;
   }
@@ -99,7 +101,9 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
   }
   .exterior.bottom {
     width: 100%;
-    grid-area: bottom;
+    grid-column-start: bottom-start;
+    grid-column-end: bottom-end;
+    grid-row: calc(var(--stanza-height) - var(--inset, 0) + 2);
     grid-template-columns: repeat(var(--stanza-full-width), minmax(0, 1fr));
     grid-auto-rows: min-content;
     align-items: flex-start;
