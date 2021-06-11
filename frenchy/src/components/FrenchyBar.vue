@@ -188,7 +188,7 @@ export default {
     width: 100%;
     padding: 0.15em;
     text-align: center;
-    font-family: var(--serif-font);
+    font-family: var(--annotation-font);
     font-weight: 700;
     white-space: pre;
     /* font-style: italic; */

@@ -33,6 +33,13 @@ const snippetList: { [key: string]: string } = {
       <path d="M29.5417 3.75L39.3334 13.5417L29.5417 23.3333" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M8 -8L8 5.70833C8 7.78586 8.8253 9.7783 10.2943 11.2473C11.7634 12.7164 13.7558 13.5417 15.8333 13.5417L39.3333 13.5417" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
+  'special-arrow':
+    `<svg class="special-arrow" width="20" viewBox="0 -30 52 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <rect x="-50" y="-50" width="100" height="100" fill="aaquamarine"></rect>
+      <rect x="0" y="-30" width="52" height="60" fill="hotpiank"></rect>
+      <path d="M30 22 L55 0 L30 -22" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M0 -40 L0 -20 A 20 -20 0 0 0 20 0 L50 0" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`
 }
 
 

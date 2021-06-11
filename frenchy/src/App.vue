@@ -96,6 +96,14 @@ let song = computed(() => {
     --text-outline-color: white;
 
     --serif-font: 'EB Garamond';
+    /* --annotation-font: 'EB Garamond'; */
+    --annotation-font: 'EB Garamond';
+    --annotation-script-font: 'EB Garamond';
+    /* --annotation-font: 'MuseJazz Text'; */
+    /* --serif-font: 'Patrick Hand SC'; */
+    /* --annotation-font: 'Patrick Hand SC'; */
+    /* --annotation-font: 'LilyJazz Text'; */
+    /* --annotation-script-font: 'Patrick Hand'; */
   }
 
   /* Utility Classes */
@@ -280,4 +288,10 @@ let song = computed(() => {
     display: inline-block;
   }
 
+  .special-arrow {
+    margin-bottom: -.25em;
+    margin-right: 0.25ch;
+    width: 1rem;
+    display: inline-block;
+  }
 </style>
