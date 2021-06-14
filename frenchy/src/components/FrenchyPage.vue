@@ -120,7 +120,7 @@ watch(pageElement, () => {
     margin-bottom: -4px;
   }
   .arrow {
-    width: 24px;
+    width: 8mm;
   }
   .segno-symbol {
     height: 24px;
@@ -133,6 +133,14 @@ watch(pageElement, () => {
     display: inline-block;
     padding: 0 0.2em 0 0.4em;
     /* background: blue; */
+  }
+  .arrow.right-down-right {
+    display: flex;
+    flex-direction: column;
+  }
+  .arrow.right-down-right .middle {
+    flex-basis: 0.5em;
+    flex-grow: 1;
   }
 
 </style>

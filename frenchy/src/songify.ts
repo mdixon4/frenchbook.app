@@ -57,7 +57,7 @@ type StanzaLayout = {
 
 type Annotation = {
   align: 'start' | 'middle' | 'end'
-  style: 'dotted' | 'volta' | 'volta-dashed' | ''
+  style: 'dotted' | 'volta' | 'volta-dashed' | 'wayfinding' | ''
   side: string
   text: string
   classes: Array<string>
@@ -68,6 +68,7 @@ type Annotation = {
 type TextBlock = {
   type: 'plain-text'
   topMargin?: number
+  bottomMargin?: number
   classes: Array<string>
   text: string
   html: string
@@ -77,6 +78,7 @@ type TextBlock = {
 type Stanza = {
   type: 'stanza'
   topMargin?: number
+  bottomMargin?: number
   classes: Array<string>
   title: {}
   lines: Array<MusicLine>
@@ -87,12 +89,12 @@ type Stanza = {
   fullWidth: number
   height: number
   annotations: Array<Annotation>
-  wayfinding: Array<{ type: string|null, position: string, lineNo: number, barNo: number }>
 }
 
 type HR = {
   type: 'hr'
   topMargin?: number
+  bottomMargin?: number
   classes: Array<string>
 }
 
@@ -528,37 +530,37 @@ const extractStanzaMetadata = (stanzaText: string): { title: string, classes: Ar
 }
 
 
-const getWayfinding = (lines: Array<MusicLine>): Array<{ type: string|null, position: string, lineNo: number, barNo: number }> => {
 
-  let bars = lines.map(
-    (line, idx) => line.bars.map((b, barIdx) => ({ ...b, lineNo: idx + 1, barNo: barIdx + 1 }))
-  ).flat()
+const getWayfinding = (lines: Array<MusicLine>, layout: Array<string>): Array<Annotation> => {
+
+  let bars = lines.map((line, lineIdx) => {
+    let effectiveIndent = effectiveLineIndent(layout[lineIdx])
+    return line.bars.map((b, barIdx) => ({ ...b, lineIdx, barIdx, column: barIdx + 1 + effectiveIndent }))
+  }).flat()
 
   let wayfindingBars = bars.filter(bar => bar.classes?.includes('to-coda') || bar.classes?.includes('to-segno'))
-
+  
   return wayfindingBars.map(bar => {
-    let position = ''
-    if (bar.classes?.includes('to-right')) {
-      position = 'to-right'
-    } else if (bar.classes?.includes('to-bottom')) {
-      position = 'to-bottom'
-    } else if (bar.isRightmost && !bar.isBottommost) {
-      position = 'to-right'
-    } else if (bar.isRightmost && lines[bar.lineNo - 1].bars.length < 8) {
-      position = 'to-right'
-    } else if (bar.isBottommost) {
-      position = 'to-bottom'
-    }
-    
+    let side = bar.classes?.includes('at-right') 
+      ? 'right' 
+      : bar.classes?.includes('at-bottom')
+        ? 'bottom'
+        : bar.isRightmost && !bar.isBottommost
+          ? 'right'
+          : bar.isRightmost && bar.column < 8
+            ? 'right'
+            : 'bottom'
+
+    let start = side === 'right' ? bar.lineIdx + 1 : bar.column
+
     return {
-      type: bar.classes?.includes('to-coda') 
-        ? 'to-coda' 
-        : bar.classes?.includes('to-segno')
-          ? 'to-segno'
-          : '',
-      position,
-      lineNo: bar.lineNo,
-      barNo: bar.barNo
+      classes: ['to-coda'],
+      side,
+      start: start,
+      end: start,
+      text: 'TOCODA',
+      style: 'wayfinding',
+      align: 'end'
     }
   })
 }
@@ -569,6 +571,7 @@ const rightIndent = (layoutLine: string): number => (layoutLine.length - layoutL
 const rowsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => layout.slice((annotation.start || 1) - 1, (annotation.end || layout.length))
 const colsSpannedByAnnotation = (layout: Array<string>, annotation: Annotation): Array<string> => layout.map(layoutLine => layoutLine.substr((annotation.start || 1 ) - 1, (annotation.end || layoutLine.length)))
 const lastOfArray = (arr: Array<any>): any => arr.slice(-1)[0]
+const effectiveLineIndent = (lineLayout: string): number => (lineLayout.match(/^0*/) || [''])[0].length
 
 const locateAnnotations = (annotations: Array<Annotation>, layout: Array<string>) => {
 
@@ -655,26 +658,27 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
 
 
 const createFancyCodaAnnotation = (classes: Array<string>): Annotation | null => {
+  console.log({ classes })
   if (classes.includes('coda-direct')) {
     return {
       side: 'left',
       start: 1,
       end: 1,
       classes: ['direct-coda'],
-      text: '',
+      text: 'CODA',
       align: 'end',
       style: ''
     }
   }
-  if (classes.includes('coda-here')) {
+  if (classes.includes('coda')) {
     return {
       side: 'left',
       start: 1,
       end: 1,
-      classes: ['here-coda'],
-      text: '',
+      classes: ['coda'],
+      text: 'CODA',
       align: 'end',
-      style: ''
+      style: 'wayfinding'
     }
   }
   return null
@@ -722,8 +726,6 @@ const parseStanza = (stanzaText: string): Stanza => {
   lines = totalPerspectiveVortexForBars(lines, layout)
   
   let borderCoordinates = getBorderCoordinates(layout)
-
-  let wayfinding = getWayfinding(lines)
   
   // let layoutHintClasses = {
   //   'no-top-business': (title === '' || classes.includes('title-left')) && !annotations.some(a => annotation.side === 'top') && (classes.includes('wayfinding')))
@@ -736,7 +738,8 @@ const parseStanza = (stanzaText: string): Stanza => {
   if (titleAnnotation) {
     annotations.push(titleAnnotation)
   }
-  annotations = locateAnnotations(annotations, layout)
+  annotations.unshift(...getWayfinding(lines, layout))
+  annotations = annotations && layout.length ? locateAnnotations(annotations, layout) : []
 
   return {
     type: 'stanza',
@@ -749,8 +752,7 @@ const parseStanza = (stanzaText: string): Stanza => {
     width, 
     fullWidth,
     height,
-    annotations,
-    wayfinding
+    annotations
   }
 
 }
@@ -827,7 +829,10 @@ const parseFrontMatter = (frontMatter: string): MetaData => {
 
 const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Array<SongPart> => {
   // Default to "2", unless we change it later
-  parts.forEach(p => p.topMargin = 2)
+  parts.forEach(p => {
+    p.topMargin = 2
+    p.bottomMargin = 2
+  })
 
   // For the first stanza, default to a smaller top-margin, 
   // because there's already a margin on the song itself.
@@ -838,33 +843,46 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   // Loop through each part. If there's a class, apply that.
   // If it's a HR, apply the class from the next stanza if it doesn't have its own
   parts.forEach((p, idx, parts) => {
+    let previousPart = parts.slice(0, idx).filter(part => part.type === 'stanza' || 'plain-text').slice(-1)?.[0]
+    console.log({ p, previousPart })
+
     if (p.classes.includes('flush')) {
       p.topMargin = 0
+      if (previousPart) previousPart.bottomMargin = 0
     }
     else if (p.classes.includes('tight')) {
       p.topMargin = 1
+      if (previousPart) previousPart.bottomMargin = 1
     }
     else if (p.classes.includes('cosy')) {
       p.topMargin = 1.5
+      if (previousPart) previousPart.bottomMargin = 1.5
     }
     else if (p.classes.includes('comfortable')) {
       p.topMargin = 2
+      if (previousPart) previousPart.bottomMargin = 2
     }
     else if (p.classes.includes('roomy')) {
       p.topMargin = 4
+      if (previousPart) previousPart.bottomMargin = 4
     }
     else if (p.type === 'hr') {
       let nextClasses = parts[idx + 1]?.classes || []
       if (nextClasses.includes('flush')) {
         p.topMargin = 0
+        if (previousPart) previousPart.bottomMargin = 0
       } else if (nextClasses.includes('tight')) {
         p.topMargin = 1
+        if (previousPart) previousPart.bottomMargin = 1
       } else if (nextClasses.includes('cosy')) {
         p.topMargin = 1.5
+        if (previousPart) previousPart.bottomMargin = 1.5
       } else if (nextClasses.includes('comfortable')) {
         p.topMargin = 2
+        if (previousPart) previousPart.bottomMargin = 2
       } else if (nextClasses.includes('roomy')) {
         p.topMargin = 4
+        if (previousPart) previousPart.bottomMargin = 4
       }
     }
   })

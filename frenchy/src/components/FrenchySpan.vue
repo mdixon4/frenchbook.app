@@ -4,9 +4,7 @@
     '--end': span.end,
     '--grid-span': gridSpan
   }" :class="span.classes">
-    <here-coda v-if="span.classes.includes('here-coda')"></here-coda>
-    <direct-coda v-if="span.classes.includes('direct-coda')"></direct-coda>
-    <div v-else class="span-inner">
+    <div class="span-inner">
       <span class="span-start"></span>
       <span class="span-text" ref="textEl">
         <span v-html="span.text"></span>
@@ -18,8 +16,7 @@
 
 <script setup>
 import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted, computed } from 'vue'
-import HereCoda from './HereCoda.vue'
-import DirectCoda from './DirectCoda.vue'
+import FrenchyWayfinding from './FrenchyWayfinding.vue'
 
 const props = defineProps({
   span: {
@@ -83,6 +80,7 @@ watch(span, growSpan)
     /* line-height: calc(18/16 * 1rem); */
     white-space: pre-wrap;
     z-index: 41;
+    position: relative;
   }
   .exterior .span-text strong {
     font-family: var(--annotation-font);
@@ -340,4 +338,37 @@ watch(span, growSpan)
     bottom: -0.15em;
   }
 
+
+
+.coda-here-vertical-left .span-text > span {
+  display: flex;
+}
+.coda-here-vertical-left .smufl-symbol.coda {
+  position: absolute;
+  top: calc(1em - var(--thick-stroke-width));
+  right: 0.05em;
+}
+
+.to-coda-vertical-right .smufl-symbol.coda {
+  position: absolute;
+  top: calc(0.75em + var(--bar-height) * 0.25);
+  left: 0.2em;
+}
+
+.to-coda-horizontal-bottom {
+  background: red;
+}
+
+.coda-immediate.span {
+  white-space: initial;
+  bottom: calc(0.5 * var(--bar-height));
+}
+.right-down-right {
+  height: calc(0.5 * var(--bar-height) + var(--top-margin) * 0.5 * var(--y-unit) - 0.25 * var(--y-unit));
+}
+.coda-immediate .smufl-symbol.coda {
+  position: absolute;
+  bottom: calc(0.25 * var(--bar-height) - var(--thick-stroke-width));
+  right: 0.8em;
+}
 </style>

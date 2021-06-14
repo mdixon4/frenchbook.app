@@ -2,6 +2,7 @@
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
     '--top-margin': stanza.topMargin,
+    '--bottom-margin': stanza.bottomMargin,
     '--height': stanza.lines.length
   }" :class="[{
     'has-title': stanza.title.length > 0,
