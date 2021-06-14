@@ -37,6 +37,13 @@ const snippetList: { [key: string]: string } = {
         L -20 0
         A 20 20 0 0 1 0 20 
         L 0 50" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg><svg class="arrow right-down-squished" viewBox="-50 -10 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M20 20 L0 40 L-20 20" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="
+        M-40 0 
+        L -20 0
+        A 20 20 0 0 1 0 20 
+        L 0 35" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
   'down-right':
     `<svg class="arrow down-right" viewBox="-55 -30 110 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">

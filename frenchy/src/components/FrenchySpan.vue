@@ -356,8 +356,19 @@ watch(span, growSpan)
 }
 
 .to-coda-horizontal-bottom {
-  background: red;
+  /* background: red; */
 }
+.to-coda-horizontal-bottom .right-down, .to-coda-horizontal-bottom .right-down-squished {
+  position: relative;
+  top: calc(-1em + 0.125 * var(--y-unit) * var(--bottom-margin));
+  /* margin-top: calc(-4.25 * var(--y-unit)); */
+}
+.tight-bottom .to-coda-horizontal-bottom .smufl-symbol.coda {
+  /* font-size: 0.9em; */
+  bottom: 0.1em;
+}
+
+
 
 .coda-immediate.span {
   white-space: initial;

@@ -142,5 +142,14 @@ watch(pageElement, () => {
     flex-basis: 0.5em;
     flex-grow: 1;
   }
+  .arrow.right-down-squished {
+    display: none;
+  }
+  .tight-bottom .arrow.right-down-squished {
+    display: initial;
+  }
+  .tight-bottom .arrow.right-down {
+    display: none;
+  }
 
 </style>
