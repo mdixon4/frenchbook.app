@@ -654,6 +654,33 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
 }
 
 
+const createFancyCodaAnnotation = (classes: Array<string>): Annotation | null => {
+  if (classes.includes('coda-direct')) {
+    return {
+      side: 'left',
+      start: 1,
+      end: 1,
+      classes: ['direct-coda'],
+      text: '',
+      align: 'end',
+      style: ''
+    }
+  }
+  if (classes.includes('coda-here')) {
+    return {
+      side: 'left',
+      start: 1,
+      end: 1,
+      classes: ['here-coda'],
+      text: '',
+      align: 'end',
+      style: ''
+    }
+  }
+  return null
+}
+
+
 const parseStanza = (stanzaText: string): Stanza => {
 
   let { title, classes, rest } = extractStanzaMetadata(stanzaText)
@@ -701,6 +728,10 @@ const parseStanza = (stanzaText: string): Stanza => {
   // let layoutHintClasses = {
   //   'no-top-business': (title === '' || classes.includes('title-left')) && !annotations.some(a => annotation.side === 'top') && (classes.includes('wayfinding')))
   // }
+  let codaAnnotation = createFancyCodaAnnotation(classes)
+  if (codaAnnotation) {
+    annotations.push(codaAnnotation)
+  }
   let titleAnnotation = convertTitleToAnnotation(title, classes, layout)
   if (titleAnnotation) {
     annotations.push(titleAnnotation)

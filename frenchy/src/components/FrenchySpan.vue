@@ -4,10 +4,11 @@
     '--end': span.end,
     '--grid-span': gridSpan
   }" :class="span.classes">
-    <div class="span-inner">
+    <here-coda v-if="span.classes.includes('here-coda')"></here-coda>
+    <direct-coda v-if="span.classes.includes('direct-coda')"></direct-coda>
+    <div v-else class="span-inner">
       <span class="span-start"></span>
       <span class="span-text" ref="textEl">
-        <strong>&ZeroWidthSpace;</strong>
         <span v-html="span.text"></span>
       </span>
       <span class="span-end"></span>
@@ -17,6 +18,8 @@
 
 <script setup>
 import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted, computed } from 'vue'
+import HereCoda from './HereCoda.vue'
+import DirectCoda from './DirectCoda.vue'
 
 const props = defineProps({
   span: {

@@ -133,6 +133,9 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
     align-self: flex-start;
     justify-self: flex-start;
   }
+  .tight .exterior.top, .exterior.top-left, .exterior.top-right {
+    margin-bottom: 0;
+  }
 
 /*
   .coda-here {
