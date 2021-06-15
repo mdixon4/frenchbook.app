@@ -121,6 +121,7 @@ watch(pageElement, () => {
   }
   .arrow {
     width: 8mm;
+    margin-right: 0.5mm;
   }
   .segno-symbol {
     height: 24px;
@@ -138,8 +139,16 @@ watch(pageElement, () => {
     display: flex;
     flex-direction: column;
   }
+  .arrow.right-down-right .top {
+    height: calc(30/110 * 8mm);
+    flex-grow: 0;
+  }
+  .arrow.right-down-right .bottom {
+    height: calc(30/110 * 8mm);
+    flex-grow: 0;
+  }
   .arrow.right-down-right .middle {
-    flex-basis: 0.5em;
+    height: 1.5em;
     flex-grow: 1;
   }
   .arrow.right-down-squished {

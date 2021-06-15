@@ -329,11 +329,15 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
 
 }
 
+const formatOrdinals = (text: string): string => text.replaceAll(/(\d)(st|nd|rd|th)(?!>[a-z])/g, '$1<sup>$2</sup>')
+
 const parseInlineMarkdown = (text: string): string => {
-  return markdownit({
+  text = markdownit({
     typographer: true,
     html: true
   }).renderInline(text)
+  text = formatOrdinals(text)
+  return text
 }
 
 
@@ -530,13 +534,97 @@ const extractStanzaMetadata = (stanzaText: string): { title: string, classes: Ar
 }
 
 
+const extractWayfindingAnnotations = ({ layout, lines, classes }: {layout: Array<string>, lines: Array<MusicLine>, classes: Array<string> }): Array<Annotation> => {
 
-const getWayfinding = (lines: Array<MusicLine>, layout: Array<string>): Array<Annotation> => {
+  let wayfindingAnnotations = [] as Array<Annotation>
 
   let bars = lines.map((line, lineIdx) => {
     let effectiveIndent = effectiveLineIndent(layout[lineIdx])
     return line.bars.map((b, barIdx) => ({ ...b, lineIdx, barIdx, column: barIdx + 1 + effectiveIndent }))
   }).flat()
+  
+  if (classes.includes('coda')) {
+    // If the first coda bar is up against the left-hand side, let's do a TOP coda instead.
+    if (
+      (classes.includes('indent-0') || layout[0].length === 8) 
+      && bars[0].column === 1
+      && !classes.includes('coda-left')
+    ) {
+      wayfindingAnnotations.push({
+        side: 'top',
+        align: 'start',
+        classes: ['coda-here-horizontal-top', 'align-start'],
+        start: 1,
+        end: 1,
+        style: '',
+        text: replaceSnippets('\\left-down\\coda')
+      })
+    } else {
+      wayfindingAnnotations.push({
+        side: 'left',
+        align: 'middle',
+        classes: ['coda-here-vertical-left'],
+        start: 1,
+        end: 1,
+        style: '',
+        text: replaceSnippets('\\coda\\down-right')
+      })
+    }
+  }
+
+  if (classes.includes('coda-immediate') || classes.includes('coda-direct')) {
+    wayfindingAnnotations.push({
+      side: 'left',
+      align: 'end',
+      classes: ['coda-immediate', 'align-end'],
+      start: 1,
+      end: 1,
+      style: '',
+      text: replaceSnippets('\\right-down-right\\coda')
+    })
+  }
+
+  bars.filter(b => b.classes?.includes('to-coda') || b.classes?.includes('to-coda-right') || b.classes?.includes('to-coda-bottom')).forEach(b => {
+    // If the 'to-coda' bar is not the last bar, put the annotation beneath it.
+    // If it's the last bar, put it to the right, unless it's hard up against the right-hand-edge.
+    let side = b.classes?.includes('to-coda-right')
+      ? 'right'
+      : b.classes?.includes('to-coda-bottom')
+        ? 'bottom'
+        : b.isRightmost && b.column < 8
+          ? 'right'
+          : 'bottom'
+
+    if (side === 'right') {
+      wayfindingAnnotations.push({
+        side: 'right',
+        align: 'middle',
+        classes: ['to-coda-vertical-right'],
+        start: b.lineIdx + 1,
+        end: b.lineIdx + 1,
+        style: '',
+        text: replaceSnippets('\\right-down\\coda')
+      })
+    } else {
+      wayfindingAnnotations.push({
+        side: 'bottom',
+        align: 'end',
+        classes: ['to-coda-horizontal-bottom', 'align-end'],
+        start: b.column,
+        end: b.column,
+        style: '',
+        text: replaceSnippets('\\coda \\right-down')
+      })
+    }
+  })
+
+  
+  return wayfindingAnnotations
+}
+
+
+const getWayfinding = (lines: Array<MusicLine>, layout: Array<string>): Array<Annotation> => {
+
 
   let wayfindingBars = bars.filter(bar => bar.classes?.includes('to-coda') || bar.classes?.includes('to-segno'))
   
@@ -641,8 +729,8 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
 
   return {
     side: classes.includes('title-left') ? 'left' : 'top',
-    start: (leftIndent(layout[0] || '') || 0) + 1,
-    end: (leftIndent(layout[0] || '') || 0) + 1,
+    start: classes.includes('title-left') ? 1 : (leftIndent(layout[0] || '') || 0) + 1,
+    end: classes.includes('title-left') ? 1 : (leftIndent(layout[0] || '') || 0) + 1,
     classes: [
       'align-start', 
       'flow',
@@ -682,6 +770,22 @@ const createFancyCodaAnnotation = (classes: Array<string>): Annotation | null =>
     }
   }
   return null
+}
+
+
+const combineAnnotations = (annotations: Array<Annotation>): Array<Annotation> => {
+  // Combine title and coda annotations if they're both at top
+  let titleAnnotation = annotations.find(a => a.classes?.includes('title') && a.side === 'top')
+  let codaAnnotation = annotations.find(a => a.classes?.includes('coda-here-horizontal-top'))
+  if (titleAnnotation && codaAnnotation) {
+    codaAnnotation.text = `${codaAnnotation.text} ${titleAnnotation.text}`
+    codaAnnotation.classes.push(...(titleAnnotation?.classes || []))
+    return [
+      codaAnnotation,
+      ...annotations.filter(a => a !== titleAnnotation && a !== codaAnnotation)
+    ]
+  }
+  return annotations
 }
 
 
@@ -727,19 +831,13 @@ const parseStanza = (stanzaText: string): Stanza => {
   
   let borderCoordinates = getBorderCoordinates(layout)
   
-  // let layoutHintClasses = {
-  //   'no-top-business': (title === '' || classes.includes('title-left')) && !annotations.some(a => annotation.side === 'top') && (classes.includes('wayfinding')))
-  // }
-  let codaAnnotation = createFancyCodaAnnotation(classes)
-  if (codaAnnotation) {
-    annotations.push(codaAnnotation)
-  }
   let titleAnnotation = convertTitleToAnnotation(title, classes, layout)
   if (titleAnnotation) {
     annotations.push(titleAnnotation)
   }
-  annotations.unshift(...getWayfinding(lines, layout))
+  annotations.unshift(...extractWayfindingAnnotations({ layout, classes, lines, titleAnnotation }))
   annotations = annotations && layout.length ? locateAnnotations(annotations, layout) : []
+  annotations = combineAnnotations(annotations)
 
   return {
     type: 'stanza',

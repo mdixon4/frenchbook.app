@@ -218,11 +218,11 @@ watch(span, growSpan)
   }
   .exterior.left {
     text-align: right;
-    margin-right: calc(2 * var(--stroke-width));
+    margin-right: calc(1 * var(--thick-stroke-width));
   }
   .exterior.right {
     text-align: left;
-    margin-left: calc(2 * var(--stroke-width));
+    margin-left: calc(1 * var(--thick-stroke-width));
   }
   .exterior.bottom {
     text-align: center;
@@ -349,9 +349,12 @@ watch(span, growSpan)
   right: 0.05em;
 }
 
+.to-coda-vertical-right .span-text > span {
+  display: flex;
+}
 .to-coda-vertical-right .smufl-symbol.coda {
   position: absolute;
-  top: calc(0.75em + var(--bar-height) * 0.25);
+  top: calc(0.5em + var(--bar-height) * 0.25);
   left: 0.2em;
 }
 
@@ -365,19 +368,24 @@ watch(span, growSpan)
 }
 .tight-bottom .to-coda-horizontal-bottom .smufl-symbol.coda {
   /* font-size: 0.9em; */
-  bottom: 0.1em;
+  bottom: -0.11em;
+  /* background: pink; */
+  clip-path: ellipse(1em 0.32em at 0.35em -0.47em);
+  /* clip-path: inset(100%); */
 }
 
 
 
 .coda-immediate.span {
-  white-space: initial;
   bottom: calc(0.5 * var(--bar-height));
+}
+.coda-immediate.span .span-text > span {
+  display: flex;
 }
 .right-down-right {
   height: calc(0.5 * var(--bar-height) + var(--top-margin) * 0.5 * var(--y-unit) - 0.25 * var(--y-unit));
 }
-.coda-immediate .smufl-symbol.coda {
+.coda-immediate.span .smufl-symbol.coda {
   position: absolute;
   bottom: calc(0.25 * var(--bar-height) - var(--thick-stroke-width));
   right: 0.8em;
