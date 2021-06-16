@@ -24,9 +24,20 @@ const snippetList: { [key: string]: string } = {
   //     <path d="M16.75 34.5417L26.5417 44.3334L36.3333 34.5417" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   //   </svg>`,
   'left-down':
-    `<svg class="left-down" width="20" viewBox="0 0 47 26" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
-      <path d="M30.25 34.5417L20.4583 44.3334L10.6667 34.5417" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M42 13H28.2917C26.2141 13 24.2217 13.8253 22.7527 15.2943C21.2836 16.7634 20.4583 18.7558 20.4583 20.8333V44.3333" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    `<svg class="arrow left-down" viewBox="-50 -30 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M-22 30 L0 55 L22 30" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="
+        M 40 0 
+        L 20 0
+        A -20 20 0 0 0 0 20 
+        L 0 50" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg><svg class="arrow left-down-squished" viewBox="-50 15 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M-20 15 L0 35 L20 15" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="
+        M 40 0 
+        L 20 0
+        A -20 20 0 0 0 0 20 
+        L 0 30" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
   'right-down':
     `<svg class="arrow right-down" viewBox="-50 -30 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
@@ -36,13 +47,13 @@ const snippetList: { [key: string]: string } = {
         L -20 0
         A 20 20 0 0 1 0 20 
         L 0 50" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg><svg class="arrow right-down-squished" viewBox="-50 -10 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
-      <path d="M20 20 L0 40 L-20 20" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg><svg class="arrow right-down-squished" viewBox="-50 15 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M20 15 L0 35 L-20 15" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="
         M-40 0 
         L -20 0
         A 20 20 0 0 1 0 20 
-        L 0 35" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        L 0 30" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
   'down-right':
     `<svg class="arrow down-right" viewBox="-55 -30 110 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">

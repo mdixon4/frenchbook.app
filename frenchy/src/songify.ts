@@ -613,7 +613,7 @@ const extractWayfindingAnnotations = ({ layout, lines, classes }: {layout: Array
         start: b.column,
         end: b.column,
         style: '',
-        text: replaceSnippets('\\coda \\right-down')
+        text: replaceSnippets('\\coda\\right-down')
       })
     }
   })
@@ -925,6 +925,28 @@ const parseFrontMatter = (frontMatter: string): MetaData => {
 }
 
 
+const suggestBottomSpacing = (part: SongPart, marginSize: number) => {
+
+  if (part.classes.includes('bottom-flush')
+    || part.classes.includes('bottom-tight')
+    || part.classes.includes('bottom-cosy')
+    || part.classes.includes('bottom-comfortable')
+    || part.classes.includes('bottom-roomy')
+  ) return
+
+  part.bottomMargin = marginSize
+  part.classes.push({
+    '0': 'bottom-flush',
+    '1': 'bottom-tight',
+    '1.5': 'bottom-cosy',
+    '2': 'bottom-comfortable',
+    '3': 'bottom-roomy'
+  }[marginSize] || '')
+}
+
+
+
+
 const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Array<SongPart> => {
   // Default to "2", unless we change it later
   parts.forEach(p => {
@@ -942,45 +964,44 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   // If it's a HR, apply the class from the next stanza if it doesn't have its own
   parts.forEach((p, idx, parts) => {
     let previousPart = parts.slice(0, idx).filter(part => part.type === 'stanza' || 'plain-text').slice(-1)?.[0]
-    console.log({ p, previousPart })
 
     if (p.classes.includes('flush')) {
       p.topMargin = 0
-      if (previousPart) previousPart.bottomMargin = 0
+      if (previousPart) suggestBottomSpacing(previousPart, 0)
     }
     else if (p.classes.includes('tight')) {
       p.topMargin = 1
-      if (previousPart) previousPart.bottomMargin = 1
+      if (previousPart) suggestBottomSpacing(previousPart, 1)
     }
     else if (p.classes.includes('cosy')) {
       p.topMargin = 1.5
-      if (previousPart) previousPart.bottomMargin = 1.5
+      if (previousPart) suggestBottomSpacing(previousPart, 1.5)
     }
     else if (p.classes.includes('comfortable')) {
       p.topMargin = 2
-      if (previousPart) previousPart.bottomMargin = 2
+      if (previousPart) suggestBottomSpacing(previousPart, 2)
     }
     else if (p.classes.includes('roomy')) {
       p.topMargin = 4
-      if (previousPart) previousPart.bottomMargin = 4
+      if (previousPart) suggestBottomSpacing(previousPart, 4)
     }
     else if (p.type === 'hr') {
       let nextClasses = parts[idx + 1]?.classes || []
       if (nextClasses.includes('flush')) {
         p.topMargin = 0
-        if (previousPart) previousPart.bottomMargin = 0
+        if (previousPart) suggestBottomSpacing(previousPart, 0)
       } else if (nextClasses.includes('tight')) {
         p.topMargin = 1
-        if (previousPart) previousPart.bottomMargin = 1
+        if (previousPart) suggestBottomSpacing(previousPart, 1)
       } else if (nextClasses.includes('cosy')) {
         p.topMargin = 1.5
-        if (previousPart) previousPart.bottomMargin = 1.5
+        if (previousPart) suggestBottomSpacing(previousPart, 1.5)
       } else if (nextClasses.includes('comfortable')) {
         p.topMargin = 2
-        if (previousPart) previousPart.bottomMargin = 2
+        if (previousPart) suggestBottomSpacing(previousPart, 2)
       } else if (nextClasses.includes('roomy')) {
         p.topMargin = 4
-        if (previousPart) previousPart.bottomMargin = 4
+        if (previousPart) suggestBottomSpacing(previousPart, 4)
       }
     }
   })

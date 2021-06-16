@@ -154,10 +154,7 @@ watch(pageElement, () => {
   .arrow.right-down-squished {
     display: none;
   }
-  .tight-bottom .arrow.right-down-squished {
-    display: initial;
-  }
-  .tight-bottom .arrow.right-down {
+  .arrow.left-down-squished {
     display: none;
   }
 

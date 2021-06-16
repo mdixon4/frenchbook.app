@@ -77,6 +77,7 @@ watch(span, growSpan)
   .exterior .span {
     font-family: var(--annotation-script-font);
     font-style: italic;
+    line-height: 1.1;
     /* line-height: calc(18/16 * 1rem); */
     white-space: pre-wrap;
     z-index: 41;
@@ -323,19 +324,22 @@ watch(span, growSpan)
     margin-top: 0.5ch;
   }
 
-  .exterior.bottom svg.right-down, 
+  /* .exterior.bottom svg.right-down, 
   .exterior.bottom-right svg.right-down {
     position: relative;
     bottom: 0.45em;
+  } */
+  .exterior.bottom .right-down {
+    display: none;
   }
-  .exterior.top svg.left-down,
-  .exterior.top svg.right-down {
-    position: relative;
-    bottom: 0.4em;
+  .exterior.bottom .right-down-squished {
+    display: inline-block;
   }
-  .exterior.top svg.down-right {
-    position: relative;
-    bottom: -0.15em;
+  .exterior.top .left-down {
+    display: none;
+  }
+  .exterior.top .left-down-squished {
+    display: inline-block;
   }
 
 
@@ -358,23 +362,33 @@ watch(span, growSpan)
   left: 0.2em;
 }
 
-.to-coda-horizontal-bottom {
-  /* background: red; */
-}
-.to-coda-horizontal-bottom .right-down, .to-coda-horizontal-bottom .right-down-squished {
-  position: relative;
-  top: calc(-1em + 0.125 * var(--y-unit) * var(--bottom-margin));
-  /* margin-top: calc(-4.25 * var(--y-unit)); */
-}
-.tight-bottom .to-coda-horizontal-bottom .smufl-symbol.coda {
-  /* font-size: 0.9em; */
-  bottom: -0.11em;
-  /* background: pink; */
-  clip-path: ellipse(1em 0.32em at 0.35em -0.47em);
-  /* clip-path: inset(100%); */
-}
 
 
+.exterior.bottom .right-down-squished {
+  position:relative;
+  margin-right: -0.4em;
+}
+.exterior.bottom .smufl-symbol.coda {
+  /* Shorten the vertical extenders */
+  font-size: 1.4rem;
+  clip-path: ellipse(1em 0.4em at 0.35em -0.43em);
+}
+.bottom-tight .exterior.bottom .smufl-symbol.coda {
+  clip-path: ellipse(1em 0.32em at 0.35em -0.44em);
+}
+.exterior.top .left-down-squished {
+  position:relative;
+  margin-left: -0.4em;
+}
+.exterior.top .smufl-symbol.coda {
+  /* Shorten the vertical extenders */
+  font-size: 1.4rem;
+  bottom: -0.24em;
+  clip-path: ellipse(1em 0.4em at 0.35em -0.5em);
+}
+.tight .exterior.top .smufl-symbol.coda {
+  clip-path: ellipse(1em 0.32em at 0.35em -0.5em);
+}
 
 .coda-immediate.span {
   bottom: calc(0.5 * var(--bar-height));

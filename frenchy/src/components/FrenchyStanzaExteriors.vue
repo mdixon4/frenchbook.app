@@ -136,6 +136,11 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
   .tight .exterior.top, .exterior.top-left, .exterior.top-right {
     margin-bottom: 0;
   }
+  .bottom-tight .exterior.bottom, 
+  .bottom-tight .exterior.bottom-left, 
+  .bottom-tight .exterior.bottom-right {
+    margin-top: 0;
+  }
 
 /*
   .coda-here {
