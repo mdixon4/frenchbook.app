@@ -86,17 +86,17 @@ watch(span, growSpan)
   .exterior .span-text strong {
     font-family: var(--annotation-font);
     font-style: normal;
-    /* font-size: calc(18/16 * 1em); */
+    font-size: calc(18/16 * 1em);
   }
   .exterior .title {
     font-family: var(--annotation-font);
     font-style: normal;
-    /* font-size: calc(18/16 * 1em); */
+    font-size: calc(18/16 * 1em);
     font-weight: bold;
   }
   .exterior .title em {
     font-family: var(--annotation-script-font);
-    /* font-size: calc(16/18 * 1em); */
+    font-size: calc(16/18 * 1em);
     font-weight: normal;
   }
   .exterior .flow {

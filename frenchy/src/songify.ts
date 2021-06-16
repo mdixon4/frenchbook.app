@@ -332,12 +332,10 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
 const formatOrdinals = (text: string): string => text.replaceAll(/(\d)(st|nd|rd|th)(?!>[a-z])/g, '$1<sup>$2</sup>')
 
 const parseInlineMarkdown = (text: string): string => {
-  text = markdownit({
+  return markdownit({
     typographer: true,
     html: true
   }).renderInline(text)
-  text = formatOrdinals(text)
-  return text
 }
 
 
