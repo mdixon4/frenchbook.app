@@ -1,28 +1,17 @@
 <template>
   <div class="stanza" :style="{
     '--default-indent': stanza.indent,
-  }" :class="stanza.classes">
-    <div class="stanza-break">
-      <div class="stanza-title">
-        <span>{{ stanza.title }}</span>
-        <span class="outline">{{ stanza.title }}</span>
-      </div>
-    </div>
-    <div v-if="stanza.classes.includes('coda')" class="coda-here">
-      <svg class="coda-symbol" width="35" height="43" viewBox="0 0 35 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.704 23.424C16.752 24.192 16.848 25.536 16.944 27.504C16.992 28.992 17.04 29.856 17.04 30.288C17.04 30.672 16.944 30.528 16.464 30.528C15.072 30.528 14.304 28.608 14.256 24.816V23.04L15.12 22.896C15.696 22.8 16.08 22.752 16.32 22.752L16.656 22.704L16.704 23.424ZM21.12 24.336C21.12 25.92 21.072 27.072 20.88 27.696C20.688 28.32 20.304 28.944 19.68 29.472C19.248 29.808 19.056 30 19.008 30C18.96 30 18.912 29.472 18.864 28.416C18.816 27.36 18.768 26.112 18.672 24.72C18.576 23.328 18.576 22.656 18.576 22.656C18.576 22.656 18.912 22.56 19.536 22.464C20.16 22.368 20.592 22.272 20.736 22.272L21.12 22.224V24.336ZM16.08 11.04C16.128 11.184 16.128 11.568 16.176 12.24C16.224 12.912 16.272 14.304 16.416 16.464C16.512 18.096 16.56 19.104 16.56 19.536C16.56 19.92 16.272 19.824 15.312 19.92C14.496 20.016 14.064 20.016 14.016 19.968C13.968 19.92 13.968 19.056 13.968 17.328C13.968 15.6 13.968 14.448 14.112 13.92C14.4 12.72 14.784 11.856 15.312 11.328C15.744 10.848 16.032 10.752 16.08 11.04ZM18.672 10.608C19.488 10.992 20.112 12.048 20.448 13.776C20.592 14.592 20.736 16.032 20.832 18.144L20.88 19.152L20.16 19.2C19.632 19.248 19.248 19.344 18.912 19.44C18.576 19.536 18.384 19.536 18.384 19.536C18.384 19.536 18.288 18.192 18.144 15.504C18 12.816 17.952 11.328 17.952 10.992C17.952 10.656 18 10.512 18.096 10.464C18.192 10.416 18.336 10.464 18.672 10.608ZM15.984 0.191998C15.696 0.287996 15.552 0.383999 15.552 0.528C15.552 0.671999 15.6 1.92 15.744 4.224C15.888 6.528 15.936 7.68 15.936 7.68C15.936 7.68 15.648 7.776 15.168 8.016C11.568 9.696 8.736 12.624 6.768 16.8C6.192 18.048 5.76 19.488 5.424 21.12C5.376 21.264 4.464 21.456 2.688 21.744L0 22.176V22.944C0 23.424 0.0959978 23.856 0.287998 24.24C0.479999 24.624 0.623998 24.864 0.815998 25.056L1.104 25.344L3.264 24.864L5.376 24.384L5.424 24.72C5.808 27.072 6.768 28.896 8.304 30.288C10.272 32.112 12.864 33.12 15.984 33.36C16.8 33.408 17.184 33.456 17.232 33.504C17.328 33.6 17.472 36.096 17.712 40.992L17.76 42.384H18.288C18.624 42.384 18.912 42.336 19.152 42.288L19.488 42.144L19.44 40.128C19.392 38.736 19.344 37.248 19.248 35.616C19.152 33.984 19.152 33.168 19.152 33.12C19.152 33.072 19.296 32.976 19.632 32.832C21.408 32.208 23.184 30.96 24.96 29.136C27.168 26.88 28.752 24.336 29.712 21.456C29.808 21.168 29.904 21.024 29.952 20.976C30 20.928 30.72 20.832 32.16 20.544C33.6 20.256 34.416 20.112 34.56 20.064C34.704 20.016 34.752 19.872 34.704 19.584C34.56 18.672 34.272 17.952 33.936 17.424C33.792 17.184 33.696 17.088 33.552 17.136C33.408 17.184 32.88 17.328 31.872 17.52C30.864 17.712 30.384 17.808 30.384 17.808C30.384 17.808 30.288 17.328 30.24 16.416C30 13.776 29.136 11.52 27.6 9.744C26.544 8.544 25.2 7.68 23.568 7.248C22.752 7.056 21.888 6.96 21.024 6.96C20.16 6.96 19.248 7.056 18.384 7.248C18 7.344 17.808 7.392 17.808 7.344C17.808 7.296 17.712 6.192 17.568 3.936C17.424 1.68 17.376 0.431998 17.376 0.143997C17.376 -2.38419e-06 17.232 0 16.896 0C16.56 0 16.272 0.0959973 15.984 0.191998Z"/>
-      </svg>
-      <svg class="coda-arrow" viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-      </svg>
-    </div>
-    <div v-if="stanza.classes.includes('segno')" class="segno-here">
-      <svg class="segno-symbol" width="28" height="43" viewBox="0 0 28 43" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M25.1945 0.252234C23.5145 1.35623 20.2025 6.30023 15.2585 14.9882C14.5385 16.3322 14.0585 17.1482 13.9145 17.3882L13.6745 17.7242H11.7545C10.4585 17.7242 9.7385 17.6762 9.4985 17.5322C9.1145 17.2922 8.9705 16.9082 9.0665 16.3322C9.2105 15.5162 9.6425 14.7962 10.3625 14.1242C11.0825 13.5002 11.9945 12.8762 13.1945 12.3962C14.3945 11.9162 15.4025 11.6762 16.3145 11.6762H16.8425L16.8905 10.5242C16.8905 10.3322 16.8905 10.0922 16.8905 9.90023C16.8905 9.42023 16.8425 9.03623 16.8425 8.79623C16.6505 7.88423 16.1225 6.82823 15.3065 5.72423C14.7305 4.90823 14.1545 4.47623 13.5785 4.42823C13.5305 4.42823 13.4825 4.42823 13.4345 4.42823C12.8585 4.42823 11.9945 4.76424 10.8425 5.34024C7.3865 7.11624 5.2265 9.46823 4.3625 12.4442C4.0745 13.3562 3.9305 14.3642 3.9305 15.3722C3.9305 16.2842 4.0265 17.2442 4.2665 18.2042C4.6985 20.5082 5.2745 22.1402 5.8985 23.1482C6.6185 24.2522 7.6265 24.9722 8.9225 25.3082C9.0665 25.3562 9.1625 25.3562 9.2105 25.4042C9.4985 25.4522 9.5945 25.5482 9.4985 25.6922C9.0185 26.3162 7.7225 28.8122 5.5625 33.2282C3.6905 37.0682 2.7785 39.6122 2.7785 41.4842C2.7785 42.1082 2.9705 42.5402 3.3065 42.7322C3.7385 42.9722 4.1705 42.8282 4.6025 42.3482C5.8025 41.1002 8.1065 37.1162 11.4665 30.3962L13.8185 25.6922H15.0185C16.6025 25.6922 17.7545 25.8362 18.5705 26.0762C19.9625 26.5082 21.0665 27.0842 21.8345 27.7562C22.0745 27.9962 22.2665 28.2362 22.4105 28.4282C22.4585 28.6202 22.5065 28.7642 22.5065 28.8602C22.5065 29.4842 21.4985 29.7722 19.5305 29.7722C18.7625 29.7722 18.2825 29.7242 17.9945 29.6282C17.7065 29.5322 17.3225 29.2442 16.7945 28.7162C16.0265 27.9962 15.4985 27.6602 15.0665 27.6602H15.0185C14.0105 27.8042 13.1945 28.5722 12.5225 29.9642C11.9945 31.0202 11.7545 32.0762 11.7545 33.2762C11.7545 33.3722 11.7545 33.4682 11.8025 33.5642C11.8505 34.8602 12.0905 36.0602 12.4745 37.1642L12.5705 37.5002H16.5545C19.2425 37.5002 20.8745 37.4522 21.4985 37.4042C23.0825 37.2602 24.2345 36.8762 25.0505 36.3002C25.8665 35.7242 26.3945 34.8602 26.7305 33.6602C26.8745 33.1802 26.9225 32.2202 26.9225 30.7322C26.9225 29.2442 26.8265 28.0922 26.6825 27.2762C26.3465 25.6442 25.9625 24.3002 25.4345 23.2922C24.0905 20.6042 21.9305 18.9242 19.0025 18.2042C18.4265 18.0602 18.1385 18.0122 18.1385 17.9642C18.1385 17.9162 18.5225 17.1002 19.4345 15.5162C21.4505 11.9642 23.5625 8.50823 25.8185 5.14823L27.8345 2.17223L27.7865 1.54824C27.7385 0.636234 27.2105 0.108232 26.2025 0.0122322C25.8185 -0.0357686 25.4825 0.0602335 25.1945 0.252234ZM24.3305 12.5402C23.7545 12.6362 23.1785 13.5002 22.6505 15.1802C22.4105 15.7562 22.3145 16.2362 22.3145 16.5722V17.1002L23.8505 17.0042C24.8585 16.9562 25.4825 16.9562 25.6265 16.9082C26.1545 16.7642 26.5865 16.3322 27.0185 15.5642C27.4505 14.6522 27.6905 13.9322 27.6905 13.3562C27.6905 12.9722 27.5945 12.6842 27.3545 12.5882C27.1145 12.4922 26.6345 12.4922 25.8185 12.4922C25.0025 12.4922 24.4745 12.4922 24.3305 12.5402ZM1.9145 25.2122C1.3865 25.3082 0.810502 26.2202 0.186501 27.9482C-0.0534985 28.5722 -0.0534994 29.0042 0.138501 29.2442C0.330501 29.4842 0.858501 29.5802 1.6745 29.6282C1.7705 29.6762 1.8665 29.6762 1.9625 29.6762C2.9225 29.6762 3.5945 29.4842 3.9785 29.1002C4.3625 28.7162 4.6985 28.0922 4.9865 27.2762C5.1785 26.7482 5.2745 26.3162 5.2745 26.0282C5.2745 25.8842 5.2265 25.7402 5.2265 25.6442C5.0825 25.3082 4.4585 25.1162 3.3545 25.1162C2.5385 25.1642 2.0585 25.1642 1.9145 25.2122Z" />
-      </svg>
-    </div>
+    '--top-margin': stanza.topMargin,
+    '--bottom-margin': stanza.bottomMargin,
+    '--height': stanza.lines.length
+  }" :class="[{
+    'has-title': stanza.title.length > 0,
+    'has-top-matter': stanza.annotations.some(a => a.side === 'top')
+  }, stanza.classes ]">
+    <!-- <div class=  "stanza-break"></div> -->
     <div class="stanza-music">
-      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="{ 'align-right': line.align === 'right' }">
+      <frenchy-stanza-exteriors :stanza="stanza"></frenchy-stanza-exteriors>
+      <div v-for="(line, lineIdx) in stanza.lines" :key="lineIdx" class="line" :class="[ line.classes, { 'align-right': line.align === 'right' }]">
         <div v-if="lineIdx === 0 && (stanza.title === 'CODA' || stanza.title === 'TAG')" class="coda-arrow">
           <svg viewBox="0 0 24 24" width="32px" height="32px" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
         </div>
@@ -33,35 +22,30 @@
           </div>
         </div>
       </div>
-      <svg class="stanza-border-b" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <mask :id="`stanza-border-eraser-mask-b-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path>
-        </mask>
-        <mask :id="`stanza-mask-b-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <!-- <path class="mask-stroke-gap" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="black"></path> -->
-          <!-- <path class="mask-stroke-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke="white"></path> -->
-          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' :d="stanzaBorderPath" stroke-width="0" fill="black"></path> -->
-        </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' :d="stanzaBorderPath"></path>
-        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
-      </svg>
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <mask :id="`stanza-mask-${stanza.id}`">
-          <rect x="-99" y="-99" width="9999" height="9999" fill="white"></rect>
-          <!-- <path class="mask-fill-inner" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" stroke-width="white" fill="black"></path> -->
-        </mask>
-        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" :mask="`url(#stanza-mask-${stanza.id})`"></path>
+        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        <template v-if="stanza.classes.includes('shadow')">
+        <defs>
+          <mask :id="`mask${randomId}`">
+            <rect x="-999" y="-999" width="9999" height="9999" fill="white"></rect>
+            <path class="shadow-mask" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" fill="black"></path>
+          </mask>
+        </defs>
+        <g :mask="`url(#mask${randomId})`">
+          <path class="shadow-fill" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        </g>
+        </template>
       </svg>
     </div>
-    <div class="stanza-break"></div>
+    <!-- <div class="stanza-break"></div> -->
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
+import { defineProps, computed, ref } from 'vue'
 import FrenchyBar from './FrenchyBar.vue'
+import FrenchyStanzaExteriors from './FrenchyStanzaExteriors.vue'
 
 const props = defineProps({
   stanza: {
@@ -69,13 +53,20 @@ const props = defineProps({
   }
 })
 
+// const stanza = computed(() => props.part)
+
+const randomId = Math.round(Math.random() * 100_000)
+
 const stanzaBorderPath = computed(() => {
-  return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
+  if (props.stanza.lines.length) {
+    return `M${props.stanza.borderCoordinates.map(coords => coords.map(coord => coord * 100).join(' ')).join(' L')} Z`
+  }
+  return ''
 })
 
 const stanzaBorderViewBox = computed(() => {
-  let width = props.stanza.width * 100
-  let height = props.stanza.height * 100
+  let width = Math.max(props.stanza.width * 100, 0)
+  let height = Math.max(props.stanza.height * 100, 0)
   return `0 0 ${width} ${height}`
 })
 
@@ -83,89 +74,41 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
-  /* .bar.is-topmost .top-barline {
-    stroke: white;
-    stroke-width: calc(var(--stroke-width) / 2);
-  }
-  .bar.is-bottommost .bottom-barline {
-    display: none;
-  }
-  .bar.is-rightmost .right-barline {
-    display: none;
-  }
-  .bar.is-leftmost .left-barline {
-    display: none;
-  } */
-
-  .stanza-border, .stanza-border-b {
+  .stanza-border, .stanza-shadow {
     position: absolute;
     inset: 0;
-    height: 100%;
+    height: calc(var(--height) * var(--bar-height));
     width: 100%;
     overflow: visible;
     pointer-events: none;
-    /* opacity: 1; */
+    /* background: orange; */
   }
-
-  .stanza-border-b {
+  .stanza-border .border-stroke-gap {
     display: none;
   }
-  .stanza.b .stanza-border-b {
-    display: block;
-  }
-  .stanza.b .stanza-border {
-    display: none;
-  }
-
-  /* .stanza-border { fill: transparent; } */
-
   .stanza-border .border-stroke {
     fill: transparent;
     stroke: var(--gridline-color);
-    /* stroke: var(--gridline-color); */
     stroke-width: var(--thick-stroke-width);
   }
-
-
-  .stanza-border-b .border-stroke {
-    fill: transparent;
-    stroke: var(--gridline-color);
-    /* stroke: bl; */
-    /* stroke: blue; */
-    stroke-width: var(--thick-stroke-width);
-    /* stroke-width: 10px; */
-  }
-  .stanza-border-b .border-stroke-gap {
+  .stanza.b .border-stroke-gap {
+    display: unset;
     fill: transparent;
     stroke: white;
-    stroke-width: calc(var(--stroke-width) * 0.5);
-    stroke-width: calc(var(--stroke-width) * .75);
+    stroke-width: calc(var(--stroke-width) * .75); /* Looks too wide on screen, but just right on pdf */
   }
-
-  .stanza.b .mask-stroke-gap {
-    stroke-width: 2px;
-    /* stroke-width: calc(var(--thick-stroke-width) / 2 + var(--stroke-width) / 2); */
-  }
-  /* .stanza.b .mask-stroke-inner {
-    stroke-width: calc(1 * var(--stroke-width));
-  }
-  .mask-stroke-inner {
-    stroke-width: var(--stroke-width);
-  } */
-  
   .stanza-border { z-index: 40 }
-
-
-
+  .stanza.shadow .stanza-border { z-index: 41 }
+  .stanza.shadow .shadow-mask {
+    stroke-width: var(--thick-stroke-width);
+    stroke: black;
+  }
+  .stanza.shadow .shadow-fill {
+    transform: translate(calc(2 * var(--thick-stroke-width)), calc(2 * var(--thick-stroke-width)));
+    fill: var(--gridline-color, black);
+  }
   .stanza-music {
     position: relative;
-  }
-
-
-
-  .stanza-title {
-    white-space: nowrap;
-    z-index: 50;
   }
 
   .stanza {
@@ -175,30 +118,20 @@ const stanzaBorderViewBox = computed(() => {
     align-items: start;
     page-break-inside: avoid;
     left: calc(var(--indent, var(--default-indent)) * var(--bar-width));
-    margin-top: calc(var(--downdent, 0) * var(--bar-height));
+    /* margin-top: calc(var(--downdent, 1) * var(--y-unit)); */
+    margin-top: calc(var(--top-margin)/2 * var(--y-unit));
+    margin-bottom: 0;
   }
-  .stanza-title {
-    font-size: calc(18/16 * 1rem);
-    /* line-height: calc(18/16 * 1rem * 1.2); */
-    line-height: 1.1;
-    font-family: 'EB Garamond';
-    /* font-family: 'IM Fell DW Pica'; */
-    /* line-height: 2; */
-    /* font-family: 'LilyJAZZ Text'; */
-    position: relative;
-    /* -webkit-text-fill-color: black; */
-    /* paint-order: stroke fill; */
-    /* fill: black; */
-    /* stroke: red; */
-    /* stroke-width: 4px; */
-    /* text-shadow: white 1px 0, white -1px 0, white 0 -1px, white 0 1px; */
+
+  /* .stanza.flush {
+    margin-top: 0;
   }
-  .stanza-title .outline {
-    user-select: none;
-    -webkit-text-stroke: 2px white;
-    position: absolute;
-    left: 0;
-    z-index: -1;
+  .stanza.tight {
+    margin-top: calc(0.5 * var(--y-unit));
+  } */
+
+  .song .stanza.no-top-annotations.no-top-title:first-child {
+    margin-top: 0;
   }
 
   .stanza-break {
@@ -206,6 +139,7 @@ const stanzaBorderViewBox = computed(() => {
     display: flex;
     align-items: flex-end;
     height: calc(var(--row-gap) / 2);
+    /* margin-bottom: 1rem; */
   }
   .stanza-music {
     display: flex;
@@ -223,6 +157,102 @@ const stanzaBorderViewBox = computed(() => {
   .line-text.align-right {
     align-self: end;
   }
+  .line.indent-0-5 {
+    left: calc(0.5 * var(--bar-width));
+  }
+  .line.indent-1 {
+    left: calc(1 * var(--bar-width));
+  }
+  .line.indent-1-5 {
+    left: calc(1.5 * var(--bar-width))
+  }
+  .line.indent-2 {
+    left: calc(2 * var(--bar-width));
+  }
+  .line.indent-2-5 {
+    left: calc(2.5 * var(--bar-width))
+  }
+  .line.indent-3 {
+    left: calc(3 * var(--bar-width));
+  }
+  .line.indent-3-5 {
+    left: calc(3.5 * var(--bar-width))
+  }
+  .line.indent-4 {
+    left: calc(4 * var(--bar-width));
+  }
+  .line.indent-4-5 {
+    left: calc(4.5 * var(--bar-width))
+  }
+  .line.indent-5 {
+    left: calc(5 * var(--bar-width));
+  }
+  .line.indent-5-5 {
+    left: calc(5.5 * var(--bar-width))
+  }
+  .line.indent-6 {
+    left: calc(6 * var(--bar-width));
+  }
+  .line.indent-6-5 {
+    left: calc(6.5 * var(--bar-width))
+  }
+  .line.indent-7 {
+    left: calc(7 * var(--bar-width));
+  }
+  .line.indent-7-5 {
+    left: calc(7.5 * var(--bar-width))
+  }
+  
+  .stanza.indent-0 {
+    left: 0;
+  }
+  .stanza.indent-0-5 {
+    left: calc(0.5 * var(--bar-width));
+  }
+  .stanza.indent-1 {
+    left: calc(1 * var(--bar-width));
+  }
+  .stanza.indent-1-5 {
+    left: calc(1.5 * var(--bar-width));
+  }
+  .stanza.indent-2 {
+    left: calc(2 * var(--bar-width));
+  }
+  .stanza.indent-2-5 {
+    left: calc(2.5 * var(--bar-width));
+  }
+  .stanza.indent-3 {
+    left: calc(3 * var(--bar-width));
+  }
+  .stanza.indent-3-5 {
+    left: calc(3.5 * var(--bar-width));
+  }
+  .stanza.indent-4 {
+    left: calc(4 * var(--bar-width));
+  }
+  .stanza.indent-4-5 {
+    left: calc(4.5 * var(--bar-width));
+  }
+  .stanza.indent-5 {
+    left: calc(5 * var(--bar-width));
+  }
+  .stanza.indent-5-5 {
+    left: calc(5.5 * var(--bar-width));
+  }
+  .stanza.indent-6 {
+    left: calc(6 * var(--bar-width));
+  }
+  .stanza.indent-6-5 {
+    left: calc(6.5 * var(--bar-width));
+  }
+  .stanza.indent-7 {
+    left: calc(7 * var(--bar-width));
+  }
+  .stanza.indent-7-5 {
+    left: calc(7.5 * var(--bar-width));
+  }
+
+
   .bar {
     width: var(--bar-width);
     height: var(--bar-height);

@@ -1,12 +1,12 @@
 <template>
   <div class="lily rendered-chord add-outline" :class="[ shape ]">
-    <span v-html="chord.renderedChord"></span>
-    <span class="outline" v-html="chord.renderedChord"></span>
+    <outlined-text :text="chord.renderedChord"></outlined-text>
   </div>
 </template>
 
 <script setup>
 import { computed, defineProps, toRefs } from 'vue'
+import OutlinedText from './OutlinedText.vue'
 
 
 const props = defineProps({
@@ -29,60 +29,73 @@ const shape = computed(() => {
 </script>
 
 <style>
-
-.rendered-chord {
-  font-family: 'LJC';
-  font-size: calc(var(--chord-size) * 0.8);
-  transform: scaleX(0.95) translateY(0.18em);
-}
-.rendered-chord.full-square {
-  font-size: calc(var(--chord-size) * 1.3);
-}
-.lily .mod-digit {
-  transform: translateY(-0.3em) scale(0.65);
-  margin: 0 -0.25em 0 -0.1em;
-}
-
 .rendered-chord .outline {
   user-select: none;
-  -webkit-text-stroke: 2px white;
   position: absolute;
   left: 0;
   z-index: -1;
 }
 
 
-.lily .bass-slash {
-  margin-left: -0.1em;
-}
-.left-triangle .lily .bass-slash {
-  top: .6em;
-  left: 0.2em;
-}
-.left-triangle .lily .bass {
-  top: 1.35em;
-  font-size: 0.9em;
-}
-.lily .mod-triangle {
-  font-size: 0.8em;
-}
 
 .rendered-chord {
-  /* font-family: 'Reprise Chords'; */
+  font-family: 'LJC';
+  font-size: calc(var(--chord-size) * 0.8);
+  transform: scaleX(0.95) translateY(0.18em);
   line-height: 0.1;
   display: inline-block;
   position: relative;
-  /* font-size: calc(var(--chord-size) * 1.2); */
   margin: 0 auto;
-  /* transform: translateY(0.1em); */
 }
 
-.full-square {
-  /* font-size: calc(var(--chord-size) * 1.9); */
+.rendered-chord.full-square {
+  font-size: calc(var(--chord-size) * 1.3);
+}
+.mod-digit {
+  transform: translateY(-0.7em);
+  font-size: 0.65em;
+  margin: 0 -0.25em 0 -0.0em;
+}
+
+.root {
+  display: inline-block;
+}
+.modifier {
+  display: inline-block;
+
+}
+.mod-stack .mod-digit {
+  margin: 0;
+}
+.mod-stack .mod-digit:first-child {
+  transform: translateY(-0.7em);
+  font-size: 0.65em;
+}
+.mod-stack .mod-digit:not(:first-child) {
+  transform: translateY(0.3em);
+}
+
+.mod-stack {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.mod-sus {
+  font-size: 0.65em;
+  margin-left: -0.1em;
 }
 
 
 
+.bass-slash {
+  display: inline-block;
+  transform: scale(0.8) translateY(0.15em);
+  margin-left: -0.2em;
+}
+.left-triangle .bass-slash {
+  top: .6em;
+  left: 0.2em;
+}
 
 
 .bass {
@@ -91,12 +104,13 @@ const shape = computed(() => {
   font-size: 0.8em;
   margin-left: -0.15em;
 }
-
-.bass-slash {
-  display: inline-block;
-  transform: scale(0.8) translateY(0.05em);
-  margin-left: -0.1em;
+.left-triangle .bass {
+  top: 1.35em;
+  font-size: 0.9em;
 }
+
+
+
 
 .mod-digit {
   display: inline-block;
@@ -109,7 +123,12 @@ const shape = computed(() => {
 }
 
 .mod-triangle {
-  /* margin: 0 -0.08em; */
+  font-size: 0.8em;
+}
+
+.mod-plus {
+  transform: translateY(-0.3em);
+  margin: 0 -0.1em 0 0;
 }
 
 .left-triangle .bass-slash {

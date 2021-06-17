@@ -1,22 +1,28 @@
-import { elementToSVG } from 'dom-to-svg'
+import { regex } from './util'
 
-//build regexes without worrying about
-// - double-backslashing
-// - adding whitespace for readability
-// - adding in comments
-let clean = (piece) => (piece
-  .replace(/((^|\n)(?:[^\/\\]|\/[^*\/]|\\.)*?)\s*\/\*(?:[^*]|\*[^\/])*(\*\/|)/g, '$1')
-  .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
-  .replace(/\n\s*/g, '')
-);
-const regex = ({raw}, ...interpolations) => (
-  new RegExp(interpolations.reduce(
-      (regex, insert, index) => (regex + insert + clean(raw[index + 1])),
-      clean(raw[0])
-  ))
-);
+export interface Chord {
+  input?: {
+    descriptor: string
+  }
+  formatted?: {
+    descriptor: string
+    chordChanges: Array<string>
+  }
+  raw?: string
+  root?: string
+  rootSymbols?: string
+  modifier?: string
+  modifiers?: Array<string>
+  modifierSymbols?: Array<string>
+  alterations?: string
+  alterationSymbols?: string
+  bass?: string
+  bassSymbols?: string
+}
 
-
+type SymbolList = {
+  [key: string]: string
+}
 
 
 
@@ -73,7 +79,7 @@ const SWAPSIES = Object.entries(DEFAULT_SYMBOLS).reduce((acc, [key, val]) => {
 }, {})
 
 
-const MODIFIER_SYMBOLS = {
+const MODIFIER_SYMBOLS: SymbolList = {
   // 'b': '&#xe188;',
   // '#': '&#xe189;',
   // 'add': '&#xe18b;',
@@ -95,6 +101,24 @@ const MODIFIER_SYMBOLS = {
   halfdim: '<span class="mod-symbol">@</span>',
   // '^': '<span class="mod-symbol mod-triangle">&#xe18a;</span>',
   '^': '<span class="mod-symbol mod-triangle">^</span>',
+  '+': '<span class="mod-symbol mod-plus">+</span>',
+  'sus': '<span class="mod-sus">sus</span>',
+  'sus4': '<span class="mod-sus">sus4</span>',
+  'sus2': '<span class="mod-sus">sus2</span>',
+  '7sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '9sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '11sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '13sus': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus</span></span>',
+  '7sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '9sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '11sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '13sus2': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus2</span></span>',
+  '7sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '9sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '11sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '13sus4': '<span class="mod-stack"><span class="mod-digit">7</span><span class="mod-sus">sus4</span></span>',
+  '69': '<span class="mod-stack"><span class="mod-digit">6</span><span class="mod-digit">9</span></span>',
+  '6/9': '<span class="mod-stack"><span class="mod-digit">6</span><span class="mod-digit">9</span></span>',
   // dim: '<span class="mod-symbol">º</span>',
   dim: '<span class="mod-symbol">°</span>',
   '1': '<span class="mod-digit">1</span>',
@@ -153,35 +177,30 @@ const MODIFIER2_SYMBOLS = {
   // 'striangle': '&#xe18a;'
 }
 
-const dictionaryReplace = (inputStr, dictionary) => {
+const dictionaryReplace = (inputStr: string, dictionary: {}): string => {
   let outputStr = inputStr
   if (!outputStr) return outputStr
-  Object.entries(dictionary).forEach(([key, val]) => {
+  Object.entries(dictionary).forEach(([key, val]: [string, string]) => {
     outputStr = outputStr.replace(key, val)
   })
   return outputStr
 }
 
-const dictionaryReplaceToken = (token, dictionary) => {
 
-}
-
-
-const arrayEquals = (arrA, arrB) => {
+const arrayEquals = (arrA: Array<any>, arrB: Array<any>): boolean => {
   return Array.isArray(arrA) &&
     Array.isArray(arrB) &&
     arrA.length <= arrB.length &&
     arrA.every((val, index) => val === arrB[index]);
 }
 
-const preParser = chordText => {
+const preParser = (chordText: string): string => {
   return chordText.replace('halfdim', 'Ø')
 }
 
-const catchHalfDim = chord => {
+const catchHalfDim = (chord: Chord): Chord => {
   // if (chord.formatted.descriptor === 'mi7' && chord.formatted.chordChanges.includes('b5')) {
   if (chord.input.descriptor === 'Ø') {
-    console.log('HALFDIM!')
     chord.formatted.chordChanges = chord.formatted.chordChanges.filter(cc => cc !== 'b5')
     chord.formatted.descriptor = 'Ø'
   }
@@ -191,7 +210,7 @@ const catchHalfDim = chord => {
 
 const chordParserRegex = regex`^
   (?<root>[A-G](#|b)?)
-  (?<modifier>(m|M|ma|mi|\^|MI|Maj|dim|halfdim|Ø|sus|o|0)?\d*)?
+  (?<modifier>(maj|ma|mi|m|MI|Maj|M|\^|dim|halfdim|Ø|(\d?sus\d*)|o|0|\+)?\d*)?
   (?<alterations>.*?)
   (/(?<bass>[A-G](#|b)?))?
 $`
@@ -200,20 +219,22 @@ const modifierRegex = regex`^
   (mi|m|min|minor|Mi|-)?
   (M|Ma|ma|maj|MA|MAJ|major|\^)?
   (dim|o|halfdim|0)?
+  (\+)?
+  (\d*sus\d?)?
   (\d+)?
 $`
 
 
-const tokeniseModifier = modifier => {
+const tokeniseModifier = (modifier: string) => {
   let matches = (modifier || '').match(modifierRegex)
-  if (matches.length) {
+  if (matches && matches.length) {
     return matches.slice(1).filter(Boolean)
   }
   return []
 }
 
 
-const parse = chordText => {
+const parse = (chordText: string): Chord => {
   let matches = chordText.match(chordParserRegex)
   if (!matches) return { raw: chordText }
   let modifiers = tokeniseModifier(matches.groups.modifier)
@@ -228,7 +249,7 @@ const parse = chordText => {
 }
 
 
-const swapSymbols = parsedChord => {
+const swapSymbols = (parsedChord: Chord): Chord => {
   let rootSymbols = dictionaryReplace(parsedChord.root, DEFAULT_SYMBOLS)
   let modifierSymbols = parsedChord.modifiers?.map(modifier => MODIFIER_SYMBOLS[modifier] ?? modifier)
   let alterationSymbols = dictionaryReplace(parsedChord.alterations, ALTERATION_SYMBOLS)
@@ -244,19 +265,7 @@ const swapSymbols = parsedChord => {
 }
 
 
-// chords = chords.map(chordText => {
-//   let chord = parse(chordText)
-//   chord = swapSymbols(chord)
-//   console.log(chord)
-//   let outputStr = `<span class="root">${ chord.rootSymbols }</span>`
-//   if (chord.modifiers.length) outputStr += `<span class="modifier">${ chord.modifierSymbols.join('') }</span>`
-//   if (chord.alterations) outputStr += `<span class="alterations">${ chord.alterationSymbols }</span>`
-//   if (chord.bass) outputStr += `<span class="bass-slash">/</span><span class="bass">${ chord.bassSymbols }</span>`
-//   return outputStr
-// })
-
-
-export const renderChord = chordText => {
+export const renderChord = (chordText: string): { parsedChord: Chord, renderedChord: string } => {
   let chord = parse(chordText)
   chord = swapSymbols(chord)
   
@@ -276,143 +285,3 @@ export const renderChord = chordText => {
   }
 }
 
-
-
-
-// class RepriseRenderedChord extends HTMLElement {
-//   connectedCallback () {
-//     let chord = this.innerHTML
-//     chord = parse(chord)
-//     chord = swapSymbols(chord)
-//     this.classList.add(this.getAttribute('shape'))
-//     let innerDiv = document.createElement('div')
-//     innerDiv.classList.add('rendered-chord', this.getAttribute('shape'), 'lily')
-//     if (this.getAttribute('shape') === 'leftTriangle' && chord.bass) {
-//       this.classList.add('compact-left')
-//     }
-//     if (this.getAttribute('shape') === 'rightTriangle' && chord.bass) {
-//       // this.classList.add('compact-right')
-//     }
-
-//     innerDiv.innerHTML = outputStr
-    
-//     this.innerHTML = `
-//       <style>
-//         .pori.rendered-chord {
-//           font-family: 'Pori Chords Std';
-//           font-size: calc(var(--chord-size) * 0.9);
-//         }
-//         .pori.fullSquare {
-//           font-size: calc(var(--chord-size) * 1.5);
-//         }
-
-//         .lily.rendered-chord {
-//           font-family: 'LJC';
-//           font-size: calc(var(--chord-size) * 0.8);
-//           transform: scaleX(0.95) translateY(0.18em);
-//         }
-//         .lily.fullSquare {
-//           font-size: calc(var(--chord-size) * 1.3);
-//         }
-//         .lily .mod-digit {
-//           transform: translateY(-0.3em) scale(0.65);
-//           margin: 0 -0.25em 0 -0.1em;
-//         }
-//         .lily .bass-slash {
-//           margin-left: -0.1em;
-//         }
-//         .compact-left .lily .bass-slash {
-//           top: .6em;
-//           left: 0.2em;
-//         }
-//         .compact-left .lily .bass {
-//           top: 1.35em;
-//           font-size: 0.9em;
-//         }
-//         .lily .mod-triangle {
-//           font-size: 0.8em;
-//         }
-
-//         .rendered-chord {
-//           font-family: 'Reprise Chords';
-//           line-height: 0.1;
-//           display: inline-block;
-//           position: relative;
-//           font-size: calc(var(--chord-size) * 1.2);
-//           margin: 0 auto;
-//           transform: translateY(0.1em);
-//         }
-
-//         .fullSquare {
-//           font-size: calc(var(--chord-size) * 1.9);
-//         }
-        
-        
-
-        
-    
-//         .bass {
-//           display: inline-block;
-//           transform: translateY(0.2em);
-//           font-size: 0.8em;
-//           margin-left: -0.15em;
-//         }
-    
-//         .bass-slash {
-//           display: inline-block;
-//           transform: scale(0.8) translateY(0.05em);
-//           margin-left: -0.1em;
-//         }
-    
-//         .mod-digit {
-//           display: inline-block;
-//           /* transform: scale(1.3) translateY(0.05em); */
-//         }
-    
-//         .mod-symbol {
-//           display: inline-block;
-//           /* transform: scale(0.8) translateY(-0.15em); */
-//         }
-    
-//         .mod-triangle {
-//           /* margin: 0 -0.08em; */
-//         }
-
-//         .compact-left .bass-slash {
-//           position: absolute;
-//           left: 0.4em;
-//           top: 0.45em;
-//           transform: scale(1) rotate(63deg);
-//           margin: 0;
-//         }
-//         .compact-left .bass {
-//           position: absolute;
-//           left: 0.1em;
-//           top: 1.1em;
-//           margin: 0;
-//         }
-//         .compact-left {
-//           height: 1.2em;
-//         }
-
-//         .compact-right .bass-slash {
-//           position: absolute;
-//           left: 0;
-//           top: 0;
-//           transform: scale(1) rotate(63deg) translateY(-0.3em) translateX(0.7em);
-//         }
-//         .compact-right .bass {
-//           position: absolute;
-//           right: 0;
-//           top: 1em;
-//         }
-//         .compact-right .rendered-chord {
-//           height: 1.1em;
-//         }
-//       </style>
-//       ${ innerDiv.outerHTML }
-//     `
-//   }
-// }
-
-// customElements.define('reprise-rendered-chord', RepriseRenderedChord)

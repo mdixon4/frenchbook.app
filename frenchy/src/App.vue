@@ -7,68 +7,25 @@
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
   </button>
   <div class="desk">
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <div class="page-holder">
-      <div class="page" v-if="song" ref="pageElement">
-        <frenchy-header :metadata="song.metadata"></frenchy-header>
-        <div class="song">
-          <template v-for="(part, idx) in song.parts" :key="idx">
-            <template v-if="part.type === 'hr'"><hr class="hr"></template>
-            <template v-if="part.type === 'stanza'">
-              <frenchy-stanza :stanza="part"></frenchy-stanza>
-            </template>
-            <template v-if="part.type === 'plain-text'">
-              <div class="non-music" v-html="part.html">
-              </div>
-            </template>
-          </template>
-        </div>
-        <component :is="'style'">{{ song.css }}</component>
-      </div>
+      <frenchy-page :song="song"></frenchy-page>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useRouteHash } from '@vueuse/router'
-import panzoom from 'panzoom'
-import base64url from 'base64url'
-import { songify } from './songify.js'
-import FrenchyStanza from './components/FrenchyStanza.vue'
-import FrenchyHeader from './components/FrenchyHeader.vue'
+import { songify } from './songify'
+import { fromUrlHash, toUrlHash } from './util'
 
-const pageElement = ref(null)
+import FrenchyPage from './components/FrenchyPage.vue'
 
-// convert a Unicode string to a string in which
-// each 16-bit unit occupies only one byte
-function toBinary(string) {
-  const codeUnits = new Uint16Array(string.length);
-  for (let i = 0; i < codeUnits.length; i++) {
-    codeUnits[i] = string.charCodeAt(i);
-  }
-  return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
-}
-function fromBinary(binary) {
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return String.fromCharCode(...new Uint16Array(bytes.buffer));
-}
-
-const toUrlHash = utf8String => {
-  return btoa(toBinary(utf8String))
-}
-
-const fromUrlHash = base64String => {
-  return fromBinary(atob(base64String))
-}
-
-
-
+const errorMessage = ref('')
+const isEditing = ref(false)
 let rawSongText = fromUrlHash(window.location.hash.substr(1))
-
 let songText = ref(rawSongText)
+
 watch(songText, () => {
   try {
     window.location.hash = toUrlHash(songText.value)
@@ -79,54 +36,85 @@ watch(songText, () => {
 
 let song = computed(() => {
   try {
+    errorMessage.value = ''
     return songify(songText.value)
-  } catch {
+  } catch (err) {
+    errorMessage.value = err
+    console.error(err)
     return null
-  }
-})
-
-const isEditing = ref(false)
-
-const pz = 
-
-watch(pageElement, () => {
-  if (pageElement.value) {
-    panzoom(pageElement.value, {
-      bounds: true,
-      maxZoom: 3,
-      minZoom: 0.25,
-      // transformOrigin: {x: 0.5, y: 0.5}
-    })
   }
 })
 
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Open+Sans+Condensed:wght@700&display=swap');
   @font-face {
     font-family: 'LJC';
     font-style: normal;
     font-weight: normal;
     src: url('./assets/lilyjazz-chord.otf') format('opentype');
   }
+  @font-face {
+    font-family: 'MuseJazz';
+    font-style: normal;
+    font-weight: normal;
+    src: url('./assets/MuseJazz.otf') format('opentype');
+  }
 
   :root {
-    --bar-width: 23mm;
-    --bar-height: 21mm;
+    --page-width: 210mm;
+    --page-height: 297mm;
+
+    --root-bar-width: 22mm;
+    --page-columns: 8;
+    --x-page-margin: calc(
+      calc(var(--page-width) - var(--page-columns) * var(--root-bar-width))
+      / 2
+    );
+    
+
+    --top-page-margin: 10mm;
+    --bottom-page-margin: 10mm;
+    --root-bar-height: 20mm;
+    --header-height: 16mm;
+
+    --font-size: 4.25mm;
+    --bar-width: var(--root-bar-width);
+    --bar-height: var(--root-bar-height);
     --x-unit: calc(var(--bar-width) / 2);
     --y-unit: calc(var(--bar-height) / 2);
-    --x-page-margin: var(--x-unit);
 
     --row-gap: var(--y-unit);
     --col-gap: var(--x-unit);
 
     --gridline-color: black;
     --stop-color: #DDD;
-    --stroke-width: .5mm;
+    --stroke-width: .25mm;
     --thick-stroke-width: 0.75mm;
+    --rhythm-font-size: 5mm;
+    --text-outline-color: white;
+
+    --serif-font: 'EB Garamond';
+    /* --annotation-font: 'EB Garamond'; */
+    --annotation-font: 'EB Garamond';
+    --annotation-script-font: 'EB Garamond';
+    /* --annotation-font: 'MuseJazz Text'; */
+    /* --serif-font: 'Patrick Hand SC'; */
+    /* --annotation-font: 'Patrick Hand SC'; */
+    /* --annotation-font: 'LilyJazz Text'; */
+    /* --annotation-script-font: 'Patrick Hand'; */
   }
 
+  /* Utility Classes */
+  .absolute {
+    position: absolute;
+  }
+  .teeny {
+    font-size: 0.8em;
+  }
+
+  /* Do not print UI, just page */
   @media print {
     .controller {
       display: none;
@@ -141,13 +129,8 @@ watch(pageElement, () => {
 
   @media screen {
     :root {
-      --bar-width: 5rem;
-      --bar-height: 4.5rem;
-      --stroke-width: 2px;
-      --thick-stroke-width: 3px;
+      --stroke-width: .5mm;
     }
-
-    /* body { display: flex; justify-content: center;} */
 
     #app {
       display: flex;
@@ -155,8 +138,9 @@ watch(pageElement, () => {
       flex-wrap: wrap;
       min-height: 100vh;
       background-color: #252600;
-      /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
-      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       align-items: stretch;
       overflow: hidden;
     }
@@ -213,36 +197,13 @@ watch(pageElement, () => {
 
     .page {
       background: white;
-      /* margin: 0.4rem auto; */
-      /* --page-height: 50rem; */
-      background-image: 
+      /* background-image: 
         linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
       background-size: var(--page-width) calc(var(--page-height) + 1px);
-      min-height: var(--page-height);
-      /* background-image: 
-        linear-gradient(to bottom, transparent 0 22px, lightblue 22px 23px), 
-        linear-gradient(to right, transparent 0 70px, crimson 70px 71px, transparent 71px); */
-      /* background-size: 9999px 23px; */
-      background-repeat: repeat;
+      background-repeat: repeat; */
       border: 1px solid black;
       box-shadow: 4px 4px black;
-      /* aspect-ratio: 1 / 1.414; */
-      /* overflow-y: auto; */
-      /* overflow-x: hidden */
-      /* margin: var(--y-unit) auto; */
     }
-  }
-
-
-  g.borders path {
-    stroke-width: var(--stroke-width);
-    stroke: var(--gridline-color);
-    stroke-linecap: square;
-  }
-
-  g.borders-internal path {
-    stroke-width: var(--stroke-width);
-    stroke: var(--gridline-color);
   }
 
 
@@ -250,72 +211,87 @@ watch(pageElement, () => {
     box-sizing: border-box;
   }
   html, body {
-    /* background: white; */
     color: black;
-
-    /* font-family: 'Patrick Hand'; */
-    /* font-family: 'Century'; */
-    /* font-family: 'IM Fell DW Pica'; */
-    font-size: 16px;
+    font-size: var(--font-size);
     padding: 0px;
     margin: 0;
+    font-family: var(--serif-font);
   }
 
-  .page {
-    --page-width: calc(8 * var(--bar-width) + 2 * var(--x-page-margin));
-    --page-height: calc(1.41 * var(--page-width));
-    width: var(--page-width);
-    padding: var(--y-unit) var(--x-page-margin)
+
+
+  [data-outline] {
+    display: inline-block;
   }
 
-  .song {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-  }
-
-  .hr {
-    margin: 0;
-    border: calc(var(--stroke-width) * 1) dashed var(--gridline-color);
-    border-top: 0;
-    align-self: stretch;
-  }
-
-  .non-music {
-    white-space: pre;
-    font-size: calc(20/16 * 1rem);
-  }
-
-  .coda-here {
+  [data-outline]::before {
+    content: attr(data-outline);
     position: absolute;
-    display: flex;
-    align-items: start;
-    right: 100%;
-    flex-direction: column;
-    top: -8px;
-    filter: drop-shadow(white 0 1px) drop-shadow(white 0 -1px) drop-shadow(white 1px 0) drop-shadow(white -1px 0);
-  }
-  .coda-here .coda-arrow {
-    transform: rotate(90deg) scaleY(-1);
-  }
-  
-  
-
-  .coda-symbol {
-    height: 24px;
-    margin-right: -6px;
-    margin-bottom: -4px;
-  }
-  .coda-arrow {
-    width: 24px;
+    z-index: -1;
+    inset: 0;
+    -webkit-text-stroke: var(--stroke-width) var(--text-outline-color);
   }
 
-  .segno-here {
-    position: absolute;
-    right: 100%;
-  }
-  .segno-symbol {
-    height: 24px;
+  .smufl-symbol {
+    font-style: normal;
+    font-weight: normal;
+    font-family: 'MuseJazz';
+    font-size: 1.7em;
+    line-height: 0;
+    position: relative;
   }
 
+  .smufl-symbol.coda {
+    bottom: -0.2em;
+    font-size: 1.5em;
+  }
+  .smufl-symbol.segno {
+    bottom: -0.2em;
+    font-size: 1.5em;
+  }
+  .smufl-symbol.caesura {
+    bottom: -0.1em;
+  }
+  .smufl-symbol.fermata {
+    bottom: -0.1em;
+  }
+  .smufl-symbol.fermata-up {
+    bottom: 0.55em;
+  }
+
+  .unicode-symbol {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 2.1em;
+    line-height: 0;
+    position: relative;
+  }
+  .unicode-symbol.fermata {
+    bottom: -0.4em;
+  }
+  .unicode-symbol.fermata-up {
+    bottom: 0.2em;
+  }
+  .unicode-symbol.down-right {
+    bottom: -0.18em;
+  }
+  .unicode-symbol.left-down {
+    bottom: -0.1em;
+  }
+  .unicode-symbol.right-down {
+    bottom: -0.18em;
+  }
+
+  .unicode-symbol.mirror {
+    transform: scaleX(-1);
+    background: lightskyblue;
+    display: inline-block;
+  }
+
+  .special-arrow {
+    margin-bottom: -.25em;
+    margin-right: 0.25ch;
+    width: 1rem;
+    display: inline-block;
+  }
 </style>

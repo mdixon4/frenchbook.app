@@ -7,12 +7,15 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@types/markdown-it": "^12.0.1",
     "@vueuse/core": "^4.8.1",
     "@vueuse/router": "^4.8.1",
     "base64url": "^3.0.1",
     "dom-to-svg": "^0.11.3",
+    "jison": "^0.4.18",
     "markdown-it": "^12.0.4",
     "panzoom": "^9.4.2",
+    "reghex": "^3.0.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.6"
   },
@@ -20,5 +23,6 @@
     "@vitejs/plugin-vue": "^1.1.5",
     "@vue/compiler-sfc": "^3.0.5",
     "vite": "^2.1.0"
-  }
+  },
+  "type": "module"
 }
