@@ -6,7 +6,7 @@
   }" :class="span.classes">
     <div class="span-inner">
       <span class="span-start"></span>
-      <span class="span-text" ref="textEl">
+      <span class="span-text">
         <span v-html="span.text"></span>
       </span>
       <span class="span-end"></span>
