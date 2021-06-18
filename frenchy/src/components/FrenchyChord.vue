@@ -42,7 +42,7 @@ const shape = computed(() => {
   font-family: 'LJC';
   font-size: calc(var(--chord-size) * 0.8);
   transform: scaleX(0.95) translateY(0.18em);
-  line-height: 0.1;
+  line-height: 1;
   display: inline-block;
   position: relative;
   margin: 0 auto;

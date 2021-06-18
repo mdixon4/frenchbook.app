@@ -103,14 +103,6 @@ watch(span, growSpan)
     white-space: nowrap;
   }
 
-  .exterior .span.rhythms .span-text {
-    font-family: 'Rhythms';
-    font-style: normal;
-    font-size: var(--rhythm-font-size);
-    line-height: 1;
-    white-space: pre;
-  }
-
   .exterior.top .span,
   .exterior.bottom .span {
     grid-column-start: var(--start, 1);

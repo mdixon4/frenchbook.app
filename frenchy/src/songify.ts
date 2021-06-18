@@ -124,6 +124,10 @@ const MAX_BARS_PER_LINE = 8
 
 const quotedRegex = /\"([^\"]*)\"/
 const globalQuotedRegex = new RegExp(quotedRegex.source, 'g')
+const rhythmWrappedRegex = /{([^}]*)}/
+const globalRhythmWrappedRegex = new RegExp(rhythmWrappedRegex.source, 'g')
+const quotedOrRhythmRegex = /(\"([^\"]*)\"|\{([^\}]*)\})/
+const globalQuotedOrRhythmRegex = new RegExp(quotedOrRhythmRegex.source, 'g')
 const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
@@ -137,11 +141,16 @@ const replacePitches = (text: string): string => text
   .replaceAll(/\b([A-G])(?:#)(?:\b|(?<=#))/g, '$1♯')
   .replaceAll(/\b([A-G])b\b/g, '$1♭')
 
+
+const wrapRhythms = (text: string): string => text
+  .replaceAll(globalRhythmWrappedRegex, '<span class="rhythms">$1</span>')
+
 const parseBarContent = (barText: string): BarContent => {
 
-  let annotationMatches = Array.from(barText.matchAll(globalQuotedRegex) || [])
+  let annotationMatches = Array.from(barText.matchAll(globalQuotedOrRhythmRegex) || [])
+  console.log({ annotationMatches })
   let annotations = annotationMatches.map(match => {
-    let text = match[1]
+    let text = match[2] || match[1]
     let position = match.index === 0 ? 'top' : 'bottom'
     let align = text.startsWith(' ') && !text.endsWith(' ')
       ? 'right'
@@ -151,13 +160,14 @@ const parseBarContent = (barText: string): BarContent => {
     text = text.replace(/\\n/g, '<br>')
     text = replaceSnippets(text)
     text = replacePitches(text)
+    text = wrapRhythms(text)
     return {
       text,
       position,
       align
     }
   })
-  barText = barText.replace(quotedRegex, ' ')
+  barText = barText.replace(globalQuotedOrRhythmRegex, ' ')
   let classes = barText.match(classesRegex)?.map(c => c.substr(1)) || []
   barText = barText.replace(classesRegex, ' ')
 
@@ -457,6 +467,7 @@ const parseStanzaAnnotation = (lineText: string): Annotation | undefined => {
   text = text.replace(/\\n/g, '<br>')
 
   text = replaceSnippets(text)
+  text = wrapRhythms(text)
   text = parseInlineMarkdown(text)
   text = replacePitches(text)
   let side = (placement.match(/\b((top-left)|(top-right)|(bottom-left)|(bottom-right)|(top)|(left)|(right)|(bottom))\b/i) || [''])[0].toLowerCase()
@@ -524,6 +535,7 @@ const extractStanzaMetadata = (stanzaText: string): { title: string, classes: Ar
   let classes = firstLine.match(classesRegex)?.map(c => c.substr(1)) || []
   let title = firstLine.replace(classesRegex, '').split(/\s+/).join(' ').trim()
   title = parseInlineMarkdown(title)
+  title = wrapRhythms(title)
   return {
     title,
     classes,

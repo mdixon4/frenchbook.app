@@ -158,4 +158,13 @@ watch(pageElement, () => {
     display: none;
   }
 
+  span.rhythms {
+    font-family: 'Rhythms';
+    font-style: normal;
+    font-size: var(--rhythm-font-size);
+    font-weight: normal;
+    white-space: pre;
+    position: relative;
+  }
+
 </style>
