@@ -73,7 +73,7 @@ export default {
   display: flex;
 }
 .beat.stop {
-  --text-outline-color: var(--stop-color);
+  /* --text-outline-color: var(--stop-color); */
 }
 
 

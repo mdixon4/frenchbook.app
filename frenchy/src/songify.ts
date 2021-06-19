@@ -10,13 +10,15 @@ type PreparedChord = {
   chord: string
   isStop: boolean
   isDitto: boolean
+  isBlank: boolean
   beats: string
 }
 
 type BarContent = {
-  chords: Array<{}>,
-  annotations: Array<{}>,
+  chords: Array<{}>
+  annotations: Array<{}>
   classes: Array<string>
+  isEmpty: boolean
 }
 
 type Bar = {
@@ -143,12 +145,11 @@ const replacePitches = (text: string): string => text
 
 
 const wrapRhythms = (text: string): string => text
-  .replaceAll(globalRhythmWrappedRegex, '<span class="rhythms">$1</span>')
+  .replaceAll(globalRhythmWrappedRegex, '<span class="rhythms" data-outline="$1">$1</span>')
 
 const parseBarContent = (barText: string): BarContent => {
 
   let annotationMatches = Array.from(barText.matchAll(globalQuotedOrRhythmRegex) || [])
-  console.log({ annotationMatches })
   let annotations = annotationMatches.map(match => {
     let text = match[2] || match[1]
     let position = match.index === 0 ? 'top' : 'bottom'
@@ -175,9 +176,10 @@ const parseBarContent = (barText: string): BarContent => {
     .map(chord => chord.trim())
     .filter(Boolean)
     .map(c => ({
-      chord: c.replace(/\.$/, ''),
+      chord: c.replace(/\.+$/, ''),
       isStop: /\.$/.test(c),
       isDitto: c === '-',
+      isBlank: c === '..',
       beats: ''
     }))
     .map(c => ({
@@ -212,7 +214,8 @@ const parseBarContent = (barText: string): BarContent => {
   return {
     chords,
     annotations,
-    classes
+    classes,
+    isEmpty: chords.length === 0 || (chords.length === 1 && chords[0].chord === '' && !chords[0].isBlank)
   }
 }
 
@@ -321,12 +324,21 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
       }
       bar.rightBarline = '|'
     }
-    
+
+    let parsedBar = parseBarContent(bar.textContent.trim())
+    if (rhythmText) {
+      let rhythmAnnotation = {
+        text: wrapRhythms(`{${rhythmText}}`),
+        position: 'bottom',
+        align: 'center'
+      }
+      parsedBar.annotations.push(rhythmAnnotation)
+    }
+
     return {
       id: idx + 1,
       ...bar, //leftBarline, rightBarline, textContent
-      rhythm: rhythmText,
-      ...parseBarContent(bar.textContent.trim())
+      ...parsedBar
     }
   }).filter(Boolean) as Array<Bar>
 
@@ -633,36 +645,6 @@ const extractWayfindingAnnotations = ({ layout, lines, classes }: {layout: Array
 }
 
 
-const getWayfinding = (lines: Array<MusicLine>, layout: Array<string>): Array<Annotation> => {
-
-
-  let wayfindingBars = bars.filter(bar => bar.classes?.includes('to-coda') || bar.classes?.includes('to-segno'))
-  
-  return wayfindingBars.map(bar => {
-    let side = bar.classes?.includes('at-right') 
-      ? 'right' 
-      : bar.classes?.includes('at-bottom')
-        ? 'bottom'
-        : bar.isRightmost && !bar.isBottommost
-          ? 'right'
-          : bar.isRightmost && bar.column < 8
-            ? 'right'
-            : 'bottom'
-
-    let start = side === 'right' ? bar.lineIdx + 1 : bar.column
-
-    return {
-      classes: ['to-coda'],
-      side,
-      start: start,
-      end: start,
-      text: 'TOCODA',
-      style: 'wayfinding',
-      align: 'end'
-    }
-  })
-}
-
 const transposeLayout = (layout: Array<string>): Array<string> => Array.from(layout[0]).map((_, colIdx) => layout.map(layoutLine => layoutLine[colIdx]).join(''))
 const leftIndent = (layoutLine: string): number => layoutLine.indexOf('1') || 0
 const rightIndent = (layoutLine: string): number => (layoutLine.length - layoutLine.lastIndexOf('1') || 0) - 1
@@ -756,7 +738,6 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
 
 
 const createFancyCodaAnnotation = (classes: Array<string>): Annotation | null => {
-  console.log({ classes })
   if (classes.includes('coda-direct')) {
     return {
       side: 'left',

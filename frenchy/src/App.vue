@@ -222,6 +222,7 @@ let song = computed(() => {
 
   [data-outline] {
     display: inline-block;
+    isolation: isolate;
   }
 
   [data-outline]::before {

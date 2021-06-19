@@ -15,14 +15,6 @@
   }, ...barData.classes]">
     <svg class="shading" viewBox="0 0 100 100" preserveAspectRatio="none">
       <g >
-        <g class="stops" fill="var(--stop-color)">
-          <rect v-if="stopOn(1) && !isSlashed" x="0" y="0" width="50" height="50"></rect>
-          <rect v-if="stopOn(2) && !isSlashed" x="50" y="0" width="50" height="50"></rect>
-          <rect v-if="stopOn(3) && !isSlashed" x="0" y="50" width="50" height="50"></rect>
-          <rect v-if="stopOn(4) && !isSlashed" x="50" y="50" width="50" height="50"></rect>
-          <path v-if="stopOn(1) && stopOn(2) && isSlashed" d="M 0 0 100 0 0 100 0 0"></path>
-          <path v-if="stopOn(3) && stopOn(4) && isSlashed" d="M 100 0 100 100 0 100 100 0"></path>
-        </g>
         <g class="borders-internal" fill="transparent">
           <path v-if="blocks==='╱'" vector-effect='non-scaling-stroke' d="M 100 0, 0 100"></path>
           <!-- <path v-if="blocks==='╱'" d="M 93 7, 7 93"></path> -->
@@ -67,6 +59,16 @@
     </div>
     <div v-for="annotation in barData.annotations" :key="annotation.text" class="annotation" :class="[ `annotation-${annotation.position}`, `annotation-${annotation.align}` ]" v-html="annotation.text"></div>
     <outlined-text class="rhythm" :text="barData.rhythm"></outlined-text>
+    <svg class="stops" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <g fill="var(--stop-color)">
+        <rect v-if="stopOn(1) && !isSlashed" x="0" y="0" width="50" height="50"></rect>
+        <rect v-if="stopOn(2) && !isSlashed" x="50" y="0" width="50" height="50"></rect>
+        <rect v-if="stopOn(3) && !isSlashed" x="0" y="50" width="50" height="50"></rect>
+        <rect v-if="stopOn(4) && !isSlashed" x="50" y="50" width="50" height="50"></rect>
+        <path v-if="stopOn(1) && stopOn(2) && isSlashed" d="M 0 0 100 0 0 100 0 0"></path>
+        <path v-if="stopOn(3) && stopOn(4) && isSlashed" d="M 100 0 100 100 0 100 100 0"></path>
+      </g>
+    </svg>
   </div>
 </template>
 
@@ -96,9 +98,7 @@ export default {
       return this.chords.length
     },
     isEmpty () {
-      return this.numChords === 0 || (
-        this.numChords === 1 && this.chords[0].chord === ''
-      )
+      return this.barData.isEmpty
     },
     isSlashed () {
       return this.blocks === '╱'
@@ -154,7 +154,7 @@ export default {
   }
 
 
-  .shading {
+  .shading, .stops {
     position: absolute;
     inset: 0;
     height: 100%;
@@ -217,16 +217,13 @@ export default {
     position: absolute;
     white-space: pre;
     bottom: 0%;
-    margin-bottom: .28em;
+    padding: 0.15em 0;
     line-height: 1;
     width: 100%;
     text-align: center;
     font-family: 'Rhythms';
     font-weight: normal;
     /* font-style: italic; */
-  }
-  .bar.is-whole-bar-stop {
-    --text-outline-color: var(--stop-color);
   }
 
 
@@ -235,6 +232,14 @@ export default {
   }
   .rhythm { 
     z-index: 1;
+  }
+  .annotation {
+    z-index: 1;
+  }
+  .stops {
+    z-index: 4;
+    opacity: 0.5;
+    mix-blend-mode: darken;
   }
 
 </style>

@@ -165,6 +165,11 @@ watch(pageElement, () => {
     font-weight: normal;
     white-space: pre;
     position: relative;
+    transform: scaleY(0.9);
+    transform-origin: bottom;
+  }
+  span.rhythms::before {
+    clip-path: inset(-0.2em);
   }
 
 </style>
