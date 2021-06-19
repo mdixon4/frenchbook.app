@@ -826,7 +826,7 @@ const parseStanza = (stanzaText: string): Stanza => {
   if (titleAnnotation) {
     annotations.push(titleAnnotation)
   }
-  annotations.unshift(...extractWayfindingAnnotations({ layout, classes, lines, titleAnnotation }))
+  annotations.unshift(...extractWayfindingAnnotations({ layout, classes, lines }))
   annotations = annotations && layout.length ? locateAnnotations(annotations, layout) : []
   annotations = combineAnnotations(annotations)
 
