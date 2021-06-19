@@ -240,6 +240,7 @@ export default {
     z-index: 4;
     opacity: 0.5;
     mix-blend-mode: darken;
+    pointer-events: none;
   }
 
 </style>

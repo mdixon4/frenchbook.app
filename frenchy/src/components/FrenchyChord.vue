@@ -42,7 +42,7 @@ const shape = computed(() => {
   font-family: 'LJC';
   font-size: calc(var(--chord-size) * 0.8);
   transform: scaleX(0.95) translateY(0.18em);
-  line-height: 1;
+  line-height: 0;
   display: inline-block;
   position: relative;
   margin: 0 auto;
@@ -52,9 +52,8 @@ const shape = computed(() => {
   font-size: calc(var(--chord-size) * 1.3);
 }
 .mod-digit {
-  transform: translateY(-0.7em);
-  font-size: 0.65em;
-  margin: 0 -0.25em 0 -0.0em;
+  transform: scale(0.65) translateY(-0.5em);
+  margin: 0 -0.16em;
 }
 
 .root {
@@ -68,11 +67,12 @@ const shape = computed(() => {
   margin: 0;
 }
 .mod-stack .mod-digit:first-child {
-  transform: translateY(-0.7em);
-  font-size: 0.65em;
+  transform: scale(0.65) translateY(-0.5em);
+  margin: 0 -0.25em;
 }
 .mod-stack .mod-digit:not(:first-child) {
-  transform: translateY(0.3em);
+  transform: scale(0.65) translateY(0.5em);
+  /* transform: translateY(0.3em); */
 }
 
 .mod-stack {
@@ -81,8 +81,12 @@ const shape = computed(() => {
 }
 
 .mod-sus {
-  font-size: 0.65em;
-  margin-left: -0.1em;
+  position: relative;
+  display: inline-block;
+  transform: scale(0.65) translateY(0.2em);
+  /* transform-origin: bottom; */
+  /* font-size: 0.65em; */
+  margin: 0 -0.3em;
 }
 
 
