@@ -309,7 +309,7 @@ const parseLineData = (rawLine: { text: string, rhythmText: string }): MusicLine
     ? 'left' // align left if there's an indent class!
     : /^\s+/.test(rawLine.text) ? 'right' : 'left'
 
-  let rhythmBars = rawLine.rhythmText ? splitTextIntoBars(rawLine.rhythmText) : null
+  let rhythmBars = rawLine.rhythmText ? splitTextIntoBars(`|${rawLine.rhythmText}`) : null
   
   let bars = splitTextIntoBars(rawLine.text).map((bar, idx, allBars) => {
     let rhythmText = ((rhythmBars?.length || 0) > idx) ? rhythmBars?.[idx].textContent || '' : ''
@@ -508,8 +508,8 @@ const isLineMusic = (lineText: string): boolean => {
 }
 
 const isRhythms = (lineText: string): boolean => {
-  // Start with "rhythms"?
-  return /^\s*rhythms\b/i.test(lineText)
+  // Start with "{"?
+  return /^\s*{/i.test(lineText)
 }
 
 const isAnnotations = (lineText: string): boolean  => {
@@ -793,7 +793,7 @@ const parseStanza = (stanzaText: string): Stanza => {
     .filter(line => line.trim().length)
     .forEach(line => {
       if (isRhythms(line)) {
-        rawLines[rawLines.length - 1].rhythmText = line.replace(/^\s*rhythms\:\s*/i, '')
+        rawLines[rawLines.length - 1].rhythmText = line.replace(/^\s*{\|?/, '').replace(/}\s*$/, '')
       }
 
       else if (isLineMusic(line)) {
