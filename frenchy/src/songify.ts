@@ -135,6 +135,7 @@ const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/
 const globalBarlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/g
+const songpartRegex = /(("""(.|\n)*"""\s*\n)|(((.|\n)*?)(\n\n|$)))/g
 
 
 // const replacePitches = text => text
@@ -176,10 +177,6 @@ const parseBarContent = (barText: string): BarContent => {
   let chords = barText.split(/\s+/)
     .map(chord => chord.trim())
     .filter(Boolean)
-    .map(c => {
-      console.log(c, c.replace(/\.+$/, '').replace(/^\((.*)\)$/, '$1'))
-      return c
-    })
     .map(c => ({
       chord: c.replace(/\.+$/, '').replace(/^\((.*)\)$/, '$1'),
       isStop: /\.$/.test(c),
@@ -276,7 +273,6 @@ const formulateLayout = (stanzaLines: Array<MusicLine>): StanzaLayout => {
 
 const splitTextIntoBars = (rawText: string): Array<Bar> => {
   let a = rawText.match(globalBarlineRegex)
-  console.log(a)
   let bars = rawText.match(globalBarlineRegex)
     ?.reduce((bars: Array<Bar>, barText, idx) => {
       let [,barline,textContent] = barText.match(barlineRegex) as Array<string>
@@ -859,7 +855,8 @@ const parseMarkdown = (markdownText: string): string => {
   return markdownit({
     typographer: true,
     linkify: true,
-    html: true
+    html: true,
+    breaks: true
   }).render(markdownText)
 }
 
@@ -892,13 +889,13 @@ const parsePart = (partText: string): SongPart => {
 
   // If the first and last non-whitespace character of the part is double quote, 
   // treat as plain text / markdown
-  let plainText = partText.replace(classesRegex, '').match(/^\s*\"(.*)\"\s*$/s)
+  let plainText = partText.replace(classesRegex, '').match(/^\s*\"(\"\")?(.*)?(\"\")\"\s*$/s)
   if (plainText) {
     return {
       type: 'plain-text',
-      text: plainText[1],
-      html: parseMarkdown(plainText[1]),
-      classes: partText.match('classesRegex')?.map(c => c.substr(1)) || []
+      text: plainText[2],
+      html: parseMarkdown(plainText[2]),
+      classes: partText.match(classesRegex)?.map(c => c.substr(1)) || []
     }
   }
 
@@ -1008,6 +1005,13 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   return parts
 }
 
+const extractParts = (songMatter: string): Array<string> => {
+  let matches = [...songMatter.matchAll(songpartRegex)]
+  let textParts = matches.map(p => p[0].replace(/^\n|\n$/g, ''))
+  textParts = textParts.filter(p => p.length)
+  return textParts
+}
+
 
 export const songify = (songText: string): Song => {
   let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/^=+$/m)
@@ -1017,10 +1021,7 @@ export const songify = (songText: string): Song => {
   }
   let metadata = parseFrontMatter(frontMatter)
 
-  let parts = songMatter.split(/^$/m)
-    .filter(part => part.trim().length)
-    .map(part => part.replace(/^\n|\n$/g, ''))
-    .map(parsePart)
+  let parts = extractParts(songMatter).map(partText => parsePart(partText))
 
   parts = handleInterpartSpacing(parts, metadata)
   
