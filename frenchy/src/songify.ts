@@ -101,11 +101,17 @@ type HR = {
   classes: Array<string>
 }
 
+type ScoreSnippet = {
+  type: 'score-snippet'
+  classes: Array<string>
+  source: string
+}
+
 type MetaData = {
   [key: string]: string
 }
 
-type SongPart = Stanza | TextBlock | HR
+type SongPart = Stanza | TextBlock | HR | ScoreSnippet
 
 type Song = {
   metadata: MetaData
@@ -135,7 +141,7 @@ const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/
 const globalBarlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/g
-const songpartRegex = /(("""(.|\n)*"""\s*\n)|(((.|\n)*?)(\n\n|$)))/g
+const songpartRegex = /((%abc((.|\n)*)%endabc\s*)|("""(.|\n)*"""\s*\n)|(((.|\n)*?)(\n\n|$)))/g
 
 
 // const replacePitches = text => text
@@ -867,6 +873,15 @@ const formatDecimalWithHyphen = (num: number): string => {
 
 
 const parsePart = (partText: string): SongPart => {
+  // If the part starts with %abc it's ABC!
+  if (partText.match(/^\s*%abc/)) {
+    return {
+      type: 'score-snippet',
+      classes: ['score-snippet'],
+      source: partText
+    }
+  }
+
   // If it's just one line, of 3 or more dashes, treat as a horizontal line
   // Allow classnames here though
   if (partText.replace(classesRegex, '').match(/^[\s>]*\-\-+[\s<]*$/)) {
