@@ -11,6 +11,7 @@ type PreparedChord = {
   isStop: boolean
   isDitto: boolean
   isBlank: boolean
+  isBracketed: boolean
   beats: string
 }
 
@@ -132,8 +133,8 @@ const quotedOrRhythmRegex = /(\"([^\"]*)\"|\{([^\}]*)\})/
 const globalQuotedOrRhythmRegex = new RegExp(quotedOrRhythmRegex.source, 'g')
 const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
-const barlineRegex = /(\)?(\||\:)?\|\:?\(?)([^\|\:(?\|)\)(?\|)]*)/
-const globalBarlineRegex = new RegExp(barlineRegex.source, 'g')
+const barlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/
+const globalBarlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/g
 
 
 // const replacePitches = text => text
@@ -175,11 +176,16 @@ const parseBarContent = (barText: string): BarContent => {
   let chords = barText.split(/\s+/)
     .map(chord => chord.trim())
     .filter(Boolean)
+    .map(c => {
+      console.log(c, c.replace(/\.+$/, '').replace(/^\((.*)\)$/, '$1'))
+      return c
+    })
     .map(c => ({
-      chord: c.replace(/\.+$/, ''),
+      chord: c.replace(/\.+$/, '').replace(/^\((.*)\)$/, '$1'),
       isStop: /\.$/.test(c),
       isDitto: c === '-',
       isBlank: c === '..',
+      isBracketed: Boolean(c.match(/^\((.*)\)$/)),
       beats: ''
     }))
     .map(c => ({
@@ -269,9 +275,11 @@ const formulateLayout = (stanzaLines: Array<MusicLine>): StanzaLayout => {
 
 
 const splitTextIntoBars = (rawText: string): Array<Bar> => {
+  let a = rawText.match(globalBarlineRegex)
+  console.log(a)
   let bars = rawText.match(globalBarlineRegex)
     ?.reduce((bars: Array<Bar>, barText, idx) => {
-      let [,barline,,textContent] = barText.match(barlineRegex) as Array<string>
+      let [,barline,textContent] = barText.match(barlineRegex) as Array<string>
       if (idx > 0) {
         bars[idx - 1].rightBarline = barline
       }

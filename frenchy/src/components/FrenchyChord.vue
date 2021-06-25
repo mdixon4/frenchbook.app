@@ -1,6 +1,6 @@
 <template>
   <div class="lily rendered-chord add-outline" :class="[ shape ]">
-    <outlined-text :text="chord.renderedChord"></outlined-text>
+    <outlined-text :text="`${ chord.isBracketed ? '(' : '' }${ chord.renderedChord }${ chord.isBracketed ? ')' : '' }`"></outlined-text>
   </div>
 </template>
 
