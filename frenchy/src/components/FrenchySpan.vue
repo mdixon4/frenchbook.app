@@ -382,10 +382,10 @@ watch(span, growSpan)
   clip-path: ellipse(1em 0.32em at 0.35em -0.5em);
 }
 
-.coda-immediate.span {
+.coda-immediate.span, .immediate.span {
   bottom: calc(0.5 * var(--bar-height));
 }
-.coda-immediate.span .span-text > span {
+.coda-immediate.span .span-text > span, .immediate.span .span-text > span, {
   display: flex;
 }
 .right-down-right {

@@ -610,6 +610,18 @@ const extractWayfindingAnnotations = ({ layout, lines, classes }: {layout: Array
     })
   }
 
+  if (classes.includes('immediate') || classes.includes('direct')) {
+    wayfindingAnnotations.push({
+      side: 'left',
+      align: 'end',
+      classes: ['immediate', 'align-end'],
+      start: 1,
+      end: 1,
+      style: '',
+      text: replaceSnippets('\\right-down-right')
+    })
+  }
+
   bars.filter(b => b.classes?.includes('to-coda') || b.classes?.includes('to-coda-right') || b.classes?.includes('to-coda-bottom')).forEach(b => {
     // If the 'to-coda' bar is not the last bar, put the annotation beneath it.
     // If it's the last bar, put it to the right, unless it's hard up against the right-hand-edge.
