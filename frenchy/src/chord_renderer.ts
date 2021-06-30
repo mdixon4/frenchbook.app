@@ -210,7 +210,7 @@ const catchHalfDim = (chord: Chord): Chord => {
 
 const chordParserRegex = regex`^
   (?<root>[A-G](#|b)?)
-  (?<modifier>(maj|ma|mi|m|MI|Maj|M|\^|dim|halfdim|Ø|(\d?sus\d*)|o|0|\+)?\d*)?
+  (?<modifier>(maj|ma|mi|m|MI|Maj|M|\^|dim|halfdim|Ø|(\d?sus\d*)|o|0|\+)*\d*)?
   (?<alterations>.*?)
   (/(?<bass>[A-G](#|b)?))?
 $`
