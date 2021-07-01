@@ -134,41 +134,59 @@ const MODIFIER_SYMBOLS: SymbolList = {
 }
 
 
-const ALTERATION_SYMBOLS = {
-  // '##': '&#x1d12a;',
-  // '#': '&#x266f;',
-  // bb: '&#x1d12b;',
-  // b: '&#x266d;',
-  // // ma: '&#xe180;',
-  // ma: '&#xe18a;', // triangle
-  // // mi: '&#xe181;',
-  // mi: 'm',
-  // halfdim: '&#xe18f;',
-  // // dim: '&#xe18e;',
-  // // m: '&#xe181;',
-  // sus: '&#xe185;',
-  // '+': '&#xe186;',
-  // degree: '&#xe187;',
-  // triangle: '&#xe18a;',
-  // '^': '&#xe18a;',
-  // sus4: '&#xe18d;',
-  // circle: '&#xe18e;',
-  // 'Ø': '&#xe18f;',
-  // natural: '&#x266e;',
-  // '0': '&#xe190;',
-  // '1': '&#xe191;',
-  // '2': '&#xe192;',
-  // '3': '&#xe193;',
-  // '4': '&#xe194;',
-  // '5': '&#xe195;',
-  // '6': '&#xe196;',
-  // '7': '&#xe197;',
-  // '8': '&#xe198;',
-  // '9': '&#xe199;',
-  // add: '&#xe18b;',
-  // add11: '&#xe18c;'
+const ALTERATION_SYMBOLS: SymbolList = {
+  // 'b': '&#xe188;',
+  // '#': '&#xe189;',
+  // 'add': '&#xe18b;',
+  // 'add11': '&#xe18c;',
+  // '11': '<span class="alt-digit">&#xe182;</span>',
+  // '13': '<span class="alt-digit">&#xe183;</span>',
+  // 'dim': '&#xe184;',
+  // '0': '<span class="alt-digit">&#xe190;</span>',
+  // '1': '<span class="alt-digit">&#xe191;</span>',
+  // '2': '<span class="alt-digit">&#xe192;</span>',
+  // '3': '<span class="alt-digit">&#xe193;</span>',
+  // '4': '<span class="alt-digit">&#xe194;</span>',
+  // '5': '<span class="alt-digit">&#xe195;</span>',
+  // '6': '<span class="alt-digit">&#xe196;</span>',
+  // '7': '<span class="alt-digit">&#xe197;</span>',
+  // '8': '<span class="alt-digit">&#xe198;</span>',
+  // '9': '<span class="alt-digit">&#xe199;</span>',
+  // halfdim: '<span class="alt-symbol">Ø</span>',
+  halfdim: '<span class="alt-symbol">@</span>',
+  // '^': '<span class="alt-symbol alt-triangle">&#xe18a;</span>',
+  '^': '<span class="alt-symbol alt-triangle">^</span>',
+  '+': '<span class="alt-symbol alt-plus">+</span>',
+  'sus': '<span class="alt-sus">sus</span>',
+  'sus4': '<span class="alt-sus">sus4</span>',
+  'sus2': '<span class="alt-sus">sus2</span>',
+  '7sus': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus</span></span>',
+  '9sus': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus</span></span>',
+  '11sus': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus</span></span>',
+  '13sus': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus</span></span>',
+  '7sus2': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus2</span></span>',
+  '9sus2': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus2</span></span>',
+  '11sus2': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus2</span></span>',
+  '13sus2': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus2</span></span>',
+  '7sus4': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus4</span></span>',
+  '9sus4': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus4</span></span>',
+  '11sus4': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus4</span></span>',
+  '13sus4': '<span class="alt-stack"><span class="alt-digit">7</span><span class="alt-sus">sus4</span></span>',
+  '69': '<span class="alt-stack"><span class="alt-digit">6</span><span class="alt-digit">9</span></span>',
+  '6/9': '<span class="alt-stack"><span class="alt-digit">6</span><span class="alt-digit">9</span></span>',
+  // dim: '<span class="alt-symbol">º</span>',
+  dim: '<span class="alt-symbol">°</span>',
+  '1': '<span class="alt-digit">1</span>',
+  '2': '<span class="alt-digit">2</span>',
+  '3': '<span class="alt-digit">3</span>',
+  '4': '<span class="alt-digit">4</span>',
+  '5': '<span class="alt-digit">5</span>',
+  '6': '<span class="alt-digit">6</span>',
+  '7': '<span class="alt-digit">7</span>',
+  '8': '<span class="alt-digit">8</span>',
+  '9': '<span class="alt-digit">9</span>',
+  '0': '<span class="alt-digit">0</span>',
 }
-
 
 const EXTENSION_SYMBOLS = {
 }
@@ -252,7 +270,7 @@ const parse = (chordText: string): Chord => {
 const swapSymbols = (parsedChord: Chord): Chord => {
   let rootSymbols = dictionaryReplace(parsedChord.root, DEFAULT_SYMBOLS)
   let modifierSymbols = parsedChord.modifiers?.map(modifier => MODIFIER_SYMBOLS[modifier] ?? modifier)
-  let alterationSymbols = dictionaryReplace(parsedChord.alterations, ALTERATION_SYMBOLS)
+  let alterationSymbols = dictionaryReplace(dictionaryReplace(parsedChord.alterations, DEFAULT_SYMBOLS), ALTERATION_SYMBOLS)
   let bassSymbols = dictionaryReplace(parsedChord.bass, BASS_SYMBOLS)
   // let alterationsSymbols = dictionaryReplace(parsedChord.alterations, ALTERATION)
   return {

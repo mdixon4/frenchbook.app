@@ -89,6 +89,13 @@ const shape = computed(() => {
   margin: 0 -0.3em;
 }
 
+.alterations {
+  /* transform: scale(0.65) translateY(-0.5em); */
+  font-size: 0.65em;
+  transform: translateY(-0.75em);
+  display: inline-block;
+}
+
 
 
 .bass-slash {
