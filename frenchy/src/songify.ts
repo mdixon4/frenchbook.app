@@ -562,6 +562,10 @@ const extractStanzaMetadata = (stanzaText: string): { title: string, classes: Ar
 
 const extractWayfindingAnnotations = ({ layout, lines, classes }: {layout: Array<string>, lines: Array<MusicLine>, classes: Array<string> }): Array<Annotation> => {
 
+  if (layout.length === 0) {
+    return []
+  }
+
   let wayfindingAnnotations = [] as Array<Annotation>
 
   let bars = lines.map((line, lineIdx) => {
