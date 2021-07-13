@@ -252,91 +252,91 @@ const stanzaBorderViewBox = computed(() => {
     left: calc(7.5 * var(--bar-width));
   }
 
-  .stanza.down-0-5 {
+  .down-0-5 {
     top: calc(0.5 * var(--bar-height));
   }
-  .stanza.down-1 {
+  .down-1 {
     top: calc(1 * var(--bar-height));
   }
-  .stanza.down-1-5 {
+  .down-1-5 {
     top: calc(1.5 * var(--bar-height));
   }
-  .stanza.down-2 {
+  .down-2 {
     top: calc(2 * var(--bar-height));
   }
-  .stanza.down-2-5 {
+  .down-2-5 {
     top: calc(2.5 * var(--bar-height));
   }
-  .stanza.down-3 {
+  .down-3 {
     top: calc(3 * var(--bar-height));
   }
-  .stanza.down-3-5 {
+  .down-3-5 {
     top: calc(3.5 * var(--bar-height));
   }
-  .stanza.down-4 {
+  .down-4 {
     top: calc(4 * var(--bar-height));
   }
-  .stanza.down-4-5 {
+  .down-4-5 {
     top: calc(4.5 * var(--bar-height));
   }
-  .stanza.down-5 {
+  .down-5 {
     top: calc(5 * var(--bar-height));
   }
-  .stanza.down-5-5 {
+  .down-5-5 {
     top: calc(5.5 * var(--bar-height));
   }
-  .stanza.down-6 {
+  .down-6 {
     top: calc(6 * var(--bar-height));
   }
-  .stanza.down-6-5 {
+  .down-6-5 {
     top: calc(6.5 * var(--bar-height));
   }
-  .stanza.down-7 {
+  .down-7 {
     top: calc(7 * var(--bar-height));
   }
-  .stanza.down-7-5 {
+  .down-7-5 {
     top: calc(7.5 * var(--bar-height));
   }
-  .stanza.down-8 {
+  .down-8 {
     top: calc(8 * var(--bar-height));
   }
-  .stanza.down-8-5 {
+  .down-8-5 {
     top: calc(8.5 * var(--bar-height));
   }
-  .stanza.down-9 {
+  .down-9 {
     top: calc(9 * var(--bar-height));
   }
-  .stanza.down-9-5 {
+  .down-9-5 {
     top: calc(9.5 * var(--bar-height));
   }
-  .stanza.down-10 {
+  .down-10 {
     top: calc(10 * var(--bar-height));
   }
-  .stanza.down-10-5 {
+  .down-10-5 {
     top: calc(10.5 * var(--bar-height));
   }
-  .stanza.down-11 {
+  .down-11 {
     top: calc(11 * var(--bar-height));
   }
-  .stanza.down-11-5 {
+  .down-11-5 {
     top: calc(11.5 * var(--bar-height));
   }
-  .stanza.down-12 {
+  .down-12 {
     top: calc(12 * var(--bar-height));
   }
-  .stanza.down-12-5 {
+  .down-12-5 {
     top: calc(12.5 * var(--bar-height));
   }
-  .stanza.down-13 {
+  .down-13 {
     top: calc(13 * var(--bar-height));
   }
-  .stanza.down-13-5 {
+  .down-13-5 {
     top: calc(13.5 * var(--bar-height));
   }
-  .stanza.down-14 {
+  .down-14 {
     top: calc(14 * var(--bar-height));
   }
-  .stanza.down-14-5 {
+  .down-14-5 {
     top: calc(14.5 * var(--bar-height));
   }
 
