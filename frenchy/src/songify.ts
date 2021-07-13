@@ -943,6 +943,7 @@ const suggestBottomSpacing = (part: SongPart, marginSize: number) => {
     || part.classes.includes('bottom-tight')
     || part.classes.includes('bottom-cosy')
     || part.classes.includes('bottom-comfortable')
+    || part.classes.includes('bottom-loose')
     || part.classes.includes('bottom-roomy')
   ) return
 
@@ -952,7 +953,8 @@ const suggestBottomSpacing = (part: SongPart, marginSize: number) => {
     '1': 'bottom-tight',
     '1.5': 'bottom-cosy',
     '2': 'bottom-comfortable',
-    '3': 'bottom-roomy'
+    '3': 'bottom-loose',
+    '4': 'bottom-roomy'
   }[marginSize] || '')
 }
 
@@ -993,6 +995,10 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
       p.topMargin = 2
       if (previousPart) suggestBottomSpacing(previousPart, 2)
     }
+    else if (p.classes.includes('loose')) {
+      p.topMargin = 3
+      if (previousPart) suggestBottomSpacing(previousPart, 3)
+    }
     else if (p.classes.includes('roomy')) {
       p.topMargin = 4
       if (previousPart) suggestBottomSpacing(previousPart, 4)
@@ -1011,6 +1017,9 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
       } else if (nextClasses.includes('comfortable')) {
         p.topMargin = 2
         if (previousPart) suggestBottomSpacing(previousPart, 2)
+      } else if (nextClasses.includes('loose')) {
+        p.topMargin = 3
+        if (previousPart) suggestBottomSpacing(previousPart, 3)
       } else if (nextClasses.includes('roomy')) {
         p.topMargin = 4
         if (previousPart) suggestBottomSpacing(previousPart, 4)
