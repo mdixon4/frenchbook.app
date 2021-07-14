@@ -157,6 +157,9 @@ watch(pageElement, () => {
   .arrow.left-down-squished {
     display: none;
   }
+  .arrow.right-up-squished {
+    display: none;
+  }
 
   span.rhythms {
     font-family: 'Rhythms';

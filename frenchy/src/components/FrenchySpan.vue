@@ -333,6 +333,12 @@ watch(span, growSpan)
   .exterior.top .left-down-squished {
     display: inline-block;
   }
+  .exterior.bottom .right-up {
+    display: none;
+  }
+  .exterior.bottom .right-up-squished {
+    display: inline-block;
+  }
 
 
 

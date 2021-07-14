@@ -55,6 +55,22 @@ const snippetList: { [key: string]: string } = {
         A 20 20 0 0 1 0 20 
         L 0 30" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
+  'right-up':
+    `<svg class="arrow right-up" viewBox="-50 -60 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M22 -30 L0 -55 L-22 -30" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="
+        M-40 0 
+        L -20 0
+        A 20 20 0 0 0 0 -20 
+        L 0 -50" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg><svg class="arrow right-up-squished" viewBox="-50 15 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
+      <path d="M20 -15 L0 -35 L-20 -15" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="
+        M-40 0 
+        L -20 0
+        A 20 20 0 0 0 0 -20 
+        L 0 -30" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
   'down-right':
     `<svg class="arrow down-right" viewBox="-55 -30 110 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible">
       <path d="M30 22 L55 0 L30 -22" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
