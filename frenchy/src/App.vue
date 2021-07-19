@@ -1,15 +1,17 @@
 <template>
-  <div class="controller" v-if="isEditing">
-    <button class="end-edit" @click="isEditing = false">Close</button>
-    <textarea v-model="songText"></textarea>
-  </div>
-  <button class="begin-edit" v-else @click="isEditing = true">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-  </button>
-  <div class="desk">
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-    <div class="page-holder">
-      <frenchy-page :song="song"></frenchy-page>
+  <div id="app" :class="{
+    'docked-left': dockside === 'left',
+    'docked-top': dockside === 'top'
+  }">
+    <frenchy-controller v-show="isEditing" @stopEditing="isEditing = false" v-model="songText" v-model:dockside="dockside"></frenchy-controller>
+    <button class="begin-edit" v-show="!isEditing" @click="isEditing = true">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+    </button>
+    <div class="desk">
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <div class="page-holder">
+        <frenchy-page :song="song"></frenchy-page>
+      </div>
     </div>
   </div>
 </template>
@@ -20,9 +22,11 @@ import { songify } from './songify'
 import { fromUrlHash, toUrlHash } from './util'
 
 import FrenchyPage from './components/FrenchyPage.vue'
+import FrenchyController from './components/FrenchyController.vue'
 
 const errorMessage = ref('')
 const isEditing = ref(false)
+const dockside = ref('left')
 let rawSongText = fromUrlHash(window.location.hash.substr(1))
 let songText = ref(rawSongText)
 
@@ -154,30 +158,24 @@ let song = computed(() => {
 
   @media screen {
 
+    #app.docked-left {
+      flex-direction: row;
+    }
+    #app.docked-top {
+      flex-direction: column;
+    }
+
     #app {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
-      min-height: 100vh;
-      background-color: #252600;
+      /* flex-wrap: wrap; */
+      height: 100vh;
+      background-color: #080f1f;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       align-items: stretch;
       overflow: hidden;
-    }
-
-    .controller {
-      color: white;
-      background: rgba(255, 255, 255, 0.329);
-      padding: 1rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      min-height: 20rem;
-      min-width: 20rem;
-      z-index: 500;
     }
 
     .begin-edit {
@@ -200,17 +198,14 @@ let song = computed(() => {
       height: 2rem;
     }
 
-    .controller textarea {
-      position: relative;
-      flex-grow: 1;
-    }
-
     .desk {
       flex-grow: 1;
+      flex-shrink: 1;
       max-height: 100vh;
       padding: var(--y-unit);
       display:flex;
       justify-content: center;
+      overflow: hidden;
     }
 
     .page-holder:focus {
