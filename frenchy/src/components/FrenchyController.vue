@@ -117,7 +117,7 @@ const dockElsewhere = () => {
   /* margin: 4px; */
   flex-grow: 1;
   position: relative;
-  background: rgba(0, 0, 0, 0.637);
+  background: rgba(0, 0, 0, 0.719);
   width: 100%;
   color: #BBB;
   overflow: visible;
@@ -125,7 +125,7 @@ const dockElsewhere = () => {
 
 
 #code-editor:focus-within {
-  background: rgba(0, 0, 0, 0.26);
+  background: rgba(0, 0, 0, 0.918);
   color: white;
 }
 

@@ -71,34 +71,39 @@ watch(pageElement, () => {
     }
     .rule.top-margin {
       width: 100%;
-      height: 3px;
+      height: 1px;
       left: 0;
-      top: calc(var(--top-page-margin) - 1px);
+      top: calc(var(--top-page-margin) - 0px);
     }
     .rule.bottom-margin {
       width: 100%;
-      height: 3px;
+      height: 1px;
       left: 0;
       top: calc(var(--page-height) - var(--bottom-page-margin) - 1px);
     }
     .rule.left-margin {
       height: 100%;
-      width: 3px;
+      width: 1px;
       top: 0;
-      left: calc(var(--x-page-margin) - 1px);
+      left: calc(var(--x-page-margin) - 0px);
     }
     .rule.right-margin {
       height: 100%;
-      width: 3px;
+      width: 1px;
       top: 0;
       left: calc(var(--page-width) - var(--x-page-margin) - 1px);
     }
     .rule.page-break {
       width: 100%;
-      height: 3px;
+      height: 1px;
       left: 0;
-      top: calc(var(--page-height) - 1px);
-      background: blue;
+      opacity: 1;
+      top: calc(var(--page-height) - 0px);
+      background: black;
+    }
+
+    .hide-rulers .rule:not(.page-break) {
+      display: none;
     }
   }
 
