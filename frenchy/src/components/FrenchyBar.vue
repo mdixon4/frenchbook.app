@@ -11,7 +11,9 @@
     'has-rhythm': hasRhythm,
     'is-slashed': isSlashed,
     'is-empty': isEmpty,
-    'is-whole-bar-stop': isWholeBarStop
+    'is-whole-bar-stop': isWholeBarStop,
+    'has-left-double-barline': barData.leftBarline.includes('||'),
+    'has-right-double-barline': barData.rightBarline.includes('||')
   }, ...barData.classes]">
     <svg class="shading" viewBox="0 0 100 100" preserveAspectRatio="none">
       <g >
@@ -26,31 +28,38 @@
         </g>
         <g class="borders" fill="transparent" vector-effect='non-scaling-stroke'>
           <!-- top -->
-          <path class="top-barline" shape-rendering="crispEdges" d="M 0 0 100 0" vector-effect='non-scaling-stroke'></path>
+          <path class="top-barline crisp" d="M 0 0 100 0" vector-effect='non-scaling-stroke'></path>
           <!-- bottom -->
-          <path class="bottom-barline" shape-rendering="crispEdges" d="M 0 100 100 100" vector-effect='non-scaling-stroke'></path>
+          <path class="bottom-barline crisp" d="M 0 100 100 100" vector-effect='non-scaling-stroke'></path>
           <!-- left -->
-          <path class="left-barline" shape-rendering="crispEdges" v-if="barData.leftBarline.includes('||') || barData.leftBarline === '|:' || barData.leftBarline === ':|'" d="M 2 0 2 100" vector-effect='non-scaling-stroke'></path>
-          <path class="left-barline" shape-rendering="crispEdges" v-else d="M 0 0 0 100" vector-effect='non-scaling-stroke'></path>
-          <g v-if="barData.leftBarline === '|:'">
-            <circle cx="7" cy="40" r="2" fill="var(--gridline-color)"></circle>
-            <circle cx="7" cy="60" r="2" fill="var(--gridline-color)"></circle>
-          </g>
-          <svg v-if="barData.leftBarline.endsWith('(')" x="4" y="3">
-            <path vector-effect='non-scaling-stroke' d="M9 94C3.4 91.4236 1 90.3195 1 82.9585C1 75.5976 1 68.2365 1 68.2365C1 68.2365 1 41.4278 1 24.25C1 19.0616 1 10.9643 1 10.9643C1 4.32145 3.19998 3.32503 8.33325 1.00004"/>
-          </svg>
-          <!-- right -->
-          <path class="right-barline" shape-rendering="crispEdges" v-if="barData.rightBarline.includes('||') || barData.rightBarline === '|:' || barData.rightBarline === ':|'" d="M 98 0 98 100" vector-effect='non-scaling-stroke'></path>
-          <path class="right-barline" shape-rendering="crispEdges" v-else d="M 100 0 100 100" vector-effect='non-scaling-stroke'></path>
-          <g v-if="barData.rightBarline === ':|'">
-            <circle cx="93" cy="40" r="2" fill="var(--gridline-color)"></circle>
-            <circle cx="93" cy="60" r="2" fill="var(--gridline-color)"></circle>
-          </g>
-          <svg v-if="barData.rightBarline.startsWith(')')" x="96" y="3" style="overflow:visible">
-            <g transform="scale(-1,1)">
-              <path vector-effect='non-scaling-stroke' d="M9 94C3.4 91.4236 1 90.3195 1 82.9585C1 75.5976 1 68.2365 1 68.2365C1 68.2365 1 41.4278 1 24.25C1 19.0616 1 10.9643 1 10.9643C1 4.32145 3.19998 3.32503 8.33325 1.00004"/>
+          <g class="left-barline-group">
+            <path class="left-barline crisp" d="M 0 0 0 100" vector-effect='non-scaling-stroke'></path>
+            <path v-if="barData.leftBarline.includes('(')" vector-effect='non-scaling-stroke' stroke="#F00" d="
+              M 10 4
+              C 5 6 3 12 3 20
+              L 3 80
+              C 3 88 5 94 10 96
+            "></path>
+            <g v-if="barData.leftBarline === '|:'">
+              <circle cx="7" cy="40" r="2" fill="var(--gridline-color)"></circle>
+              <circle cx="7" cy="60" r="2" fill="var(--gridline-color)"></circle>
             </g>
-          </svg>
+          </g>
+          
+          <!-- right -->
+          <g class="right-barline-group">
+            <path class="right-barline crisp" d="M 100 0 100 100" vector-effect='non-scaling-stroke'></path>
+            <path v-if="barData.rightBarline.includes(')')" vector-effect='non-scaling-stroke' stroke="#F00" d="
+              M 90 4
+              C 95 6 97 12 97 20
+              L 97 80
+              C 97 88 95 94 90 96
+            "></path>
+            <g v-if="barData.rightBarline === ':|'">
+              <circle cx="93" cy="40" r="2" fill="var(--gridline-color)"></circle>
+              <circle cx="93" cy="60" r="2" fill="var(--gridline-color)"></circle>
+            </g>
+          </g>
         </g>
       </g>
     </svg>
@@ -241,6 +250,29 @@ export default {
     opacity: 0.5;
     mix-blend-mode: darken;
     pointer-events: none;
+  }
+
+
+  .is-leftmost .left-barline-group {
+    transform: translateX(calc(0.5 * var(--stroke-width)));
+  }
+  .has-left-double-barline .left-barline-group {
+    /* --gridline-color: red; */
+    transform: translateX(calc(1.5 * var(--stroke-width)));
+  }
+  .is-leftmost.has-left-double-barline .left-barline-group {
+    transform: translateX(calc(3.5 * var(--stroke-width)));
+  }
+  
+  .is-rightmost .right-barline-group {
+    transform: translateX(calc(-0.5 * var(--stroke-width)));
+  }
+  .has-right-double-barline .right-barline-group {
+    /* --gridline-color: red; */
+    transform: translateX(calc(-1.5 * var(--stroke-width)));
+  }
+  .is-rightmost.has-right-double-barline .right-barline-group {
+    transform: translateX(calc(-3.5 * var(--stroke-width)));
   }
 
 </style>

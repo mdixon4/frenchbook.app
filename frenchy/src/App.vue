@@ -90,8 +90,9 @@ let song = computed(() => {
 
     --gridline-color: black;
     --stop-color: #DDD;
-    --stroke-width: .25mm;
+    --stroke-width: 0.25mm;
     --thick-stroke-width: 0.75mm;
+    --border-stroke-gap-width: 0.25mm;
     --rhythm-font-size: 5mm;
     --text-outline-color: white;
 
@@ -114,8 +115,28 @@ let song = computed(() => {
     font-size: 0.8em;
   }
 
+  .non-scaling-stroke {
+    vector-effect: non-scaling-stroke;
+  }
+
+  @page {
+    size:A4 portrait;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin: 0;
+    /* -webkit-print-color-adjust: exact; */
+  }
+  
   /* Do not print UI, just page */
   @media print {
+    /* Ensure user agent does not need "print background colours" on in order
+       for white outlines to print around chord names etc */
+    body {
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
     .controller {
       display: none;
     }
@@ -125,12 +146,13 @@ let song = computed(() => {
     .page {
       transform: none !important;
     }
+
+    /* .crisp {
+      shape-rendering: crispEdges;
+    } */
   }
 
   @media screen {
-    :root {
-      --stroke-width: .5mm;
-    }
 
     #app {
       display: flex;
@@ -197,13 +219,10 @@ let song = computed(() => {
 
     .page {
       background: white;
-      /* background-image: 
-        linear-gradient(to bottom, transparent 0 calc(var(--page-height) - 3px), red calc(var(--page-height) - 3px) var(--page-height));
-      background-size: var(--page-width) calc(var(--page-height) + 1px);
-      background-repeat: repeat; */
       border: 1px solid black;
       box-shadow: 4px 4px black;
     }
+
   }
 
 

@@ -23,17 +23,17 @@
         </div>
       </div>
       <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
-        <path class="border-stroke" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
-        <path class="border-stroke-gap" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+        <path class="border-stroke crisp non-scaling-stroke" :d="stanzaBorderPath"></path>
+        <path class="border-stroke-gap non-scaling-stroke" :d="stanzaBorderPath"></path>
         <template v-if="stanza.classes.includes('shadow')">
         <defs>
           <mask :id="`mask${randomId}`">
             <rect x="-999" y="-999" width="9999" height="9999" fill="white"></rect>
-            <path class="shadow-mask" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath" fill="black"></path>
+            <path class="shadow-mask crisp non-scaling-stroke" :d="stanzaBorderPath" fill="black"></path>
           </mask>
         </defs>
         <g :mask="`url(#mask${randomId})`">
-          <path class="shadow-fill" vector-effect='non-scaling-stroke' shape-rendering="crispEdges" :d="stanzaBorderPath"></path>
+          <path class="shadow-fill crisp non-scaling-stroke" :d="stanzaBorderPath"></path>
         </g>
         </template>
       </svg>
@@ -95,7 +95,7 @@ const stanzaBorderViewBox = computed(() => {
     display: unset;
     fill: transparent;
     stroke: white;
-    stroke-width: calc(var(--stroke-width) * .75); /* Looks too wide on screen, but just right on pdf */
+    stroke-width: var(--border-stroke-gap-width);
   }
   .stanza-border { z-index: 40 }
   .stanza.shadow .stanza-border { z-index: 41 }
