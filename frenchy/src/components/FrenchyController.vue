@@ -7,10 +7,10 @@
       <button class="end-edit" @click="$emit('stopEditing')" title="Close">
         <svg height="100%" class="close-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
       </button>
-      <button v-if="isDockedLeft" @click="dockElsewhere" title="Dock to top">
+      <button v-if="isDockedLeft" @click="dockToTop" title="Dock to top">
         <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>
       </button>
-      <button v-if="isDockedTop" @click="dockElsewhere" title="Dock to left">
+      <button v-if="isDockedTop" @click="dockToLeft" title="Dock to left">
         <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
       </button>
     </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmit, computed, ref } from 'vue'
+import { defineProps, defineEmit, computed, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -30,10 +30,16 @@ const props = defineProps({
   },
   dockside: {
     type: String
+  },
+  controllerHeight: {
+    type: Number
+  },
+  controllerWidth: {
+    type: Number
   }
 })
 
-const emit = defineEmit(['update:modelValue', 'update:dockside'])
+const emit = defineEmit(['update:modelValue', 'update:dockside', 'stopEditing', 'update:controllerHeight', 'update:controllerWidth'])
 
 const songText = computed({
   get: () => props.modelValue,
@@ -50,11 +56,42 @@ const isDockedTop = computed(() => {
   return props.dockside === 'top'
 })
 
-const dockElsewhere = () => {
-  delete controller.value.style.removeProperty('width')
-  delete controller.value.style.removeProperty('height')
-  emit('update:dockside', props.dockside === 'left' ? 'top' : 'left')
+const width = computed({
+  get: () => props.controllerWidth,
+  set: (v) => emit('update:controllerWidth', v)
+})
+const height = computed({
+  get: () => props.controllerHeight,
+  set: (v) => emit('update:controllerHeight', v)
+})
+
+const dockToTop = () => {
+  controller.value.style.removeProperty('width')
+  controller.value.style.height = height.value + 'px'
+  emit('update:dockside', 'top')
 }
+const dockToLeft = () => {
+  controller.value.style.removeProperty('height')
+  controller.value.style.width = width.value + 'px'
+  emit('update:dockside', 'left')
+}
+
+const editorResizeObserver = new ResizeObserver(entries => {
+  console.log(entries[0])
+  if (isDockedLeft.value) {
+    width.value = entries[0].contentRect.width
+  }
+  if (isDockedTop.value) {
+    height.value = entries[0].contentRect.height
+  }
+})
+
+watch(controller, () => {
+  if (isDockedLeft.value) controller.value.style.width = width.value + 'px'
+  if (isDockedTop.value) controller.value.style.height = height.value + 'px'
+  editorResizeObserver.observe(controller.value)
+})
+
 
 </script>
 

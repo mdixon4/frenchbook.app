@@ -1,16 +1,22 @@
 <template>
   <div id="app" :class="[
     {
-      'docked-left': dockside === 'left',
-      'docked-top': dockside === 'top',
+      'docked-left': settings.dockside === 'left',
+      'docked-top': settings.dockside === 'top',
       'hide-rulers': !settings.showRulers
     }, 
-    settings.backdrop
+    settings.backdrop,
+    logoClass
 
   ]"
   >
-    <frenchy-controller v-show="isEditing" @stopEditing="isEditing = false" v-model="songText" v-model:dockside="dockside"></frenchy-controller>
-    <button class="begin-edit" v-show="!isEditing" @click="isEditing = true">
+    <frenchy-controller v-show="settings.isEditing" @stopEditing="settings.isEditing = false" 
+      v-model="songText" 
+      v-model:dockside="settings.dockside"
+      v-model:controllerWidth="settings.controllerWidth"
+      v-model:controllerHeight="settings.controllerHeight"
+    ></frenchy-controller>
+    <button class="begin-edit" v-show="!settings.isEditing" @click="settings.isEditing = true">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
     </button>
     <frenchy-settings v-show="isChangingSettings" @stopChangingSettings="isChangingSettings = false" v-model="settings"></frenchy-settings>
@@ -36,13 +42,28 @@ import FrenchyController from './components/FrenchyController.vue'
 import FrenchySettings from './components/FrenchySettings.vue'
 
 const errorMessage = ref('')
-const isEditing = ref(false)
-const dockside = ref('left')
 const isChangingSettings = ref(false)
+
+const initialSettingsFromStorage = localStorage.getItem('settings')
+const initialSettings = initialSettingsFromStorage ? JSON.parse(initialSettingsFromStorage) : {}
+
 const settings = ref({
-  backdrop: '',
-  showRulers: true
+  backdrop: initialSettings.backdrop ?? '',
+  showRulers: initialSettings.showRulers ?? true,
+  controllerWidth: initialSettings.controllerWidth ?? null,
+  controllerHeight: initialSettings.controllerHeight ?? null,
+  isEditing: initialSettings.isEditing ?? false,
+  dockside: initialSettings.dockside ?? 'left'
 })
+
+const currentRoute = window.location.pathname
+const logoClass = currentRoute === '/s/' ? 'with-shirazz-logo' : 'with-french-book-logo'
+
+
+
+watch(settings, () => {
+  localStorage.setItem('settings', JSON.stringify(settings.value))
+}, { deep: true })
 
 let rawSongText = fromUrlHash(window.location.hash.substr(1))
 let songText = ref(rawSongText)
@@ -196,10 +217,24 @@ let song = computed(() => {
     }
 
     #app.backdrop-wood {
+      background-color: #6a4d3d;
       background-image: url(https://source.unsplash.com/J2gEgTPM_OA/1600x900)
     }
     #app.backdrop-blue-wall {
+      background-color: #4772aa;
       background-image: url(https://source.unsplash.com/BawjznQ3Q8U/1600x900)
+    }
+    #app.backdrop-nebula {
+      background-color: #775318;
+      background-image: url(https://source.unsplash.com/-hI5dX2ObAs/1600x900)
+    }
+    #app.backdrop-bright-paper {
+      background-color: #fec42d;
+      background-image: url(https://source.unsplash.com/7OCUyev2M9E/1600x900)
+    }
+    #app.backdrop-black-sand {
+      background-color: #2c2c2c;
+      background-image: url(https://source.unsplash.com/w1_4YH5IhDg/1600x900)
     }
 
     .begin-edit {
