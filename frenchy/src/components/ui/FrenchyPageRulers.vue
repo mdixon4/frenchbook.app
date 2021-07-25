@@ -34,6 +34,7 @@ setTimeout(() => { console.log(topMargin) }, 1000)
     position: absolute;
     inset: 0;
     overflow: hidden;
+    pointer-events: none;
   }
 
   .rulers svg {

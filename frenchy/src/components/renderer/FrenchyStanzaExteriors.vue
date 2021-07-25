@@ -64,6 +64,7 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
     position: absolute;
     left: calc(-2 * var(--bar-width));
     top: calc(-2 * var(--bar-height));
+    pointer-events: none;
   }
 
   .exterior {

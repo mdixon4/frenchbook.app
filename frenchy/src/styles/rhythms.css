@@ -1,0 +1,15 @@
+
+
+span.rhythms {
+  font-family: 'Rhythms';
+  font-style: normal;
+  font-size: var(--rhythm-font-size);
+  font-weight: normal;
+  white-space: pre;
+  position: relative;
+  transform: scaleY(0.9);
+  transform-origin: bottom;
+}
+span.rhythms::before {
+  clip-path: inset(-0.2em);
+}

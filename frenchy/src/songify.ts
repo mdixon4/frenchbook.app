@@ -891,7 +891,7 @@ const parsePart = (partText: string): SongPart => {
     let width = Math.max(16 - indentLeft - indentRight, 0)
     let indentClasses = [
       indentLeft ? `indent-${formatDecimalWithHyphen(indentLeft/2)}` : '',
-      indentRight ? `width-${formatDecimalWithHyphen(width/2)}` : ''
+      `width-${formatDecimalWithHyphen(width/2)}`
     ].filter(Boolean)
     
     return {
