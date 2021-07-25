@@ -1,92 +1,19 @@
 <template>
-  <div id="app" :class="[
-    {
-      'docked-left': settings.dockside === 'left',
-      'docked-top': settings.dockside === 'top',
-      'hide-rulers': !settings.showRulers
-    }, 
-    settings.backdrop,
-    logoClass
-
-  ]"
-  >
-    <frenchy-controller v-show="settings.isEditing" @stopEditing="settings.isEditing = false" 
-      v-model="songText" 
-      v-model:dockside="settings.dockside"
-      v-model:controllerWidth="settings.controllerWidth"
-      v-model:controllerHeight="settings.controllerHeight"
-    ></frenchy-controller>
-    <button class="begin-edit" v-show="!settings.isEditing" @click="settings.isEditing = true">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-    </button>
-    <frenchy-settings v-show="isChangingSettings" @stopChangingSettings="isChangingSettings = false" v-model="settings"></frenchy-settings>
-    <button class="open-settings" @click="isChangingSettings = true">
-      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
-    </button>
-    <div class="desk">
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-      <div class="page-holder">
-        <frenchy-page :song="song"></frenchy-page>
-      </div>
-    </div>
-  </div>
+  <frenchy-ui v-model:songText="songText">
+    <frenchy-renderer :song="song" :template="logoClass"></frenchy-renderer>
+  </frenchy-ui>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue'
-import { songify } from './songify'
-import { fromUrlHash, toUrlHash } from './util'
+import { useSongParser } from './composables/useSongParser'
+import { useBase64RouteHash } from './composables/useBase64RouteHash'
 
-import FrenchyPage from './components/FrenchyPage.vue'
-import FrenchyController from './components/FrenchyController.vue'
-import FrenchySettings from './components/FrenchySettings.vue'
+import FrenchyUi from './components/ui/FrenchyUi.vue'
+import FrenchyRenderer from './components/renderer/FrenchyRenderer.vue'
 
-const errorMessage = ref('')
-const isChangingSettings = ref(false)
-
-const initialSettingsFromStorage = localStorage.getItem('settings')
-const initialSettings = initialSettingsFromStorage ? JSON.parse(initialSettingsFromStorage) : {}
-
-const settings = ref({
-  backdrop: initialSettings.backdrop ?? '',
-  showRulers: initialSettings.showRulers ?? true,
-  controllerWidth: initialSettings.controllerWidth ?? null,
-  controllerHeight: initialSettings.controllerHeight ?? null,
-  isEditing: initialSettings.isEditing ?? false,
-  dockside: initialSettings.dockside ?? 'left'
-})
-
-const currentRoute = window.location.pathname
-const logoClass = currentRoute === '/s/' ? 'with-shirazz-logo' : 'with-french-book-logo'
-
-
-
-watch(settings, () => {
-  localStorage.setItem('settings', JSON.stringify(settings.value))
-}, { deep: true })
-
-let rawSongText = fromUrlHash(window.location.hash.substr(1))
-let songText = ref(rawSongText)
-
-watch(songText, () => {
-  try {
-    window.location.hash = toUrlHash(songText.value)
-  } catch (err) {
-    console.error(err)
-  }
-})
-
-let song = computed(() => {
-  try {
-    errorMessage.value = ''
-    return songify(songText.value)
-  } catch (err) {
-    errorMessage.value = err
-    console.error(err)
-    return null
-  }
-})
-
+const logoClass = window.location.pathname === '/s/' ? 'with-shirazz-logo' : 'with-french-book-logo'
+const songText = useBase64RouteHash()
+const song = useSongParser(songText)
 </script>
 
 <style>

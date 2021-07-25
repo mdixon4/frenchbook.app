@@ -37,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmit(['update:modelValue'])
+const emit = defineEmit(['update:modelValue', 'stopChangingSettings'])
 
 const backdrop = computed({
   get: () => props.modelValue.backdrop,

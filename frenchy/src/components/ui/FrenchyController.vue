@@ -77,7 +77,6 @@ const dockToLeft = () => {
 }
 
 const editorResizeObserver = new ResizeObserver(entries => {
-  console.log(entries[0])
   if (isDockedLeft.value) {
     width.value = entries[0].contentRect.width
   }
