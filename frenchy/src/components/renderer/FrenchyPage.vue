@@ -1,10 +1,5 @@
 <template>
   <div class="page" v-if="song" ref="pageElement">
-    <div class="rule top-margin"></div>
-    <div class="rule bottom-margin"></div>
-    <div class="rule left-margin"></div>
-    <div class="rule right-margin"></div>
-    <div class="rule page-break"></div>
 
     <frenchy-header :metadata="song.metadata"></frenchy-header>
     <div class="song" :style="{
@@ -23,7 +18,6 @@
 
 <script setup>
 import { defineProps, watch, ref } from 'vue'
-import panzoom from 'panzoom'
 
 import FrenchyHeader from './FrenchyHeader.vue'
 import FrenchyStanza from './FrenchyStanza.vue'
@@ -33,21 +27,9 @@ import FrenchyTextBlock from './FrenchyTextBlock.vue'
 const pageWidth = ref(210)
 const pageHeight = ref(297)
 
-const pageElement = ref(null)
-
 const props = defineProps({
   song: {
     type: Object
-  }
-})
-
-watch(pageElement, () => {
-  if (pageElement.value) {
-    panzoom(pageElement.value, {
-      bounds: true,
-      maxZoom: 4,
-      minZoom: 0.25
-    })
   }
 })
 
