@@ -6,18 +6,17 @@
 <script setup>
 import { defineProps } from 'vue'
 
-
 const props = defineProps({
   part: {
     type: Object
   }
 })
-console.log(props.part)
 </script>
 
 <style>
   .non-music {
-    /* white-space: pre; */
+    font-family: var(--serif-font);
+    position: relative;
     font-size: calc(16/16 * 1rem);
   }
 
@@ -34,6 +33,6 @@ console.log(props.part)
   }
 
   .non-music p + p {
-    margin-top: 0.5rem;
+    margin-top: 0.25em;
   }
 </style>

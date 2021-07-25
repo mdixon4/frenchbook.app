@@ -16,7 +16,6 @@
 
 <script setup>
 import { defineProps, toRefs, toRef, ref, watch, nextTick, watchEffect, reactive, onUpdated, onMounted, computed } from 'vue'
-import FrenchyWayfinding from './FrenchyWayfinding.vue'
 
 const props = defineProps({
   span: {

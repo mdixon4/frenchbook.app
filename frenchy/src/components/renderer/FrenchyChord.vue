@@ -1,6 +1,6 @@
 <template>
   <div class="lily rendered-chord add-outline" :class="[ shape ]">
-    <outlined-text :text="`${ chord.isBracketed ? '(' : '' }${ chord.renderedChord }${ chord.isBracketed ? ')' : '' }`"></outlined-text>
+    <outlined-text :text="printableChord"></outlined-text>
   </div>
 </template>
 
@@ -12,19 +12,16 @@ import OutlinedText from './OutlinedText.vue'
 const props = defineProps({
   chord: {
     type: Object
+  },
+  shape: {
+    type: String,
+    required: true
   }
 })
 
-const { chord } = toRefs(props)
+const { chord, shape } = toRefs(props)
 
-const shape = computed(() => {
-  if (chord.value.beats.length === 1) return 'small-square'
-  if (chord.value.beats === '12' && chord.value.isSlashed) return 'left-triangle'
-  if (chord.value.beats === '34' && chord.value.isSlashed) return 'right-triangle'
-  if (chord.value.beats === '1234') return 'full-square'
-  return 'rectangle'
-})
-
+const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${ chord.value.renderedChord }${ chord.value.isBracketed ? ']' : '' }`)
 
 </script>
 
@@ -103,10 +100,10 @@ const shape = computed(() => {
   transform: scale(0.8) translateY(0.15em);
   margin-left: -0.2em;
 }
-.left-triangle .bass-slash {
+/* .left-triangle .bass-slash {
   top: .6em;
   left: 0.2em;
-}
+} */
 
 
 .bass {
@@ -115,10 +112,10 @@ const shape = computed(() => {
   font-size: 0.8em;
   margin-left: -0.15em;
 }
-.left-triangle .bass {
+/* .left-triangle .bass {
   top: 1.35em;
   font-size: 0.9em;
-}
+} */
 
 
 
@@ -142,7 +139,7 @@ const shape = computed(() => {
   margin: 0 -0.1em 0 0;
 }
 
-.left-triangle .bass-slash {
+/* .left-triangle .bass-slash {
   position: absolute;
   left: 0.4em;
   top: 0.45em;
@@ -154,12 +151,12 @@ const shape = computed(() => {
   left: 0.1em;
   top: 1.1em;
   margin: 0;
-}
-.left-triangle {
+} */
+/* .left-triangle {
   height: 1.2em;
-}
+} */
 
-.right-triangle .bass-slash {
+/* .right-triangle .bass-slash {
   position: absolute;
   left: 0;
   top: 0;
@@ -172,6 +169,6 @@ const shape = computed(() => {
 }
 .right-triangle .rendered-chord {
   height: 1.1em;
-}
+} */
 </style>
 
