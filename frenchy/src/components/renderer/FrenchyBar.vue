@@ -49,10 +49,7 @@ const props = defineProps({
 const { barData } = toRefs(props)
 
 const getStopOnFn = beatNo => {
-  return computed(() => {
-    console.log({ chords: chords.value })
-    return chords.value.length && chords.value.find(c => c.beats.includes(beatNo)).isStop
-  })
+  return computed(() => chords.value.length && chords.value.find(c => c.beats.includes(beatNo)).isStop)
 }
 
 const isDitto = computed(() => barData.value.chords.length === 1 && barData.value.chords[0].chord === '-')
@@ -76,10 +73,7 @@ const isStopOn1 = getStopOnFn(1)
 const isStopOn2 = getStopOnFn(2)
 const isStopOn3 = getStopOnFn(3)
 const isStopOn4 = getStopOnFn(4)
-const isWholeBarStop = computed(() => {
-  console.log({ blocks, isStopOn1 })
-  return blocks.value === '' && isStopOn1.value
-})
+const isWholeBarStop = computed(() => blocks.value === '' && isStopOn1.value)
 
 
 </script>

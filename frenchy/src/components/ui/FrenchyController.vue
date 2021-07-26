@@ -13,16 +13,22 @@
       <button v-if="isDockedTop" @click="dockToLeft" title="Dock to left">
         <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
       </button>
+      <button v-if="isControllerWrapped" @click="emit('update:isControllerWrapped', false)" title="Do not wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g class="icon-tabler" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10"/><path d="M4 18h10"/><path d="M4 12h17l-3-3m0 6l3-3"/></g></svg>
+      </button>
+      <button v-if="!isControllerWrapped" @click="emit('update:isControllerWrapped', true)" title="Wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g class="icon-tabler" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 18h5"/><path d="M4 12h13a3 3 0 0 1 0 6h-4l2-2m0 4l-2-2"/></g></svg>
+      </button>
     </div>
     <div id="code-editor" ref="codeEditor">
-      <textarea id="code-input" v-model="songText" spellcheck="false"></textarea>
+      <textarea id="code-input" v-model="songText" spellcheck="false" :class="[ isControllerWrapped ? 'wrap' : 'no-wrap' ]"></textarea>
       <!-- <pre id="code-display" aria-hidden="true"><code>{{ songText }}</code></pre> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmit, computed, ref, watch } from 'vue'
+import { defineProps, defineEmit, computed, ref, onMounted } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -36,10 +42,13 @@ const props = defineProps({
   },
   controllerWidth: {
     type: Number
+  },
+  isControllerWrapped: {
+    type: Boolean
   }
 })
 
-const emit = defineEmit(['update:modelValue', 'update:dockside', 'stopEditing', 'update:controllerHeight', 'update:controllerWidth'])
+const emit = defineEmit(['update:modelValue', 'update:dockside', 'stopEditing', 'update:controllerHeight', 'update:controllerWidth', 'update:isControllerWrapped'])
 
 const songText = computed({
   get: () => props.modelValue,
@@ -85,7 +94,7 @@ const editorResizeObserver = new ResizeObserver(entries => {
   }
 })
 
-watch(controller, () => {
+onMounted(() => {
   if (isDockedLeft.value) controller.value.style.width = width.value + 'px'
   if (isDockedTop.value) controller.value.style.height = height.value + 'px'
   editorResizeObserver.observe(controller.value)
@@ -181,6 +190,10 @@ watch(controller, () => {
   background: transparent;
   /* background: yellow; */
   caret-color: white;
+}
+
+#code-input.no-wrap {
+  white-space: nowrap;
 }
 
 #code-input:focus {

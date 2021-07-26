@@ -14,6 +14,7 @@
       v-model:dockside="uiSettings.dockside"
       v-model:controllerWidth="uiSettings.controllerWidth"
       v-model:controllerHeight="uiSettings.controllerHeight"
+      v-model:isControllerWrapped="uiSettings.isControllerWrapped"
       v-model="songText"
     ></frenchy-controller>
     <button class="begin-edit" v-show="!uiSettings.isEditing" @click="uiSettings.isEditing = true">
@@ -60,12 +61,12 @@ const uiSettings = useStorage('frenchbook-settings', {
   controllerWidth: null,
   controllerHeight: null,
   isEditing: false,
-  dockside: 'left'
+  dockside: 'left',
+  isControllerWrapped: true
 })
 
 watch(pagePanzoomEl, () => {
   if (pagePanzoomEl.value) {
-    console.log('applying panzoom')
     panzoom(pagePanzoomEl.value, {
       bounds: true,
       maxZoom: 4,

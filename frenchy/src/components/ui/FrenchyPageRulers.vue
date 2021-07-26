@@ -1,5 +1,5 @@
 <template>
-  <div class="rulers" ref="rulersEl">
+  <div class="rulers">
     <svg viewBox="0 0 210 1" class="top-margin" preserveAspectRatio="none">
       <line x1="0" x2="210" y1="1" y2="1"></line>
     </svg>
@@ -19,14 +19,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useCssVar } from '@vueuse/core'
-
-const rulersEl = ref(null)
-const topMargin = useCssVar('--top-margin', rulersEl)
-console.log(topMargin)
-setTimeout(() => { console.log(topMargin) }, 1000)
-
 </script>
 
 <style>
