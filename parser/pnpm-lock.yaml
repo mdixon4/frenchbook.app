@@ -1,0 +1,131 @@
+lockfileVersion: 5.3
+
+specifiers:
+  jison: ^0.4.18
+  reghex: ^3.0.0
+
+dependencies:
+  jison: 0.4.18
+  reghex: 3.0.0
+
+packages:
+
+  /JSONSelect/0.4.0:
+    resolution: {integrity: sha1-oI7cxn6z/L6Z7WMIVTRKDPKCu40=}
+    engines: {node: '>=0.4.7'}
+    dev: false
+
+  /JSV/4.0.2:
+    resolution: {integrity: sha1-0Hf2glVx+CEy+d/67Vh7QCn+/1c=}
+    dev: false
+
+  /amdefine/1.0.1:
+    resolution: {integrity: sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=}
+    engines: {node: '>=0.4.2'}
+    dev: false
+    optional: true
+
+  /cjson/0.3.0:
+    resolution: {integrity: sha1-5kObkHA9MS/24iJAl76pLOPQKhQ=}
+    engines: {node: '>= 0.3.0'}
+    dependencies:
+      jsonlint: 1.6.0
+    dev: false
+
+  /colors/0.5.1:
+    resolution: {integrity: sha1-fQAj6usVTo7p/Oddy5I9DtFmd3Q=}
+    engines: {node: '>=0.1.90'}
+    dev: false
+
+  /ebnf-parser/0.1.10:
+    resolution: {integrity: sha1-zR9rpHfFY4xAyX7ZtXLbW6tdgzE=}
+    dev: false
+
+  /escodegen/1.3.3:
+    resolution: {integrity: sha1-8CQBb1qI4Eb9EgBQVek5gC5sXyM=}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+    dependencies:
+      esprima: 1.1.1
+      estraverse: 1.5.1
+      esutils: 1.0.0
+    optionalDependencies:
+      source-map: 0.1.43
+    dev: false
+
+  /esprima/1.1.1:
+    resolution: {integrity: sha1-W28VR/TRAuZw4UDFCb5ncdautUk=}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+    dev: false
+
+  /estraverse/1.5.1:
+    resolution: {integrity: sha1-hno+jlip+EYYr7bC3bzZFrfLr3E=}
+    engines: {node: '>=0.4.0'}
+    dev: false
+
+  /esutils/1.0.0:
+    resolution: {integrity: sha1-gVHTWOIMisx/t0XnRywAJf5JZXA=}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /jison-lex/0.3.4:
+    resolution: {integrity: sha1-gcoo2E+ESZ36jFlNzePYo/Jux6U=}
+    engines: {node: '>=0.4'}
+    hasBin: true
+    dependencies:
+      lex-parser: 0.1.4
+      nomnom: 1.5.2
+    dev: false
+
+  /jison/0.4.18:
+    resolution: {integrity: sha512-FKkCiJvozgC7VTHhMJ00a0/IApSxhlGsFIshLW6trWJ8ONX2TQJBBz6DlcO1Gffy4w9LT+uL+PA+CVnUSJMF7w==}
+    engines: {node: '>=0.4'}
+    hasBin: true
+    dependencies:
+      cjson: 0.3.0
+      ebnf-parser: 0.1.10
+      escodegen: 1.3.3
+      esprima: 1.1.1
+      jison-lex: 0.3.4
+      JSONSelect: 0.4.0
+      lex-parser: 0.1.4
+      nomnom: 1.5.2
+    dev: false
+
+  /jsonlint/1.6.0:
+    resolution: {integrity: sha1-iKpGvCiaesk7tGyuLVihh6m7SUo=}
+    engines: {node: '>= 0.6'}
+    hasBin: true
+    dependencies:
+      JSV: 4.0.2
+      nomnom: 1.5.2
+    dev: false
+
+  /lex-parser/0.1.4:
+    resolution: {integrity: sha1-ZMTwJfF/1Tv7RXY/rrFvAVp0dVA=}
+    dev: false
+
+  /nomnom/1.5.2:
+    resolution: {integrity: sha1-9DRUSKhTz71cDSYyDyR3qwUm/i8=}
+    deprecated: Package no longer supported. Contact support@npmjs.com for more info.
+    dependencies:
+      colors: 0.5.1
+      underscore: 1.1.7
+    dev: false
+
+  /reghex/3.0.0:
+    resolution: {integrity: sha512-CWL9oEFQBq1PF3iT4GjSz7Te/OuLFYYHWS5/lCyxmMFncsr4Cxi/aapgmEF1AiqodEHI16t0cu1A/B/O78NUcA==}
+    dev: false
+
+  /source-map/0.1.43:
+    resolution: {integrity: sha1-wkvBRspRfBRx9drL4lcbK3+eM0Y=}
+    engines: {node: '>=0.8.0'}
+    dependencies:
+      amdefine: 1.0.1
+    dev: false
+    optional: true
+
+  /underscore/1.1.7:
+    resolution: {integrity: sha1-QLq4S60Z0jAJbo1u9ii/8FXYPbA=}
+    dev: false
