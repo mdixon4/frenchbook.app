@@ -1,28 +1,7 @@
 import { regex } from './util'
 
-export interface Chord {
-  input?: {
-    descriptor: string
-  }
-  formatted?: {
-    descriptor: string
-    chordChanges: Array<string>
-  }
-  raw?: string
-  root?: string
-  rootSymbols?: string
-  modifier?: string
-  modifiers?: Array<string>
-  modifierSymbols?: Array<string>
-  alterations?: string
-  alterationSymbols?: string
-  bass?: string
-  bassSymbols?: string
-}
+import { Chord, SymbolList } from './types'
 
-type SymbolList = {
-  [key: string]: string
-}
 
 
 
@@ -76,7 +55,7 @@ const BASS_SYMBOLS = {
 const SWAPSIES = Object.entries(DEFAULT_SYMBOLS).reduce((acc, [key, val]) => {
   acc[key] = `<b>${ val }</b>`
   return acc
-}, {})
+}, {} as SymbolList)
 
 
 const MODIFIER_SYMBOLS: SymbolList = {
@@ -199,9 +178,9 @@ const MODIFIER2_SYMBOLS = {
   // 'striangle': '&#xe18a;'
 }
 
-const dictionaryReplace = (inputStr: string, dictionary: {}): string => {
+const dictionaryReplace = (inputStr: string | undefined, dictionary: SymbolList): string | undefined => {
+  if (!inputStr) return inputStr
   let outputStr = inputStr
-  if (!outputStr) return outputStr
   Object.entries(dictionary).forEach(([key, val]: [string, string]) => {
     outputStr = outputStr.replace(key, val)
   })
@@ -220,14 +199,14 @@ const preParser = (chordText: string): string => {
   return chordText.replace('halfdim', 'Ø')
 }
 
-const catchHalfDim = (chord: Chord): Chord => {
-  // if (chord.formatted.descriptor === 'mi7' && chord.formatted.chordChanges.includes('b5')) {
-  if (chord.input.descriptor === 'Ø') {
-    chord.formatted.chordChanges = chord.formatted.chordChanges.filter(cc => cc !== 'b5')
-    chord.formatted.descriptor = 'Ø'
-  }
-  return chord
-}
+// const catchHalfDim = (chord: Chord): Chord => {
+//   // if (chord.formatted.descriptor === 'mi7' && chord.formatted.chordChanges.includes('b5')) {
+//   if (chord.input.descriptor === 'Ø') {
+//     chord.formatted.chordChanges = chord.formatted.chordChanges.filter(cc => cc !== 'b5')
+//     chord.formatted.descriptor = 'Ø'
+//   }
+//   return chord
+// }
 
 
 const chordParserRegex = regex`^
@@ -258,7 +237,7 @@ const tokeniseModifier = (modifier: string) => {
 
 const parse = (chordText: string): Chord => {
   let matches = chordText.match(chordParserRegex)
-  if (!matches) return { raw: chordText }
+  if (!matches || !matches.groups) return { raw: chordText }
   let modifiers = tokeniseModifier(matches.groups.modifier)
   return {
     raw: chordText,
@@ -297,7 +276,7 @@ export const renderChord = (chordText: string): { parsedChord: Chord, renderedCh
   } else {
     outputStr += chord.raw
   }
-  if (chord.modifiers?.length) outputStr += `<span class="modifier">${ chord.modifierSymbols.join('') }</span>`
+  if (chord.modifiers?.length) outputStr += `<span class="modifier">${ (chord.modifierSymbols || []).join('') }</span>`
   if (chord.alterations) outputStr += `<span class="alterations">${ chord.alterationSymbols }</span>`
   if (chord.bass) outputStr += `<span class="bass-slash">/</span><span class="bass">${ chord.bassSymbols }</span>`
 

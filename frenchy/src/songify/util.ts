@@ -1,4 +1,5 @@
 
+//https://stackoverflow.com/a/60027277
 //build regexes without worrying about
 // - double-backslashing
 // - adding whitespace for readability
@@ -8,13 +9,12 @@ let clean = (piece: string): string => (piece
   .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
   .replace(/\n\s*/g, '')
 );
-export const regex = ({raw}: {raw: string}, ...interpolations: Array<string>) => (
+export const regex = (strings: TemplateStringsArray, ...interpolations: Array<string>) => (
   new RegExp(interpolations.reduce(
-      (regex, insert, index) => (regex + insert + clean(raw[index + 1])),
-      clean(raw[0])
+      (regex, insert, index) => (regex + insert + clean(strings.raw[index + 1])),
+      clean(strings.raw[0])
   ))
 );
-
 
 // convert a Unicode string to a string in which
 // each 16-bit unit occupies only one byte

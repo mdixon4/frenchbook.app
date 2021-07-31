@@ -1,122 +1,27 @@
 import markdownit from 'markdown-it'
 import { renderChord } from './chord_renderer'
 import { replaceSnippets } from './snippets';
+import { regex } from './util'
 
-import { Chord } from './chord_renderer'
-
-type PreparedChord = {
-  parsedChord: Chord
-  renderedChord: string
-  chord: string
-  isStop: boolean
-  isDitto: boolean
-  isBlank: boolean
-  isBracketed: boolean
-  beats: string
-}
-
-type BarContent = {
-  chords: Array<{}>
-  annotations: Array<{}>
-  classes: Array<string>
-  isEmpty: boolean
-}
-
-type Bar = {
-  leftBarline: string
-  rightBarline: string | undefined
-  textContent: string
-  classes?: Array<string>
-  
-  isLeftmost?: boolean
-  isRightmost?: boolean
-  isTopmost?: boolean
-  isBottommost?: boolean
-}
-
-type UnparsedMusicLine = {
-  rhythmText: string
-  text: string
-}
-
-type MusicLine = {
-  bars: Array<Bar>
-  indent: number | null
-  align: string
-  classes: Array<string>
-}
-
-type AnnotationLine = string
-
-type Line = MusicLine | AnnotationLine
-
-type StanzaLayout = {
-  layout: Array<string>
-  indent: number
-  width: number
-  fullWidth: number
-  height: number
-}
-
-type Annotation = {
-  align: 'start' | 'middle' | 'end'
-  style: 'dotted' | 'volta' | 'volta-dashed' | 'wayfinding' | ''
-  side: string
-  text: string
-  classes: Array<string>
-  start: number | null
-  end: number | null
-}
-
-type TextBlock = {
-  type: 'plain-text'
-  topMargin?: number
-  bottomMargin?: number
-  classes: Array<string>
-  text: string
-  html: string
-}
-
-
-type Stanza = {
-  type: 'stanza'
-  topMargin?: number
-  bottomMargin?: number
-  classes: Array<string>
-  title: {}
-  lines: Array<MusicLine>
-  layout: Array<string>
-  borderCoordinates: Array<[number, number]>
-  indent: number
-  width: number
-  fullWidth: number
-  height: number
-  annotations: Array<Annotation>
-}
-
-type HR = {
-  type: 'hr'
-  topMargin?: number
-  bottomMargin?: number
-  classes: Array<string>
-}
-
-type MetaData = {
-  [key: string]: string
-}
-
-type SongPart = Stanza | TextBlock | HR
-
-type Song = {
-  metadata: MetaData
-  parts: Array<SongPart>
-  css: string
-}
-
-
-
-
-
+import {
+  Chord,
+  SymbolList,
+  PreparedChord,
+  BarContent,
+  Bar,
+  UnparsedMusicLine,
+  MusicLine,
+  AnnotationLine,
+  Line,
+  StanzaLayout,
+  Annotation,
+  TextBlock,
+  Stanza,
+  HR,
+  MetaData,
+  SongPart,
+  Song
+} from './types'
 
 
 
@@ -131,11 +36,15 @@ const rhythmWrappedRegex = /{([^}]*)}/
 const globalRhythmWrappedRegex = new RegExp(rhythmWrappedRegex.source, 'g')
 const quotedOrRhythmRegex = /(\"([^\"]*)\"|\{([^\}]*)\})/
 const globalQuotedOrRhythmRegex = new RegExp(quotedOrRhythmRegex.source, 'g')
-const classesRegex = /(?<![\.\w\d])\.([^\s|\.])+/g
+const classesRegex = /(?<![\.\w\d\\])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/
 const globalBarlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/g
-const songpartRegex = /(("""(.|\n)*"""\s*\n)|(((.|\n)*?)(\n\n|$)))/g
+const songpartRegex = /("""(.|\n)*?"""\s*\n)|((.|\n)*?(\n\n|$))/g
+
+
+
+
 
 
 // const replacePitches = text => text
@@ -757,40 +666,13 @@ const convertTitleToAnnotation = (title: string, classes: Array<string>, layout:
 }
 
 
-const createFancyCodaAnnotation = (classes: Array<string>): Annotation | null => {
-  if (classes.includes('coda-direct')) {
-    return {
-      side: 'left',
-      start: 1,
-      end: 1,
-      classes: ['direct-coda'],
-      text: 'CODA',
-      align: 'end',
-      style: ''
-    }
-  }
-  if (classes.includes('coda')) {
-    return {
-      side: 'left',
-      start: 1,
-      end: 1,
-      classes: ['coda'],
-      text: 'CODA',
-      align: 'end',
-      style: 'wayfinding'
-    }
-  }
-  return null
-}
-
-
 const combineAnnotations = (annotations: Array<Annotation>): Array<Annotation> => {
   // Combine title and coda annotations if they're both at top
   let titleAnnotation = annotations.find(a => a.classes?.includes('title') && a.side === 'top')
   let codaAnnotation = annotations.find(a => a.classes?.includes('coda-here-horizontal-top'))
   if (titleAnnotation && codaAnnotation) {
     codaAnnotation.text = `${codaAnnotation.text} ${titleAnnotation.text}`
-    codaAnnotation.classes.push(...(titleAnnotation?.classes || []))
+    codaAnnotation.classes.push(...(titleAnnotation.classes || []))
     return [
       codaAnnotation,
       ...annotations.filter(a => a !== titleAnnotation && a !== codaAnnotation)
@@ -1030,11 +912,12 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   return parts
 }
 
-const extractParts = (songMatter: string): Array<string> => {
+const extractParts = (songMatter: string): Array<SongPart> => {
   let matches = [...songMatter.matchAll(songpartRegex)]
   let textParts = matches.map(p => p[0].replace(/^\n|\n$/g, ''))
   textParts = textParts.filter(p => p.length)
-  return textParts
+  let parts = textParts.map(partText => parsePart(partText))
+  return parts
 }
 
 
@@ -1046,7 +929,7 @@ export const songify = (songText: string): Song => {
   }
   let metadata = parseFrontMatter(frontMatter)
 
-  let parts = extractParts(songMatter).map(partText => parsePart(partText))
+  let parts = extractParts(songMatter)
 
   parts = handleInterpartSpacing(parts, metadata)
   

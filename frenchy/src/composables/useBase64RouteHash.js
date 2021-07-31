@@ -1,5 +1,5 @@
 import { computed, ref, watch } from 'vue'
-import { fromUrlHash, toUrlHash } from '../util'
+import { fromUrlHash, toUrlHash } from '../songify/util'
 
 
 export function useBase64RouteHash () {
