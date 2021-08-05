@@ -40,7 +40,7 @@ const classesRegex = /(?<![\.\w\d\\])\.([^\s|\.])+/g
 // const classesRegex = /(?<!(\w|\d|\.))\.\S+/g
 const barlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/
 const globalBarlineRegex = /(\:?\)?\|?\|\(?\:?)((.(?!(\:?\)?\|?\|\(?\:?)))*.?)/g
-const songpartRegex = /("""(.|\n)*?"""\s*\n)|((.|\n)*?(\n\n|$))/g
+const songpartRegex = /("""(.|\n)*?"""\s*(\n|$))|((.|\n)*?(\n\n+|$))/g
 
 
 
@@ -922,7 +922,7 @@ const extractParts = (songMatter: string): Array<SongPart> => {
 
 
 export const songify = (songText: string): Song => {
-  let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/^=+$/m)
+  let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/\n*=+\n*/m)
   if (songMatter === undefined) {
     songMatter = frontMatter
     frontMatter = ''
