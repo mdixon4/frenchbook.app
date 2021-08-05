@@ -1,5 +1,10 @@
 <template>
-  <div class="non-music" v-html="part.html" :class="part.classes">
+  <div class="non-music" v-html="part.html" :class="part.classes"
+    :style="{
+      '--top-margin': part.topMargin,
+      '--bottom-margin': part.bottomMargin
+    }"
+  >
   </div>
 </template>
 
@@ -18,6 +23,7 @@ const props = defineProps({
     font-family: var(--serif-font);
     position: relative;
     font-size: calc(16/16 * 1rem);
+    margin-top: calc(var(--top-margin)/2 * var(--y-unit));
   }
 
   .non-music h1 {
