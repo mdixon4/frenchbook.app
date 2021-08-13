@@ -3,7 +3,8 @@
     <frenchy-header :metadata="song.metadata"></frenchy-header>
     <div class="song" :style="{
       '--bar-width': `calc(${song.metadata.barWidth || 1} * var(--root-bar-width))`,
-      '--bar-height': `calc(${song.metadata.barHeight || 1} * var(--root-bar-height))`
+      '--bar-height': `calc(${song.metadata.barHeight || 1} * var(--root-bar-height))`,
+      '--chord-size': song.metadata.chordSize || '1'
     }">
       <template v-for="(part, idx) in song.parts" :key="idx">
         <frenchy-hr v-if="part.type === 'hr'" :part="part"></frenchy-hr>

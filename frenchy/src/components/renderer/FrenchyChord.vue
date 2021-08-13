@@ -1,5 +1,5 @@
 <template>
-  <div class="lily rendered-chord add-outline" :class="[ shape ]">
+  <div class="rendered-chord add-outline" :class="[ shape ]">
     <outlined-text :text="printableChord"></outlined-text>
   </div>
 </template>
@@ -34,11 +34,10 @@ const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${
 }
 
 
-
 .rendered-chord {
   font-family: 'LJC';
-  font-size: calc(var(--chord-size) * 0.8);
-  transform: scaleX(0.95) translateY(0.18em);
+  font-size: calc(var(--chord-size, 1) * var(--root-small-chord-size));
+  transform: scaleX(0.95) translateY(0.23em);
   line-height: 0;
   display: inline-block;
   position: relative;
@@ -46,7 +45,7 @@ const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${
 }
 
 .rendered-chord.full-square {
-  font-size: calc(var(--chord-size) * 1.3);
+  font-size: calc(var(--chord-size, 1) * var(--root-large-chord-size));
 }
 .mod-digit {
   transform: scale(0.65) translateY(-0.5em);

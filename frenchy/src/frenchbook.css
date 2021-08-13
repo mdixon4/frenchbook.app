@@ -69,7 +69,9 @@
   --serif-font: 'EB Garamond';
   --annotation-font: 'EB Garamond';
   --annotation-script-font: 'EB Garamond';
-  --chord-size: 25px;
+  
+  --root-large-chord-size: 8.6mm;
+  --root-small-chord-size: calc(var(--root-large-chord-size) / 1.625);
 }
 
 
