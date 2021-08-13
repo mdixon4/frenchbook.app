@@ -49,7 +49,7 @@ const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${
 }
 .mod-digit {
   transform: scale(0.65) translateY(-0.5em);
-  margin: 0 -0.16em;
+  margin: 0 -0.17em;
 }
 
 .root {
@@ -64,7 +64,7 @@ const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${
 }
 .mod-stack .mod-digit:first-child {
   transform: scale(0.65) translateY(-0.5em);
-  margin: 0 -0.25em;
+  margin: 0 -0.4em;
 }
 .mod-stack .mod-digit:not(:first-child) {
   transform: scale(0.65) translateY(0.5em);
@@ -82,7 +82,7 @@ const printableChord = computed(() => `${ chord.value.isBracketed ? '[' : '' }${
   transform: scale(0.65) translateY(0.2em);
   /* transform-origin: bottom; */
   /* font-size: 0.65em; */
-  margin: 0 -0.3em;
+  margin: 0 -0.4em;
 }
 
 .alterations {

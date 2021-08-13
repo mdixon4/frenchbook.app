@@ -1,0 +1,62 @@
+title: Welcome!
+credits: Matt Dixon, 2021
+number: 1
+
+===
+
+""".doc
+### Welcome to _frenchbook_.app
+
+This tool helps you with laying out french-style _jazz manouche_ chord charts, where bars are squares.
+
+Everything is text. You can edit the text by clicking the pencil on the left. Copy the whole thing to a file to keep a copy. Or bookmark the URL - the url contains the whole piece!
+
+Print it to paper or PDF using the browser print menu. Choose 100% scaling, no header/footer, no margins, and yes, print backgrounds.
+
+Bars are squares. Where there are two two-beat changes in a bar, the square is split diagonally. Or into smaller squares if there's more changes.
+
+* Type chords, 
+* surround and separate them with bar-lines,
+* use `-` to indicate a repeat bar, or to extend a chord over a subsequent beat,
+* use `.` to indicate a stop beat or bar, where playing should cease
+
+`| F | D7 Gm9 | C - Cm C7 | F F/A Bb Bdim | F7sus4 | - | Gm. - - C7 | F. |`
+"""
+
+Demo .tight
+| F "Rag time!" | D7 Gm9 | C - Cm C7 | F F/A Bb Bdim | F7sus4 { q q q q } | - | Gm. - - C7 | "\fermata" F. |
+top 5,6: ___Loud!___
+
+""".doc .tight
+# Features...
+
+**Chords, bars & barlines.** Write chords in plain text and have them rendered beautifully, positioned within the grid appropriately. Use repeat symbols, stop bars, various available subdivisions. Make use of double bar lines, bracketed bar lines or repeat bar lines for performance hints. Add textual directions to bars, or rhythmic figures to help the player.
+
+**The stanza.** Lay out the bars as appropriate for the music. Some lines might be shorter than others, or indented. Add a title, add other textual notes around the outside of the stanza. Highlight the stanza with a different border style.
+
+**Page layout.** Adjust the spacing between stanzas, and adjust the position of each on the page left-right and up-down. Position a stanza absolutely and have almost complete flexibility where it lands. Use horizontal rules to separate significant parts of the piece.
+
+**Add rich text.** Format text with markdown in standalone blocks, include pictures.
+
+**Coda arrows.** Use coda symbols and arrows to direct the arrangement and indicate how the tag ties in to the main form.
+
+**Metadata and global tweaks.** Set the title, composer/lyricist, and page no. and have them formatted in the header. Modify the grid size in order to squeeze a slightly-too-long piece onto one page.
+
+**Advanced overrides.** Add custom classes and include custom CSS to change anything at all in any way at all. Want a multicolored 3D chord chart? I'm not stopping you.
+
+"""
+
+
+
+
+
+===
+.doc {
+	background: #E5F5FF;
+	left: calc(var(--x-unit) * 1);
+	width: calc(var(--x-unit) * 14);
+	padding: 1em;
+}
+.doc p > code {
+font-size: 0.85em;
+}

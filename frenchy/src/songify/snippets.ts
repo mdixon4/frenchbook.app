@@ -9,6 +9,7 @@ const snippetRegex = /(?:(?<=(?:.[^\\]|\\\\))|^|(?<=^.))\\( |\\|[a-z-]+|$)/g
 const snippetList: { [key: string]: string } = {
   // '': `&ZeroWidthSpace;`,
   '\\': '&#92;',
+  '\.': '&period;',
   ' ': `&nbsp;`,
   'caesura': `<span class="smufl-symbol caesura">&#xE4D1;</span>`,
   'coda': `<span class="smufl-symbol coda" data-outline="&#xE049;">&#xE049;</span>`,

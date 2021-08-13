@@ -95,3 +95,7 @@
 }
 
 
+hr {
+  border-width: 0 0 var(--stroke-width);
+  border-style: solid;
+}
