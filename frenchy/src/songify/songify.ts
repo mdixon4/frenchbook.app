@@ -855,6 +855,9 @@ const handleInterpartSpacing = (parts: Array<SongPart>, metadata: MetaData): Arr
   if (parts[0]?.type === 'stanza') {
     parts[0].topMargin = 1
   }
+  if (parts[0]?.type === 'plain-text') {
+    parts[0].topMargin = 0
+  }
 
   // Loop through each part. If there's a class, apply that.
   // If it's a HR, apply the class from the next stanza if it doesn't have its own

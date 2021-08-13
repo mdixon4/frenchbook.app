@@ -21,14 +21,16 @@
       </button>
     </div>
     <div id="code-editor" ref="codeEditor">
-      <textarea id="code-input" v-model="songText" spellcheck="false" :class="[ isControllerWrapped ? 'wrap' : 'no-wrap' ]"></textarea>
+      <textarea id="code-input" v-model="songText" spellcheck="false" :class="[ isControllerWrapped ? 'wrap' : 'no-wrap' ]" ref="textareaEl"
+        @keydown.tab.prevent="handleTabPress"
+      ></textarea>
       <!-- <pre id="code-display" aria-hidden="true"><code>{{ songText }}</code></pre> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmit, computed, ref, onMounted } from 'vue'
+import { defineProps, defineEmit, computed, ref, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -57,6 +59,7 @@ const songText = computed({
 
 const codeEditor = ref(null)
 const controller = ref(null)
+const textareaEl = ref(null)
 
 const isDockedLeft = computed(() => {
   return props.dockside === 'left'
@@ -99,6 +102,17 @@ onMounted(() => {
   if (isDockedTop.value) controller.value.style.height = height.value + 'px'
   editorResizeObserver.observe(controller.value)
 })
+
+const handleTabPress = () => {
+  let start = textareaEl.value.selectionStart
+  let end = textareaEl.value.selectionEnd
+  songText.value = (
+    songText.value.substring(0, start)
+    + "\t"
+    + songText.value.substring(end)
+  )
+  nextTick(() => textareaEl.value.selectionStart = textareaEl.value.selectionEnd = start + 1)
+}
 
 
 </script>
@@ -190,6 +204,7 @@ onMounted(() => {
   background: transparent;
   /* background: yellow; */
   caret-color: white;
+  tab-size: 4;
 }
 
 #code-input.no-wrap {

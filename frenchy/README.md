@@ -347,6 +347,7 @@ As well, some parameters are available to adjust the page layout.
 
 * `barHeight: 1` - a multiplier of the base bar height. If the song is a little long to fit on one page, try reducing this to `0.95`, `0.9`...
 * `barWidth: 1` - a multiplier of the base bar width. For example, if you want your page to fit 8.5 bars across, set this to `16/17` (figure it out)
+* `chordSize: 1` - scale all chords across the song. If you've significantly shrunk the bars, you might want to also shrink the chord size.
 
 Other front matter options are being considered.
 
@@ -359,15 +360,17 @@ In most places where you can write text, you can use Markdown. Basic markdown in
 
 ## Text Blocks
 
-It may be useful to add text content, e.g. lyrics, other notes. Just surround your text with `"""..."""`. If you have empty lines in your text content, the system will not be able to cope. Add a backslash to escape the empty lines:
+It may be useful to add text content, e.g. lyrics, other notes. Just surround your text with `"""..."""`. The text within is formatted according to markdown rules, e.g. \__italics_\_, \*\***bold**\*\*
+
+Layout classes (like `.indent-4`, `.tight`, `.absolute`, `.down-3-5`) work here.
 
 ```
 """
 Ob-la-di, ob-la-da, life goes on, Ra!
 La la how the life goes on.
-\
+
 And if you want some fun,
-Take ob-la-di-la-da!
+Take _ob-la-di-la-da_!
 """
 ```
 

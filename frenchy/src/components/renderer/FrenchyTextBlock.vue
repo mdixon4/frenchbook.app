@@ -30,7 +30,7 @@ const props = defineProps({
     font-size: calc(18/16 * 1rem);
   }
 
-  .non-music h1, .non-music h2, .non-music h3, .non-music h4, .non-music p {
+  .non-music h1, .non-music h2, .non-music h3, .non-music h4, .non-music p, .non-music ul {
     margin: 0;
   }
 

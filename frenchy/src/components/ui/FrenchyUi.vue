@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, defineProps, defineEmit } from 'vue'
+import { ref, computed, watch, defineProps, defineEmit, onMounted } from 'vue'
 import { useStorage, useVModel } from '@vueuse/core'
 import panzoom from 'panzoom'
 
@@ -65,14 +65,12 @@ const uiSettings = useStorage('frenchbook-settings', {
   isControllerWrapped: true
 })
 
-watch(pagePanzoomEl, () => {
-  if (pagePanzoomEl.value) {
-    panzoom(pagePanzoomEl.value, {
-      bounds: true,
-      maxZoom: 4,
-      minZoom: 0.25
-    })
-  }
+onMounted(() => {
+  panzoom(pagePanzoomEl.value, {
+    bounds: true,
+    maxZoom: 4,
+    minZoom: 0.25
+  })
 })
 
 </script>
