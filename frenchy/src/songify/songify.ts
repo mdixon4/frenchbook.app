@@ -787,12 +787,14 @@ const parsePart = (partText: string): SongPart => {
 
   // If the first and last non-whitespace character of the part is double quote, 
   // treat as plain text / markdown
-  let plainText = partText.replace(classesRegex, '').match(/^\s*\"(\"\")?(.*)?(\"\")\"\s*$/s)
+  let plainText = partText.replace(classesRegex, '').match(/^\s*\"(\"\")?(.*)?(\"\")\"\s*$/s)?.[2]
   if (plainText) {
+    plainText = wrapRhythms(plainText)
+    plainText = replacePitches(plainText)
     return {
       type: 'plain-text',
-      text: plainText[2],
-      html: parseMarkdown(plainText[2]),
+      text: plainText,
+      html: parseMarkdown(plainText),
       classes: partText.match(classesRegex)?.map(c => c.substr(1)) || []
     }
   }
@@ -925,20 +927,40 @@ const extractParts = (songMatter: string): Array<SongPart> => {
 
 
 export const songify = (songText: string): Song => {
-  let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/\n*=+\n*/m)
-  if (songMatter === undefined) {
-    songMatter = frontMatter
-    frontMatter = ''
-  }
-  let metadata = parseFrontMatter(frontMatter)
+  try {
 
-  let parts = extractParts(songMatter)
+    let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/\n*=+\n*/m)
+    if (songMatter === undefined) {
+      songMatter = frontMatter
+      frontMatter = ''
+    }
+    let metadata = parseFrontMatter(frontMatter)
+    
+    let parts = extractParts(songMatter)
 
-  parts = handleInterpartSpacing(parts, metadata)
-  
-  return {
-    metadata,
-    parts,
-    css
+    parts = handleInterpartSpacing(parts, metadata)
+    
+    return {
+      metadata,
+      parts,
+      css
+    }
+  } catch (err) {
+
+    console.error(err)
+    return {
+      metadata: {
+        title: 'Error'
+      },
+      parts: [
+        {
+          type: 'plain-text',
+          classes: ['error'],
+          text: err.message,
+          html: err.message
+        }
+      ],
+      css: '.error { background: pink; padding: 2rem; }'
+    }
   }
 }
