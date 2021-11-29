@@ -17,6 +17,7 @@
             <option value="backdrop-nebula">Nebula</option>
             <option value="backdrop-bright-paper">Bright Paper</option>
             <option value="backdrop-black-sand">Black Sand</option>
+            <option value="backdrop-music-stand">Music Stand</option>
           </select>
         </div>
         <div>

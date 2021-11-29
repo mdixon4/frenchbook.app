@@ -119,6 +119,10 @@ onMounted(() => {
       background-color: #2c2c2c;
       background-image: url(https://source.unsplash.com/w1_4YH5IhDg/1600x900)
     }
+    #app.backdrop-music-stand {
+      background-color: #0b0704;
+      background-image: url(https://source.unsplash.com/njaQKSM365I/1600x900)
+    }
 
     .begin-edit {
       border: 0;
