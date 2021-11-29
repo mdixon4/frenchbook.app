@@ -2,7 +2,7 @@
 
 ## Basic Grids
 
-The `|` character is a barline. Surround chords with barlines to create a chart. Simple as that.
+The `|` character is a barline. Surround chords with barlines to create a chart.
 
 ```
 | F | Bb | F | C7 |
