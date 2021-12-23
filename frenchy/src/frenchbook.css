@@ -17,12 +17,10 @@
   src: url('../src/assets/MuseJazz.otf') format('opentype');
 }
 @font-face {
-  font-family: 'Rhythms';
+  font-family: 'RhythmsFont';
   font-style: normal;
   font-weight: normal;
-  font-display: block;
-  src: url('../src/assets/Rhythms.woff2') format('woff2')
-       url('../src/assets/Rhythms.woff') format('woff');
+  src: url('../src/assets/Rhythms.otf') format('opentype');
 }
 
 

@@ -138,7 +138,7 @@ const isWholeBarStop = computed(() => blocks.value === '' && isStopOn1.value)
     line-height: 1;
     width: 100%;
     text-align: center;
-    font-family: 'Rhythms';
+    font-family: 'RhythmsFont';
     font-weight: normal;
     /* font-style: italic; */
   }
