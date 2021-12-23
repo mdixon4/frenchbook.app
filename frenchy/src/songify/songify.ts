@@ -928,6 +928,7 @@ const extractParts = (songMatter: string): Array<SongPart> => {
 
 export const songify = (songText: string): Song => {
   try {
+    songText = songText.replaceAll('\r\n', '\n')
 
     let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/\n*=+\n*/m)
     if (songMatter === undefined) {
