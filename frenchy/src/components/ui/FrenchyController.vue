@@ -19,6 +19,9 @@
       <button v-if="!isControllerWrapped" @click="emit('update:isControllerWrapped', true)" title="Wrap">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g class="icon-tabler" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 18h5"/><path d="M4 12h13a3 3 0 0 1 0 6h-4l2-2m0 4l-2-2"/></g></svg>
       </button>
+      <button @click="copyImage" title="Copy image">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5s-5 2.24-5 5s2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2s-1.43-3.2-3.2-3.2s-3.2 1.43-3.2 3.2z" fill="currentColor"/></svg>
+      </button>
     </div>
     <div id="code-editor" ref="codeEditor">
       <textarea id="code-input" v-model="songText" spellcheck="false" :class="[ isControllerWrapped ? 'wrap' : 'no-wrap' ]" ref="textareaEl"
@@ -31,6 +34,7 @@
 
 <script setup>
 import { defineProps, defineEmits, computed, ref, onMounted, nextTick } from 'vue'
+import { useImageExport } from '../../composables/useImageExport'
 
 const props = defineProps({
   modelValue: {
@@ -114,6 +118,11 @@ const handleTabPress = () => {
   nextTick(() => textareaEl.value.selectionStart = textareaEl.value.selectionEnd = start + 1)
 }
 
+const imageExport = useImageExport()
+
+const copyImage = () => {
+  imageExport.run()
+}
 
 </script>
 
