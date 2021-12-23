@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmit, computed } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -38,7 +38,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmit(['update:modelValue', 'stopChangingSettings'])
+const emit = defineEmits(['update:modelValue', 'stopChangingSettings'])
 
 const backdrop = computed({
   get: () => props.modelValue.backdrop,

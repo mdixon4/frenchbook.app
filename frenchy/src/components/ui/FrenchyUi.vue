@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, defineProps, defineEmit, onMounted } from 'vue'
+import { ref, computed, watch, defineProps, defineEmits, onMounted } from 'vue'
 import { useStorage, useVModel } from '@vueuse/core'
 import panzoom from 'panzoom'
 
@@ -50,7 +50,7 @@ const props = defineProps({
     required: true
   }
 })
-const emit = defineEmit(['update:songText'])
+const emit = defineEmits(['update:songText'])
 const songText = useVModel(props, 'songText', emit)
 const isChangingSettings = ref(false)
 const pagePanzoomEl = ref(null)

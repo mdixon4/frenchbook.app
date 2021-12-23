@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmit, computed, ref, onMounted, nextTick } from 'vue'
+import { defineProps, defineEmits, computed, ref, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -50,7 +50,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmit(['update:modelValue', 'update:dockside', 'stopEditing', 'update:controllerHeight', 'update:controllerWidth', 'update:isControllerWrapped'])
+const emit = defineEmits(['update:modelValue', 'update:dockside', 'stopEditing', 'update:controllerHeight', 'update:controllerWidth', 'update:isControllerWrapped'])
 
 const songText = computed({
   get: () => props.modelValue,
