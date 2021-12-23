@@ -11,7 +11,8 @@ exports.handler = async (event) => {
   })
   const page = await browser.newPage()
   await page.goto(pageToScreenshot)
-  const screenshot = await page.screenshot({
+  const pageEl = await page.$('.page')
+  const screenshot = await pageEl.screenshot({
     encoding: 'base64'
   })
   await browser.close()
