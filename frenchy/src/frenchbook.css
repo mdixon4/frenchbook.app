@@ -16,6 +16,15 @@
   font-weight: normal;
   src: url('../src/assets/MuseJazz.otf') format('opentype');
 }
+@font-face {
+  font-family: 'Rhythms';
+  font-style: normal;
+  font-weight: normal;
+  font-display: block;
+  src: url('../src/assets/Rhythms.woff2') format('woff2')
+       url('../src/assets/Rhythms.woff') format('woff');
+}
+
 
 @media print {
   /* Ensure user agent does not need "print background colours" on in order
