@@ -390,7 +390,7 @@ watch(span, growSpan)
 .coda-immediate.span, .immediate.span {
   bottom: calc(0.5 * var(--bar-height));
 }
-.coda-immediate.span .span-text > span, .immediate.span .span-text > span, {
+.coda-immediate.span .span-text > span, .immediate.span .span-text > span {
   display: flex;
 }
 .right-down-right {
