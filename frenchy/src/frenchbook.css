@@ -3,7 +3,10 @@
 @import url('./styles/rhythms.css');
 @import url('./styles/layout.css');
 
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Open+Sans+Condensed:wght@700&display=swap');
+/* @import url('./styles/fonts.css'); */
+/* @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Open+Sans+Condensed:wght@700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Emoji:wght@400;700&family=Noto+Music&family=Noto+Sans+Symbols:wght@400;700&family=Open+Sans+Condensed:wght@700&display=swap');
+
 @font-face {
   font-family: 'LJC';
   font-style: normal;
@@ -73,9 +76,9 @@
   --border-stroke-gap-width: 0.25mm;
   --rhythm-font-size: 5mm;
   --text-outline-color: white;
-  --serif-font: 'EB Garamond';
-  --annotation-font: 'EB Garamond';
-  --annotation-script-font: 'EB Garamond';
+  --serif-font: 'EB Garamond', 'Noto Sans Symbols', 'Noto Emoji';
+  --annotation-font: 'EB Garamond', 'Noto Sans Symbols', 'Noto Emoji';
+  --annotation-script-font: 'EB Garamond', 'Noto Music', 'Noto Sans Symbols', 'Noto Emoji';
   
   --root-large-chord-size: 8.6mm;
   --root-small-chord-size: calc(var(--root-large-chord-size) / 1.625);

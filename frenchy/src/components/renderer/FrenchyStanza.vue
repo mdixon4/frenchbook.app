@@ -86,7 +86,7 @@ const props = defineProps({
     /* background: #38B6; */
     display: flex;
     right: 0;
-    font-family: 'rhythms';
+    font-family: 'RhythmsFont';
     font-size: 1.2rem;
     line-height: 1.8rem;
   }
