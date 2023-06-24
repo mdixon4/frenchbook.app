@@ -1,6 +1,6 @@
 <template>
   <div class="page" v-if="song">
-    <frenchy-header :metadata="song.metadata"></frenchy-header>
+    <frenchy-header layout="ipad" :metadata="song.metadata"></frenchy-header>
     <div class="song" :style="{
       '--bar-width': `calc(${song.metadata.barWidth || 1} * var(--root-bar-width))`,
       '--bar-height': `calc(${song.metadata.barHeight || 1} * var(--root-bar-height))`,

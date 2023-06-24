@@ -47,6 +47,10 @@ defineProps({
   metadata: {
     type: Object,
     required: true
+  },
+  layout: {
+    type: String,
+    default: 'print'
   }
 })
 

@@ -53,12 +53,12 @@
   .rulers .left-margin {
     height: 500mm;
     width: 1px;
-    left: calc(var(--x-page-margin) - 1px);
+    left: calc(var(--left-page-margin) - 1px);
   }
   .rulers .right-margin {
     height: 500mm;
     width: 1px;
-    left: calc(var(--page-width) - var(--x-page-margin) - 1px);
+    left: calc(var(--page-width) - var(--right-page-margin) - 1px);
   }
   .rulers .page-break {
     width: 100%;

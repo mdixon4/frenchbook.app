@@ -35,30 +35,84 @@
     color-adjust: exact;
   }
 }
-@page {
-  size:A4 portrait;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin: 0;
+
+:root[data-media='print'] {
+  @page {
+    size:A4 portrait;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin: 0;
+  }
+}
+:root[data-media='screen'][data-ratio='3:4'] {
+  @page {
+    size: var(--page-width) var(--page-height);
+    /* width: var(--page-width);
+    height: var(--page-height); */
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin: 0;
+  }
+}
+
+:root[data-media='print'] {
+  --page-width: 210mm;
+  --page-height: 297mm;
+  --top-page-margin: 10mm;
+  --bottom-page-margin: 10mm;
+  --header-height: 16mm;
+  --song-top-padding: calc(var(--y-unit) / 2);
+}
+:root[data-media='screen'][data-ratio='3:4'] {
+  --header-height: 1.5rem;
+  --top-page-margin: 2mm;
+  --bottom-page-margin: 2mm;
+  --page-height: calc(297mm - 20mm - 16mm - calc(var(--y-unit)/2) + var(--top-page-margin) + var(--bottom-page-margin));
+  --song-top-padding: 0;
+  --page-width: calc(var(--page-height) * 3 / 4);
+  --remaining-margin-space: calc(var(--page-width) - var(--page-columns) * var(--root-bar-width) - var(--header-height));
+  --x-page-margin: calc(var(--remaining-margin-space) / 2);
+  --left-page-margin: calc(var(--remaining-margin-space) / 2);
+  --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--header-height));
+  
+}
+
+:root[data-media='screen'][data-ratio='3:4'] {
+  & header {
+    position: absolute;
+    left: 100%;
+    transform-origin: top left;
+    transform: rotate(90deg);
+
+  }
+  & .title-bar {
+    width: var(--page-height);
+    position: relative;
+    left: calc(-1 * var(--top-page-margin));
+    background: rgb(63, 2, 2);
+    color: white;
+  }
+  & .top-content { display: none; }
+  & .number { font-size: 1.75rem; line-height: 1.5rem; }
+  & .title-bar .title { font-size: 1.5rem; line-height: 1; }
+
 }
 
 :root {
-  --page-width: 210mm;
-  --page-height: 297mm;
-
   --root-bar-width: 22mm;
   --page-columns: 8;
   --x-page-margin: calc(
     calc(var(--page-width) - var(--page-columns) * var(--root-bar-width))
     / 2
   );
+  --left-page-margin: var(--x-page-margin);
+  --right-page-margin: var(--x-page-margin);
 
-  --top-page-margin: 10mm;
-  --bottom-page-margin: 10mm;
   --root-bar-height: 20mm;
-  --header-height: 16mm;
 
   --font-size: 4.25mm;
   --bar-width: var(--root-bar-width);
@@ -101,7 +155,7 @@
   flex-direction: column;
   align-items: start;
   position: relative;
-  margin-top: calc(var(--y-unit) / 2);
+  margin-top: var(--song-top-padding);
 }
 
 

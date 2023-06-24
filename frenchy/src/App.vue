@@ -15,17 +15,27 @@ import FrenchyRenderer from './components/renderer/FrenchyRenderer.vue'
 import FrenchyDocs from './components/docs/FrenchyDocs.vue'
 
 const logoClass = window.location.pathname === '/s/' ? 'with-shirazz-logo' : 'with-french-book-logo'
+const isTablet = window.location.pathname === '/tablet/'
 const isDocs = window.location.pathname === '/docs/'
 const songText = useBase64RouteHash()
 const song = useSongParser(songText)
+
+if (isTablet) {
+  document.documentElement.dataset.media = 'screen'
+  document.documentElement.dataset.ratio = '3:4'
+} else {
+  document.documentElement.dataset.media = 'print'
+}
 </script>
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
-  html, body {
-    padding: 0px;
-    margin: 0;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0px;
+  margin: 0;
+}
 </style>
