@@ -75,11 +75,10 @@
 }
   
 :root[data-media='screen'][data-ratio='3:4'] .title-bar {
-  width: var(--page-height);
+  width: calc(var(--page-height) - 0.5cm);
   position: relative;
   left: calc(-1 * var(--top-page-margin));
-  background: rgb(63, 2, 2);
-  color: white;
+  margin-inline: 0.25cm;
 }
 :root[data-media='screen'][data-ratio='3:4'] .top-content {
   display: none;
@@ -140,6 +139,7 @@
   padding: var(--top-page-margin) var(--x-page-margin) 0;
   overflow: hidden;
   font-family: var(--serif-font);
+  position: relative;
 }
 
 .song {
