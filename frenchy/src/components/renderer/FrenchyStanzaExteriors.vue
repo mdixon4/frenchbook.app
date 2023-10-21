@@ -12,6 +12,7 @@
     >
       <frenchy-span v-for="span in spanGroup.annotations" :key="span.uuid" :span="span"></frenchy-span>
     </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -52,18 +53,16 @@ const groupedSpans = computed(() => (stanza.value.annotations || [])
   .stanza-exteriors {
     display: grid;
     grid-template-columns: 
-      [topleft-start left-start bottomleft-start] calc(2 * var(--bar-width))
-      [topleft-end left-end bottomleft-end top-start bottom-start] repeat(var(--stanza-full-width), var(--bar-width)) /*repeat(var(--stanza-width), calc(--bar-width)) */
-      [top-end bottom-end topright-start right-start bottomright-start] calc(2 * var(--bar-width)) 
+      [topleft-start left-start bottomleft-start] 0
+      [topleft-end left-end bottomleft-end top-start bottom-start content-start] repeat(var(--stanza-full-width), var(--bar-width)) /*repeat(var(--stanza-width), calc(--bar-width)) */
+      [top-end bottom-end content-end topright-start right-start bottomright-start] 0
       [topright-end right-end bottomright-end];
     grid-template-rows: 
-      [topleft-start top-start topright-start] calc(2 * var(--bar-height))
-      [topleft-end top-end topright-end left-start right-start] repeat(var(--stanza-height), var(--bar-height))
-      [left-end right-end bottomleft-start bottom-start bottomright-start] calc(2 * var(--bar-height))
+      [topleft-start top-start topright-start] 0 
+      [topleft-end top-end topright-end left-start right-start content-start] repeat(var(--stanza-height), var(--bar-height)) 
+      [left-end right-end content-end bottomleft-start bottom-start bottomright-start] 0 
       [bottomleft-end bottom-end bottomright-end];
-    position: absolute;
-    left: calc(-2 * var(--bar-width));
-    top: calc(-2 * var(--bar-height));
+    position: relative;
     pointer-events: none;
   }
 

@@ -50,8 +50,7 @@ const stanzaBorderViewBox = computed(() => {
 
 <style>
   .stanza-border, .stanza-shadow {
-    position: absolute;
-    inset: 0;
+    grid-area: content;
     height: calc(var(--height) * var(--bar-height));
     width: 100%;
     overflow: visible;

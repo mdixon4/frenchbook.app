@@ -25,5 +25,7 @@ const props = defineProps({ stanza: { type: Object, required: true } })
 </script>
 
 <style>
-
+.stanza-music {
+  grid-area: content;
+}
 </style>

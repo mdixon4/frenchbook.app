@@ -9,9 +9,10 @@
     'has-top-matter': stanza.annotations.some(a => a.side === 'top')
   }, stanza.classes ]">
     <!-- <div class=  "stanza-break"></div> -->
-    <frenchy-stanza-exteriors :stanza="stanza"></frenchy-stanza-exteriors>
-    <frenchy-stanza-border :width="stanza.width" :height="stanza.height" :borderCoordinates="stanza.borderCoordinates"></frenchy-stanza-border>
-    <frenchy-stanza-music :stanza="stanza"></frenchy-stanza-music>
+    <frenchy-stanza-exteriors :stanza="stanza">
+      <frenchy-stanza-border :width="stanza.width" :height="stanza.height" :borderCoordinates="stanza.borderCoordinates"></frenchy-stanza-border>
+      <frenchy-stanza-music :stanza="stanza"></frenchy-stanza-music>
+    </frenchy-stanza-exteriors>
   </div>
 </template>
 
