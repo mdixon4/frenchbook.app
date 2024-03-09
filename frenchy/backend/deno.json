@@ -1,0 +1,8 @@
+{
+  "deploy": {
+    "project": "cf897baa-e871-4500-b95c-6968f4f58032",
+    "exclude": [],
+    "include": [],
+    "entrypoint": "server.js"
+  }
+}

@@ -1,0 +1,11 @@
+
+###
+POST http://localhost:8000/charts/wild
+Content-Type: text/plain
+Authorization: Basic dXNlcjpwYXNz
+
+||: Ab | - | Fm | Db7 :||
+
+###
+GET http://localhost:8000/charts/wild
+
