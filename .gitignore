@@ -4,6 +4,10 @@ node_modules/
 .netlify
 
 # Environment files
+*.local
 .env
 .env.*
 !.env.vault
+
+# Build artifacts
+dist/
