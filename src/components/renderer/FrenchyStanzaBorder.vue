@@ -32,7 +32,7 @@ const props = defineProps({
   }
 })
 
-const randomId = ref(Math.round(Math.random()*100000).toString().padStart(5, '0'))
+const randomId = ref(Math.round(Math.random() * 100000).toString().padStart(5, '0'))
 
 const stanzaBorderPath = computed(() => {
   if (props.width * props.height) {
@@ -49,37 +49,44 @@ const stanzaBorderViewBox = computed(() => {
 </script>
 
 <style>
-  .stanza-border, .stanza-shadow {
-    grid-area: content;
-    height: calc(var(--height) * var(--bar-height));
-    width: 100%;
-    overflow: visible;
-    pointer-events: none;
-    /* background: orange; */
-  }
-  .stanza-border .border-stroke {
-    fill: transparent;
-    stroke: var(--gridline-color);
-    stroke-width: var(--thick-stroke-width);
-  }
+.stanza-border,
+.stanza-shadow {
+  grid-area: content;
+  height: calc(var(--height) * var(--bar-height));
+  width: 100%;
+  overflow: visible;
+  pointer-events: none;
+  /* background: orange; */
+}
 
-  .stanza-border .border-stroke-gap {
-    display: none;
-  }
-  .stanza.b .border-stroke-gap {
-    display: unset;
-    fill: transparent;
-    stroke: white;
-    stroke-width: var(--border-stroke-gap-width);
-  }
-  .shadow-mask {
-    stroke-width: var(--thick-stroke-width);
-    stroke: black;
-  }
-  .stanza.shadow .shadow-fill {
-    transform: translate(calc(2 * var(--thick-stroke-width)), calc(2 * var(--thick-stroke-width)));
-    fill: var(--gridline-color, black);
-  }
+.stanza-border .border-stroke {
+  fill: transparent;
+  stroke: var(--gridline-color);
+  stroke-width: var(--thick-stroke-width);
+}
 
+.stanza-border .border-stroke-gap {
+  display: none;
+}
 
+.stanza.b .border-stroke-gap {
+  display: unset;
+  fill: transparent;
+  stroke: white;
+  stroke-width: var(--border-stroke-gap-width);
+}
+
+.shadow-mask {
+  stroke-width: var(--thick-stroke-width);
+  stroke: black;
+}
+
+.shadow-fill {
+  fill: transparent;
+}
+
+.stanza.shadow .shadow-fill {
+  transform: translate(calc(2 * var(--thick-stroke-width)), calc(2 * var(--thick-stroke-width)));
+  fill: var(--gridline-color, black);
+}
 </style>
