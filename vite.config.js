@@ -10,5 +10,10 @@ export default {
         }
       }
     })
-  ]
+  ],
+  build: {
+    alias: {
+      '@': './src'
+    }
+  }
 }

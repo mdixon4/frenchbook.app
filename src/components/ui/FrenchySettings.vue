@@ -1,84 +1,85 @@
 <template>
-  <div class="settings" @click="$emit('stopChangingSettings')">
-    <div class="settings-window" @click.stop="">
-      <div id="settings-toolbar">
-        <button class="close-settings" @click="$emit('stopChangingSettings')" title="Close">
-          <svg height="100%" class="close-icon" fill="currentColor" viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <strong>Settings</strong>
+  <Teleport to="body">
+    <div class="settings" @click="uiStore.isChangingSettings = false">
+      <div class="settings-window" @click.stop="">
+        <div id="settings-toolbar">
+          <button class="close-settings" @click="uiStore.isChangingSettings = false" title="Close">
+            <svg height="100%" class="close-icon" fill="currentColor" viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </button>
+          <strong>Settings</strong>
+        </div>
+        <form>
+          <div>
+            <label for="backdrop">Backdrop</label>
+            <div class="input-wrapper">
+              <select v-model="uiStore.backdrop" name="backdrop">
+                <option value="">Default</option>
+                <option value="backdrop-wood">Wood</option>
+                <option value="backdrop-blue-wall">Blue Wall</option>
+                <option value="backdrop-nebula">Nebula</option>
+                <option value="backdrop-bright-paper">Bright Paper</option>
+                <option value="backdrop-black-sand">Black Sand</option>
+                <option value="backdrop-music-stand">Music Stand</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="show-rulers">Show Rulers?</label>
+            <div class="input-wrapper">
+              <input type="checkbox" v-model="uiStore.showRulers" value="on" name="show-rulers">
+            </div>
+          </div>
+          <div>
+            <label for="is-broadcasting">Broadcast?</label>
+            <div class="input-wrapper">
+              <input type="checkbox" v-model="uiStore.isBroadcasting" value="off" name="is-broadcasting">
+            </div>
+          </div>
+          <div>
+            <label for="broadcast-password">Password</label>
+            <div class="input-wrapper">
+              <input type="text" v-model="uiStore.broadcastPassword" name="broadcast-password">
+            </div>
+          </div>
+          <div>
+            <label for="is-listening">Listen?</label>
+            <div class="input-wrapper">
+              <input type="checkbox" v-model="uiStore.isListening" value="off" name="is-listening">
+            </div>
+          </div>
+        </form>
       </div>
-      <form>
-        <div>
-          <label for="backdrop">Backdrop</label>
-          <div class="input-wrapper">
-            <select v-model="backdrop" name="backdrop">
-              <option value="">Default</option>
-              <option value="backdrop-wood">Wood</option>
-              <option value="backdrop-blue-wall">Blue Wall</option>
-              <option value="backdrop-nebula">Nebula</option>
-              <option value="backdrop-bright-paper">Bright Paper</option>
-              <option value="backdrop-black-sand">Black Sand</option>
-              <option value="backdrop-music-stand">Music Stand</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label for="show-rulers">Show Rulers?</label>
-          <div class="input-wrapper">
-            <input type="checkbox" v-model="showRulers" value="on" name="show-rulers">
-          </div>
-        </div>
-        <div>
-          <label for="is-broadcasting">Broadcast?</label>
-          <div class="input-wrapper">
-            <input type="checkbox" v-model="isBroadcasting" value="off" name="is-broadcasting">
-          </div>
-        </div>
-        <div>
-          <label for="broadcast-password">Password</label>
-          <div class="input-wrapper">
-            <input type="text" v-model="broadcastPassword" name="broadcast-password">
-          </div>
-        </div>
-        <div>
-          <label for="is-listening">Listen?</label>
-          <div class="input-wrapper">
-            <input type="checkbox" v-model="isListening" value="off" name="is-listening">
-          </div>
-        </div>
-      </form>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>
 import { defineProps, defineEmits, computed, inject } from 'vue'
+import { useUIStore } from '../../store/ui'
 
-const isBroadcasting = inject('isBroadcasting')
-const isListening = inject('isListening')
-const broadcastPassword = inject('broadcastPassword')
+// const props = defineProps({
+//   modelValue: {
+//     type: Object
+//   }
+// })
 
-const props = defineProps({
-  modelValue: {
-    type: Object
-  }
-})
+const uiStore = useUIStore()
 
-const emit = defineEmits(['update:modelValue', 'stopChangingSettings'])
+// const emit = defineEmits(['update:modelValue', 'stopChangingSettings'])
 
-const backdrop = computed({
-  get: () => props.modelValue.backdrop,
-  set: val => emit('update:modelValue', { ...props.modelValue, backdrop: val })
-})
-const showRulers = computed({
-  get: () => props.modelValue.showRulers,
-  set: val => emit('update:modelValue', { ...props.modelValue, showRulers: val })
-})
+// const backdrop = computed({
+//   get: () => props.modelValue.backdrop,
+//   set: val => emit('update:modelValue', { ...props.modelValue, backdrop: val })
+// })
+// const showRulers = computed({
+//   get: () => props.modelValue.showRulers,
+//   set: val => emit('update:modelValue', { ...props.modelValue, showRulers: val })
+// })
 </script>
 
 <style>

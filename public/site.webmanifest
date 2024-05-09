@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Frenchbook.app",
+    "short_name": "Frenchbook.app",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -13,7 +13,21 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "display": "standalone"
+    "theme_color": "rebeccapurple",
+    "background_color": "blue",
+    "display": "standalone",
+    "start_url": "/",
+    "file_handlers": [
+        {
+            "action": "/",
+            "accept": {
+                "text/plain": [
+                    ".grid"
+                ]
+            }
+        }
+    ],
+    "display_override": [
+        "window-controls-overlay"
+    ]
 }

@@ -1,13 +1,23 @@
 import { computed, ref, watch } from 'vue'
 import { fromUrlHash, toUrlHash } from '../songify/util'
+import { syncRef } from '@vueuse/core'
 
-
-export function useBase64RouteHash () {
-  const encodedValue = ref(window.location.hash.substr(1))
-  watch(encodedValue, v => window.location.hash = v)
-  const decodedValue = computed({
-    get: () => fromUrlHash(encodedValue.value),
-    set: (v) => encodedValue.value = toUrlHash(v)
+/**
+ * 
+ * @param {import('vue').Ref<string>} textRef 
+ */
+export function syncWithUrlHash(textRef) {
+  const hash = computed({
+    get: () => window.location.hash.substring(1),
+    set: v => window.location.hash = v
   })
-  return decodedValue
+
+  try {
+    textRef.value = fromUrlHash(hash.value)
+  } catch {
+  }
+
+  watch(textRef, (v) => {
+    hash.value = toUrlHash(v)
+  })
 }
