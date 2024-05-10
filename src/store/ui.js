@@ -1,7 +1,8 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from "pinia";
 import { useSongStore } from './song';
 import { useBroadcast } from '../composables/useBroadcast';
+import { useCssVar, syncRef } from '@vueuse/core';
 
 export const useUIStore = defineStore('ui', () => {
   const backdrop = ref('')
@@ -22,6 +23,22 @@ export const useUIStore = defineStore('ui', () => {
 
   const { isBroadcasting, isListening, broadcastPassword } = useBroadcast(import.meta.env.VITE_BROADCAST_ROOM, songText)
 
+  const metaThemeColor = computed(() => {
+    const theme = backdrop.value
+    if (theme === 'backdrop-wood') return '#6a4d3d'
+    if (theme === 'backdrop-blue-wall') return '#4772aa'
+    if (theme === 'backdrop-nebula') return '#775318'
+    if (theme === 'backdrop-bright-paper') return '#fec42d'
+    if (theme === 'backdrop-black-sand') return '#2c2c2c'
+    if (theme === 'backdrop-music-stand') return '#0b0704'
+    return '#080f1f'
+  })
+
+  const themeColorCss = useCssVar('--theme-color', document.body)
+  syncRef(themeColorCss, metaThemeColor, {
+    direction: 'rtl'
+  })
+
 
   return {
     backdrop,
@@ -34,24 +51,10 @@ export const useUIStore = defineStore('ui', () => {
     isChangingSettings,
     isBroadcasting,
     isListening,
-    broadcastPassword
+    broadcastPassword,
+    metaThemeColor,
   }
 
 }, {
   persist: true
-  // {
-  //   // serializer: {
-  //   //   serialize: value => {
-  //   //     console.log('serializing', value)
-  //   //     return JSON.stringify(value)
-  //   //   },
-  //   //   deserialize: s => {
-  //   //     console.log('deserializing', s)
-  //   //     return JSON.parse(s)
-  //   //   }
-  //   // },
-  //   // beforeRestore: context => console.log('beforeRestore', context),
-  //   // afterRestore: context => console.log('afterRestore', context),
-  //   // storage: window.localStorage
-  // }
 })

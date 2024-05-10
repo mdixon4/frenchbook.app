@@ -13,8 +13,6 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "rebeccapurple",
-    "background_color": "blue",
     "display": "standalone",
     "start_url": "/",
     "file_handlers": [

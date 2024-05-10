@@ -6,13 +6,14 @@ import { syncWithUrlHash } from "../composables/useBase64RouteHash";
 
 export const useSongStore = defineStore('song', () => {
 
-
+  const defaultSongText = "title: \nnumber: \ncredits: \n\n===\n\n"
   const songText = ref('')
   const song = computed(() => songify(songText.value))
   syncWithUrlHash(songText)
 
   return {
     songText,
-    song
+    song,
+    defaultSongText
   }
 })

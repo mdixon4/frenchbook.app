@@ -8,15 +8,18 @@
     uiStore.backdrop
   ]">
 
-    <frenchy-controller v-if="uiStore.isEditing"></frenchy-controller>
-    <frenchy-settings v-if="uiStore.isChangingSettings"></frenchy-settings>
+    <title-bar></title-bar>
+    <div id="work-area">
+      <frenchy-edit-button v-if="!uiStore.isEditing"></frenchy-edit-button>
+      <frenchy-controller v-if="uiStore.isEditing"></frenchy-controller>
+      <frenchy-settings v-if="uiStore.isChangingSettings"></frenchy-settings>
 
-
-    <div class="desk">
-      <div class="page-holder">
-        <div class="page-panzoom" ref="pagePanzoomEl">
-          <slot></slot>
-          <frenchy-page-rulers></frenchy-page-rulers>
+      <div class="desk">
+        <div class="page-holder">
+          <div class="page-panzoom" ref="pagePanzoomEl">
+            <slot></slot>
+            <frenchy-page-rulers></frenchy-page-rulers>
+          </div>
         </div>
       </div>
     </div>
@@ -25,17 +28,23 @@
 
 <script setup>
 import { ref, computed, watch, defineProps, defineEmits, onMounted, inject } from 'vue'
+import { useHead } from '@unhead/vue'
 import { useStorage, useVModel } from '@vueuse/core'
 import panzoom from 'panzoom'
 import FrenchyPageRulers from './FrenchyPageRulers.vue'
 import FrenchySettings from './FrenchySettings.vue'
 import FrenchyController from './FrenchyController.vue'
+import FrenchyEditButton from './FrenchyEditButton.vue'
+import TitleBar from './TitleBar.vue'
 import { useUIStore } from '../../store/ui'
 import { useSongStore } from '../../store/song'
+
+
 
 const uiStore = useUIStore()
 const songStore = useSongStore()
 const pagePanzoomEl = ref(null)
+
 
 onMounted(() => {
   panzoom(pagePanzoomEl.value, {
@@ -58,7 +67,8 @@ onMounted(() => {
   }
 
   #app {
-    display: flex;
+    display: grid;
+    grid-template-rows: min-content auto;
     flex-direction: row;
     /* flex-wrap: wrap; */
     flex-grow: 1;
@@ -68,6 +78,11 @@ onMounted(() => {
     background-attachment: fixed;
     align-items: stretch;
     overflow: hidden;
+  }
+
+  #work-area {
+    display: flex;
+    flex-direction: row;
   }
 
   #app.backdrop-wood {
