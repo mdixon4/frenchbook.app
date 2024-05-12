@@ -193,7 +193,11 @@ onMounted(() => {
 
 /* Do not print UI, just page */
 @media print {
-  #app> :not(.desk) {
+  #app> :not(#work-area) {
+    display: none;
+  }
+
+  #work-area> :not(.desk) {
     display: none;
   }
 

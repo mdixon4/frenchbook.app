@@ -1,0 +1,87 @@
+import chromium from '@sparticuz/chromium'
+import puppeteer from 'puppeteer-core'
+
+import { fromUrlHash, toUrlHash } from '../../../src/songify/util'
+
+const API_KEY = "1"
+// const FRENCHBOOK_URL = 'https://beta.frenchbook.app/'
+const FRENCHBOOK_URL = 'http://localhost:3000/'
+const PDF_API_URL = "https://pdf-api.netlify.app/api/pdf-from-url"
+const PDF_API_KEY = 'TLtitijjwBBo07jMjREY'
+
+const abort = (statusCode, message) => {
+  return {
+    statusCode: statusCode || 401,
+    headers: {
+      "content-type": 'application/json'
+    },
+    body: JSON.stringify({ message: message || "Error" })
+  }
+}
+
+const render = async (url) => {
+  console.log(await chromium.executablePath())
+
+  const browser = await puppeteer.launch({
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+    defaultViewport: chromium.defaultViewport,
+    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+  })
+
+  const page = await browser.newPage()
+  await page.goto(url, { waitUntil: 'networkidle0' })
+  // if (waitFor) {
+  //   await page.waitForSelector(waitFor, {
+  //     timeout: parseInt(timeout || 5000, 10),
+  //   })
+  // }
+  await page.evaluate(() => document.fonts.ready)
+
+  const pdfBuffer = await page.pdf({
+    format: 'a4',
+    landscape: true,
+    printBackground: true,
+    omitBackground: true,
+  })
+
+  await browser.close()
+
+  return pdfBuffer
+}
+
+export async function handler(event, context) {
+  // Require api-key
+  const auth = event.headers["x-api-key"];
+  if (!auth || auth !== API_KEY) {
+    return abort(403, "Unauthorized, missing or invalid api-key")
+  }
+
+  // Require post
+  if (event.httpMethod !== "POST") {
+    return abort(405, "Method Not Allowed")
+  }
+
+  // Body should be a plain text file.
+  if (event.headers['content-type'] !== 'text/plain') {
+    return abort(415, "Unsupported Media Type")
+  }
+
+  console.log(event.body)
+
+  // Turn body into base-64 encoded string
+  const b64 = toUrlHash(event.body)
+  const url = new URL('', FRENCHBOOK_URL)
+  url.hash = b64
+  const pdfBuffer = await render(url)
+
+  return {
+    statusCode: 200,
+    headers: {
+      "content-type": 'application/pdf'
+    },
+    body: pdfBuffer.toString('base64'),
+    isBase64Encoded: true
+  }
+}

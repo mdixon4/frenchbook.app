@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
+    "@sparticuz/chromium": "^123.0.1",
     "@types/markdown-it": "^12.2.3",
     "@unhead/vue": "^1.9.10",
     "@vueuse/core": "^10.9.0",
@@ -17,6 +18,7 @@
     "panzoom": "^9.4.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
+    "puppeteer-core": "^22.8.0",
     "unhead": "^1.9.10",
     "vue": "^3.4.27",
     "vue-router": "^4.0.12"
