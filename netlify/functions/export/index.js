@@ -1,13 +1,12 @@
 import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer-core'
+import md5 from 'md5'
 
-import { fromUrlHash, toUrlHash } from '../../../src/songify/util'
+import { toUrlHash } from '../../../src/songify/util'
+import { getPresignedUrl, storage, fileExists } from './_storage'
 
-const API_KEY = "1"
-// const FRENCHBOOK_URL = 'https://beta.frenchbook.app/'
-const FRENCHBOOK_URL = 'http://localhost:3000/'
-const PDF_API_URL = "https://pdf-api.netlify.app/api/pdf-from-url"
-const PDF_API_KEY = 'TLtitijjwBBo07jMjREY'
+const API_KEY = process.env.PDF_API_KEY
+const FRENCHBOOK_URL = 'https://beta.frenchbook.app/'
 
 const abort = (statusCode, message) => {
   return {
@@ -69,6 +68,25 @@ export async function handler(event, context) {
   }
 
   console.log(event.body)
+  const key = md5(event.body)
+
+
+  // Check if the pdf is already cached
+  const cached = await fileExists('frenchbook.app/pdf/' + key)
+  console.log({ cached })
+  if (cached) {
+    const u = await getPresignedUrl('frenchbook.app/pdf/' + key)
+    return {
+      statusCode: 200,
+      headers: {
+        "content-type": 'application/json'
+      },
+      body: JSON.stringify({
+        url: u
+      }),
+      // isBase64Encoded: true
+    }
+  }
 
   // Turn body into base-64 encoded string
   const b64 = toUrlHash(event.body)
@@ -76,12 +94,18 @@ export async function handler(event, context) {
   url.hash = b64
   const pdfBuffer = await render(url)
 
+  // Cache the pdf under the hash
+  storage.write('frenchbook.app/pdf/' + key, pdfBuffer)
+  const u = await getPresignedUrl('frenchbook.app/pdf/' + key)
+
   return {
     statusCode: 200,
     headers: {
-      "content-type": 'application/pdf'
+      "content-type": 'application/json'
     },
-    body: pdfBuffer.toString('base64'),
-    isBase64Encoded: true
+    body: JSON.stringify({
+      url: u
+    }),
+    // isBase64Encoded: true
   }
 }

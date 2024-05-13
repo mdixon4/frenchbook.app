@@ -9,3 +9,11 @@ Authorization: Basic dXNlcjpwYXNz
 ###
 GET http://localhost:8000/charts/wild
 
+### 
+POST http://localhost:8888/api/export
+Content-Type: text/plain
+X-API-Key: 1
+
+title: Wild Thing
+===
+||: Ab | - | Fm6 | Gm7 :||

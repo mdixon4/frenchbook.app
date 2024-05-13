@@ -3,8 +3,10 @@ import { ref } from 'vue'
 import { useFloating } from '@floating-ui/vue';
 import { useUIStore } from '../../store/ui';
 import { useLocalFileStore } from '../../store/localFile';
+import { useSongStore } from '../../store/song';
 const uiStore = useUIStore();
 const localFileStore = useLocalFileStore()
+const songStore = useSongStore()
 
 const reference = ref(null)
 const floating = ref(null)
@@ -12,6 +14,28 @@ const floating = ref(null)
 const { floatingStyles } = useFloating(reference, floating, {
   placement: 'bottom-start',
 })
+
+const toPdf = async () => {
+  console.log('Exporting to PDF')
+  console.log(uiStore.pdfApiKey)
+  if (!songStore.songText) return
+  if (!uiStore.pdfApiKey) return
+
+  const resp = await fetch('/api/export', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain',
+      'X-Api-Key': uiStore.pdfApiKey,
+    },
+    body: songStore.songText,
+  })
+
+  const json = await resp.json()
+  if (json.url) {
+    // Open in new tab
+    window.open(json.url, '_blank')
+  }
+}
 
 </script>
 
@@ -25,7 +49,7 @@ const { floatingStyles } = useFloating(reference, floating, {
         <li><button @click="localFileStore.saveFile">Save</button></li>
         <li><button @click="localFileStore.saveAs">Save As</button></li>
         <li><button @click="uiStore.isChangingSettings = true">Settings</button></li>
-        <!-- <li><button @click="pdfStore.toPdf">Export to PDF</button></li> -->
+        <li><button @click="toPdf">Export to PDF</button></li>
         <li><a href="/docs/" target="_blank">Help</a></li>
       </ul>
     </div>
