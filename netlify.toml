@@ -16,4 +16,3 @@
 
 [functions]
   external_node_modules = ["@sparticuz/chromium"]
-  included_files = ["src/songify/*"]
