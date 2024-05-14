@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <main>
+    <div id="page">Hi</div>
+  </main>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    main {
+      container-name: main;
+      container-type: size;
+      height: 100vh;
+      --page-ratio: calc(1 / sqrt(2));
+      --page-height: 297mm;
+      --page-width: calc(var(--page-height) / var(--page-ratio));
+    }
+
+    #page {
+      height: 100%;
+      aspect-ratio: var(--page-ratio);
+      border: 2mm solid black;
+      background: teal;
+    }
+
+    @page {
+      margin: 0;
+    }
+
+    @container main (aspect-ratio >=3/4) {
+      #page {
+        --page-ratio: 3/4;
+        background-color: yellow;
+      }
+    }
+
+    @media print {
+      #page {
+        width: 100%;
+      }
+    }
+  </style>
+</body>
+
+</html>

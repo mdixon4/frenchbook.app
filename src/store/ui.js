@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from "pinia";
 import { useSongStore } from './song';
 import { useBroadcast } from '../composables/useBroadcast';
-import { useCssVar, syncRef } from '@vueuse/core';
+import { useCssVar, syncRef, useLocalStorage } from '@vueuse/core';
 
 export const useUIStore = defineStore('ui', () => {
   const backdrop = ref('')
@@ -13,6 +13,7 @@ export const useUIStore = defineStore('ui', () => {
   const dockside = ref('left')
   const isControllerWrapped = ref(true)
   const isChangingSettings = ref(false)
+  const pdfApiKey = useLocalStorage('pdfApiKey', '')
 
   // const isBroadcasting = ref(false)
   // const isListening = ref(false)
@@ -53,6 +54,7 @@ export const useUIStore = defineStore('ui', () => {
     isListening,
     broadcastPassword,
     metaThemeColor,
+    pdfApiKey,
   }
 
 }, {

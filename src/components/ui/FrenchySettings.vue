@@ -52,6 +52,12 @@
               <input type="checkbox" v-model="uiStore.isListening" value="off" name="is-listening">
             </div>
           </div>
+          <div>
+            <label for="">PDF API Key</label>
+            <div class="input-wrapper">
+              <input type="text" v-model="uiStore.pdfApiKey" name="pdf-api-key">
+            </div>
+          </div>
         </form>
       </div>
     </div>

@@ -3,8 +3,12 @@ import { ref } from 'vue'
 import { useFloating } from '@floating-ui/vue';
 import { useUIStore } from '../../store/ui';
 import { useLocalFileStore } from '../../store/localFile';
+import { useSongStore } from '../../store/song';
+import { usePdfDownloader } from '../../composables/usePdfDownloader'
 const uiStore = useUIStore();
 const localFileStore = useLocalFileStore()
+const songStore = useSongStore()
+const pdfDownloader = usePdfDownloader()
 
 const reference = ref(null)
 const floating = ref(null)
@@ -25,6 +29,7 @@ const { floatingStyles } = useFloating(reference, floating, {
         <li><button @click="localFileStore.saveFile">Save</button></li>
         <li><button @click="localFileStore.saveAs">Save As</button></li>
         <li><button @click="uiStore.isChangingSettings = true">Settings</button></li>
+        <li><button :disabled="!pdfDownloader.canExport" @click="pdfDownloader.toPdf">Export to PDF</button></li>
         <li><a href="/docs/" target="_blank">Help</a></li>
       </ul>
     </div>
@@ -126,7 +131,13 @@ const { floatingStyles } = useFloating(reference, floating, {
   &:hover {
     background-color: hsla(0, 0%, 0%, 0.9);
   }
+
+  &:disabled {
+    color: grey;
+    cursor: default;
+  }
 }
+
 
 #broadcast-status {
   color: yellow;
