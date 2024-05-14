@@ -19,8 +19,6 @@ const abort = (statusCode, message) => {
 }
 
 const render = async (url) => {
-  console.log(await chromium.executablePath())
-
   const browser = await puppeteer.launch({
     executablePath: await chromium.executablePath(),
     headless: chromium.headless,
@@ -73,18 +71,16 @@ export async function handler(event, context) {
 
   // Check if the pdf is already cached
   const cached = await fileExists('frenchbook.app/pdf/' + key)
-  console.log({ cached })
   if (cached) {
-    const u = await getPresignedUrl('frenchbook.app/pdf/' + key)
+    const pdfBuffer = await storage.readToBuffer('frenchbook.app/pdf/' + key)
     return {
       statusCode: 200,
       headers: {
-        "content-type": 'application/json'
+        "content-type": 'application/pdf',
+        "content-disposition": 'attachment; filename="frenchbook.pdf"'
       },
-      body: JSON.stringify({
-        url: u
-      }),
-      // isBase64Encoded: true
+      body: pdfBuffer.toString('base64'),
+      isBase64Encoded: true
     }
   }
 
@@ -96,16 +92,14 @@ export async function handler(event, context) {
 
   // Cache the pdf under the hash
   storage.write('frenchbook.app/pdf/' + key, pdfBuffer)
-  const u = await getPresignedUrl('frenchbook.app/pdf/' + key)
 
   return {
     statusCode: 200,
     headers: {
-      "content-type": 'application/json'
+      "content-type": 'application/pdf',
+      "content-disposition": 'attachment; filename="frenchbook.pdf"'
     },
-    body: JSON.stringify({
-      url: u
-    }),
-    // isBase64Encoded: true
+    body: pdfBuffer.toString('base64'),
+    isBase64Encoded: true
   }
 }

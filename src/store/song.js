@@ -9,11 +9,13 @@ export const useSongStore = defineStore('song', () => {
   const defaultSongText = "title: \nnumber: \ncredits: \n\n===\n\n"
   const songText = ref('')
   const song = computed(() => songify(songText.value))
+  const songTitle = computed(() => song.value?.metadata?.title ?? null)
   syncWithUrlHash(songText)
 
   return {
     songText,
     song,
+    songTitle,
     defaultSongText
   }
 })
