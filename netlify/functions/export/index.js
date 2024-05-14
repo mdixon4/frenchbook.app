@@ -1,7 +1,7 @@
 import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer-core'
 import md5 from 'md5'
-import { toUrlHash } from '_util'
+import { toUrlHash } from './_util'
 import { getPresignedUrl, storage, fileExists } from './_storage'
 
 const API_KEY = process.env.PDF_API_KEY
