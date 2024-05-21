@@ -1,19 +1,19 @@
-.indent-0   { left: 0; }
-.indent-0-5 { left:  calc(0.5 * var(--bar-width) ); }
-.indent-1   { left:  calc(1   * var(--bar-width) ); }
-.indent-1-5 { left:  calc(1.5 * var(--bar-width) ); }
-.indent-2   { left:  calc(2   * var(--bar-width) ); }
-.indent-2-5 { left:  calc(2.5 * var(--bar-width) ); }
-.indent-3   { left:  calc(3   * var(--bar-width) ); }
-.indent-3-5 { left:  calc(3.5 * var(--bar-width) ); }
-.indent-4   { left:  calc(4   * var(--bar-width) ); }
-.indent-4-5 { left:  calc(4.5 * var(--bar-width) ); }
-.indent-5   { left:  calc(5   * var(--bar-width) ); }
-.indent-5-5 { left:  calc(5.5 * var(--bar-width) ); }
-.indent-6   { left:  calc(6   * var(--bar-width) ); }
-.indent-6-5 { left:  calc(6.5 * var(--bar-width) ); }
-.indent-7   { left:  calc(7   * var(--bar-width) ); }
-.indent-7-5 { left:  calc(7.5 * var(--bar-width) ); }
+.indent-0   { --indent: 0; left: 0; }
+.indent-0-5 { --indent: 0.5; left:  calc(0.5 * var(--bar-width) ); }
+.indent-1   { --indent: 1  ; left:  calc(1   * var(--bar-width) ); }
+.indent-1-5 { --indent: 1.5; left:  calc(1.5 * var(--bar-width) ); }
+.indent-2   { --indent: 2  ; left:  calc(2   * var(--bar-width) ); }
+.indent-2-5 { --indent: 2.5; left:  calc(2.5 * var(--bar-width) ); }
+.indent-3   { --indent: 3  ; left:  calc(3   * var(--bar-width) ); }
+.indent-3-5 { --indent: 3.5; left:  calc(3.5 * var(--bar-width) ); }
+.indent-4   { --indent: 4  ; left:  calc(4   * var(--bar-width) ); }
+.indent-4-5 { --indent: 4.5; left:  calc(4.5 * var(--bar-width) ); }
+.indent-5   { --indent: 5  ; left:  calc(5   * var(--bar-width) ); }
+.indent-5-5 { --indent: 5.5; left:  calc(5.5 * var(--bar-width) ); }
+.indent-6   { --indent: 6  ; left:  calc(6   * var(--bar-width) ); }
+.indent-6-5 { --indent: 6.5; left:  calc(6.5 * var(--bar-width) ); }
+.indent-7   { --indent: 7  ; left:  calc(7   * var(--bar-width) ); }
+.indent-7-5 { --indent: 7.5; left:  calc(7.5 * var(--bar-width) ); }
 
 .width-0-5  { width: calc(0.5 * var(--bar-width) ); }
 .width-1    { width: calc(1   * var(--bar-width) ); }
