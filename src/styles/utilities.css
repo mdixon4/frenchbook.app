@@ -1,6 +1,6 @@
 
   /* Utility Classes */
-  .absolute {
+  body .absolute {
     position: absolute;
   }
   .teeny {
