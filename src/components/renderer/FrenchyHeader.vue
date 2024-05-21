@@ -75,14 +75,14 @@ defineProps({
     height: 0.8em;
   }
 
-  .with-french-book-logo .french-book-logo {
+  [data-template="frenchbook"] .french-book-logo {
     display: block;
   }
   .french-book-logo {
     width: 7rem;
     display: none;
   }
-  .with-shirazz-logo .shirazz-logo {
+  [data-template="shirazz"] .shirazz-logo {
     display: block;
   }
   .shirazz-logo {

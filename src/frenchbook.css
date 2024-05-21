@@ -11,21 +11,38 @@
   font-family: 'LJC';
   font-style: normal;
   font-weight: normal;
-  src: url('../src/assets/lilyjazz-chord.otf') format('opentype');
+  src: url('/src/assets/lilyjazz-chord.otf') format('opentype');
 }
 @font-face {
   font-family: 'MuseJazz';
   font-style: normal;
   font-weight: normal;
-  src: url('../src/assets/MuseJazz.otf') format('opentype');
+  src: url('/src/assets/MuseJazz.otf') format('opentype');
 }
 @font-face {
   font-family: 'RhythmsFont';
   font-style: normal;
   font-weight: normal;
-  src: url('../src/assets/Rhythms.otf') format('opentype');
+  src: url('/src/assets/Rhythms.otf') format('opentype');
 }
 
+@property --page-width {
+  syntax: '<length>';
+  initial-value: 210mm;
+  inherits: true;
+}
+
+@property --page-height {
+  syntax: '<length>';
+  initial-value: 297mm;
+  inherits: true;
+}
+
+@property --aspect-ratio {
+  syntax: '<number>';
+  initial-value: calc(210/297);
+  inherits: true;
+}
 
 @media print {
   /* Ensure user agent does not need "print background colours" on in order
@@ -45,7 +62,7 @@
   margin: 0;
 }
 
-:root[data-media='print'] {
+:root {
   --page-width: 210mm;
   --page-height: 297mm;
   --top-page-margin: 10mm;
@@ -53,7 +70,7 @@
   --header-height: 16mm;
   --song-top-padding: calc(var(--y-unit) / 2);
 }
-:root[data-media='screen'][data-ratio='3:4'] {
+:root[data-page-size='ipad'] {
   --header-height: 1.5rem;
   --top-page-margin: 2mm;
   --bottom-page-margin: 2mm;
@@ -67,27 +84,27 @@
   
 }
 
-:root[data-media='screen'][data-ratio='3:4'] header {
+:root[data-page-size='ipad'] header {
   position: absolute;
   left: 100%;
   transform-origin: top left;
   transform: rotate(90deg);
 }
   
-:root[data-media='screen'][data-ratio='3:4'] .title-bar {
+:root[data-page-size='ipad'] .title-bar {
   width: calc(var(--page-height) - 0.5cm);
   position: relative;
   left: calc(-1 * var(--top-page-margin));
   margin-inline: 0.25cm;
 }
-:root[data-media='screen'][data-ratio='3:4'] .top-content {
+:root[data-page-size='ipad'] .top-content {
   display: none;
 }
-:root[data-media='screen'][data-ratio='3:4'] .number {
+:root[data-page-size='ipad'] .number {
   font-size: 1.75rem; 
   line-height: 1.5rem;
 }
-:root[data-media='screen'][data-ratio='3:4'] .title-bar .title {
+:root[data-page-size='ipad'] .title-bar .title {
   font-size: 1.5rem;
   line-height: 1;
 }

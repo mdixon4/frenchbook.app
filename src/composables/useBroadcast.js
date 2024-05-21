@@ -11,12 +11,14 @@ const wsFromHttp = (url) => {
 }
 
 export const useBroadcast = (server, myRef) => {
+
   const isBroadcasting = ref(false)
   const isListening = ref(false)
   const broadcastPassword = useLocalStorage('broadcastPassword', '')
-  const websocketUrl = wsFromHttp(server)
-
-  console.log(websocketUrl)
+  const websocketUrl = computed(() => {
+    if (server) return wsFromHttp(server)
+    return ''
+  })
 
   const { status, data, send, open, close } = useWebSocket(websocketUrl, {
     immediate: false,

@@ -40,7 +40,7 @@ importers:
         version: 10.9.0(vue@3.4.27)
       '@vueuse/router':
         specifier: ^4.11.2
-        version: 4.11.2(vue-router@4.0.12)(vue@3.4.27)
+        version: 4.11.2(vue-router@4.3.2(vue@3.4.27))(vue@3.4.27)
       idb-keyval:
         specifier: ^6.2.1
         version: 6.2.1
@@ -58,7 +58,7 @@ importers:
         version: 2.1.7(vue@3.4.27)
       pinia-plugin-persistedstate:
         specifier: ^3.2.1
-        version: 3.2.1(pinia@2.1.7)
+        version: 3.2.1(pinia@2.1.7(vue@3.4.27))
       puppeteer-core:
         specifier: ^22.8.0
         version: 22.8.0
@@ -69,8 +69,8 @@ importers:
         specifier: ^3.4.27
         version: 3.4.27
       vue-router:
-        specifier: ^4.0.12
-        version: 4.0.12(vue@3.4.27)
+        specifier: ^4.3.2
+        version: 4.3.2(vue@3.4.27)
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^1.10.2
@@ -1245,10 +1245,10 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  vue-router@4.0.12:
-    resolution: {integrity: sha512-CPXvfqe+mZLB1kBWssssTiWg4EQERyqJZes7USiqfW9B5N2x+nHlnsM1D3b5CaJ6qgCvMmYJnz+G0iWjNCvXrg==}
+  vue-router@4.3.2:
+    resolution: {integrity: sha512-hKQJ1vDAZ5LVkKEnHhmm1f9pMiWIBNGF5AwU67PdH7TyXCj/a4hTccuUuYCAMgJK6rO/NVYtQIEN3yL8CECa7Q==}
     peerDependencies:
-      vue: ^3.0.0
+      vue: ^3.2.0
 
   vue@3.4.27:
     resolution: {integrity: sha512-8s/56uK6r01r1icG/aEOHqyMVxd1bkYcSe9j8HcKtr/xTOFWvnzIVTehNW+5Yt89f+DLBe4A569pnZLS5HzAMA==}
@@ -2386,11 +2386,11 @@ snapshots:
 
   '@vueuse/metadata@10.9.0': {}
 
-  '@vueuse/router@4.11.2(vue-router@4.0.12)(vue@3.4.27)':
+  '@vueuse/router@4.11.2(vue-router@4.3.2(vue@3.4.27))(vue@3.4.27)':
     dependencies:
       '@vueuse/shared': 4.11.2(vue@3.4.27)
       vue-demi: 0.14.7(vue@3.4.27)
-      vue-router: 4.0.12(vue@3.4.27)
+      vue-router: 4.3.2(vue@3.4.27)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -2811,7 +2811,7 @@ snapshots:
 
   picocolors@1.0.0: {}
 
-  pinia-plugin-persistedstate@3.2.1(pinia@2.1.7):
+  pinia-plugin-persistedstate@3.2.1(pinia@2.1.7(vue@3.4.27)):
     dependencies:
       pinia: 2.1.7(vue@3.4.27)
 
@@ -3022,7 +3022,7 @@ snapshots:
     dependencies:
       vue: 3.4.27
 
-  vue-router@4.0.12(vue@3.4.27):
+  vue-router@4.3.2(vue@3.4.27):
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.4.27

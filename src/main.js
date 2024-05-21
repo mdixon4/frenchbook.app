@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import { createHead } from '@unhead/vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
+import { router } from './router'
 
 import './frenchbook.css'
 
@@ -12,5 +13,6 @@ const head = createHead()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(head)
+app.use(router)
 app.mount('#apphost')
 
