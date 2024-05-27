@@ -25,16 +25,13 @@ const scale = computed(() => {
   return 1
 })
 
-watch(fitStrategy, () => {
-  document.body.style.overflowX = 'auto'
-  document.body.style.overflowY = 'auto'
-  if (fitStrategy.value === 'FIT-WIDTH' || fitStrategy.value === 'FIT-SCREEN') {
-    document.body.style.overflowX = 'hidden'
-  }
-  if (fitStrategy.value === 'FIT-HEIGHT' || fitStrategy.value === 'FIT-SCREEN') {
-    document.body.style.overflowY = 'hidden'
-  }
-  console.log('Strategy changed to', fitStrategy.value)
+watch(scale, (newScale) => {
+  document.documentElement.style.setProperty('--scale', newScale)
+}, { immediate: true })
+
+watch(fitStrategy, (fit) => {
+  document.documentElement.style.setProperty('--fit-strategy', fit)
+  document.documentElement.dataset.fitStrategy = fit
 }, { immediate: true })
 
 </script>
@@ -71,13 +68,33 @@ watch(fitStrategy, () => {
   opacity: 0.8;
 }
 
-html,
-body {
-  width: 0;
-  height: 0;
+html {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 body {
-  background: darkkhaki;
+  background: var(--vscode-editor-background, #1e1e1e);
+  overflow: hidden;
+}
+
+/* 
+[data-fit-strategy="FIT-WIDTH"] body {
+  overflow-x: hidden;
+}
+
+[data-fit-strategy="FIT-HEIGHT"] body {
+  overflow-y: hidden;
+} */
+
+[data-fit-strategy="FIT-WIDTH"] body {
+  height: calc(var(--scale) * var(--page-height));
+}
+
+[data-fit-strategy="FIT-HEIGHT"] body {
+  width: calc(var(--scale) * var(--page-width));
+  margin: 0 auto;
+  height: 100%;
 }
 </style>
