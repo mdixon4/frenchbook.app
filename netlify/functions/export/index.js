@@ -95,7 +95,7 @@ export async function handler(event, context) {
 
   // Cache the pdf under the hash
   console.log('Caching pdf')
-  storage.write('frenchbook.app/pdf/' + key, pdfBuffer)
+  await storage.write('frenchbook.app/pdf/' + key, pdfBuffer)
   console.log('pdfBuffer:', pdfBuffer)
 
   return {
