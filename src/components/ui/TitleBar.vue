@@ -29,7 +29,7 @@ const { floatingStyles } = useFloating(reference, floating, {
         <li><button @click="localFileStore.saveFile">Save</button></li>
         <li><button @click="localFileStore.saveAs">Save As</button></li>
         <li><button @click="uiStore.isChangingSettings = true">Settings</button></li>
-        <li><button :disabled="!pdfDownloader.canExport" @click="pdfDownloader.toPdf">Export to PDF</button></li>
+        <li><button :disabled="!pdfDownloader.canExport.value" @click="pdfDownloader.toPdf">Export to PDF</button></li>
         <li><a href="/docs/" target="_blank">Help</a></li>
       </ul>
     </div>

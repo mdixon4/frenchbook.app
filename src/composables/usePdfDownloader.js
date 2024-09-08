@@ -52,7 +52,13 @@ export const usePdfDownloader = () => {
   const canSave = 'showOpenFilePicker' in window
 
   const canExport = computed(() => {
-    return songStore.songText && uiStore.pdfApiKey
+    if (!songStore.songText) {
+      return false
+    }
+    if (!uiStore.pdfApiKey) {
+      return false
+    }
+    return true
   })
 
   const pdfFileName = computed(() => {
@@ -68,7 +74,10 @@ export const usePdfDownloader = () => {
 
   const toPdf = async () => {
     console.log('Exporting to PDF')
-    if (!canExport.value) return
+    if (!canExport.value) {
+      console.log('Cannot export to PDF')
+      return
+    }
     const NOT_SUPPORTED = Symbol('NOT_SUPPORTED')
 
     const [resp, fileHandle] = await Promise.all([

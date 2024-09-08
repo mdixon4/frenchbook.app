@@ -71,6 +71,8 @@ export async function handler(event, context) {
   // Check if the pdf is already cached
   const cached = await fileExists('frenchbook.app/pdf/' + key)
   if (cached) {
+    console.log('Found cached pdf, returning it preferentially')
+
     const pdfBuffer = await storage.readToBuffer('frenchbook.app/pdf/' + key)
     return {
       statusCode: 200,
@@ -83,6 +85,8 @@ export async function handler(event, context) {
     }
   }
 
+  console.log('No cached pdf found, rendering')
+
   // Turn body into base-64 encoded string
   const b64 = toUrlHash(event.body)
   const url = new URL('', FRENCHBOOK_URL)
@@ -90,7 +94,9 @@ export async function handler(event, context) {
   const pdfBuffer = await render(url)
 
   // Cache the pdf under the hash
+  console.log('Caching pdf')
   storage.write('frenchbook.app/pdf/' + key, pdfBuffer)
+  console.log('pdfBuffer:', pdfBuffer)
 
   return {
     statusCode: 200,
