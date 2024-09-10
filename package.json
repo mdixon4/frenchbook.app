@@ -19,7 +19,6 @@
     "@vueuse/core": "^10.11.1",
     "@vueuse/router": "^4.11.2",
     "dotenv": "^16.4.5",
-    "file-type": "^19.5.0",
     "idb-keyval": "^6.2.1",
     "markdown-it": "^12.3.2",
     "md5": "^2.3.0",
@@ -36,5 +35,13 @@
     "@vue/compiler-sfc": "^3.5.3",
     "vite": "^2.9.18"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "@flystorage/stream-mime-type": "0.1.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@flystorage/stream-mime-type": "0.1.1"
+    }
+  }
 }
