@@ -16,3 +16,4 @@
 
 [functions]
   external_node_modules = ["@sparticuz/chromium"]
+  included_files = ["node_modules/file-type"]
