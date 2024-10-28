@@ -2,15 +2,11 @@
   <svg class="stanza-border" :viewBox="stanzaBorderViewBox" preserveAspectRatio="none">
     <path class="border-stroke crisp non-scaling-stroke" :d="stanzaBorderPath"></path>
     <path class="border-stroke-gap non-scaling-stroke" :d="stanzaBorderPath"></path>
-    <defs>
-      <mask :id="`mask${randomId}`">
-        <rect x="-999" y="-999" width="9999" height="9999" fill="white"></rect>
-        <path class="shadow-mask crisp non-scaling-stroke" :d="stanzaBorderPath" fill="black"></path>
-      </mask>
-    </defs>
-    <g :mask="`url(#mask${randomId})`">
-      <path class="shadow-fill crisp non-scaling-stroke" :d="stanzaBorderPath"></path>
-    </g>
+    <filter id="shadow-filter" x=0 y=0 width="200%" height="200%">
+      <feOffset in="SourceGraphic" result="offset" dx="4" dy="4"></feOffset>
+      <feComposite in2="SourceGraphic" in="offset" operator="out"></feComposite>
+    </filter>
+    <path class="stanza-shadow crisp non-scaling-stroke" :d="stanzaBorderPath" filter="url(#shadow-filter)"></path>
   </svg>
 </template>
 
@@ -72,13 +68,14 @@ const stanzaBorderViewBox = computed(() => {
     stroke: white;
     stroke-width: var(--border-stroke-gap-width);
   }
-  .shadow-mask {
+  .stanza-shadow {
+    fill: black;
     stroke-width: var(--thick-stroke-width);
     stroke: black;
+    display: none;
   }
-  .stanza.shadow .shadow-fill {
-    transform: translate(calc(2 * var(--thick-stroke-width)), calc(2 * var(--thick-stroke-width)));
-    fill: var(--gridline-color, black);
+  .stanza.shadow .stanza-shadow {
+    display: unset;
   }
 
 
