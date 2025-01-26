@@ -87,32 +87,32 @@ onMounted(() => {
 
   #app.backdrop-wood {
     background-color: #6a4d3d;
-    background-image: url(https://source.unsplash.com/J2gEgTPM_OA/1600x900)
+    background-image: url(/backgrounds/J2gEgTPM_OA.jpg)
   }
 
   #app.backdrop-blue-wall {
     background-color: #4772aa;
-    background-image: url(https://source.unsplash.com/BawjznQ3Q8U/1600x900)
+    background-image: url(/backgrounds/BawjznQ3Q8U.jpg)
   }
 
   #app.backdrop-nebula {
     background-color: #775318;
-    background-image: url(https://source.unsplash.com/-hI5dX2ObAs/1600x900)
+    background-image: url(/backgrounds/-hI5dX2ObAs.jpg)
   }
 
   #app.backdrop-bright-paper {
     background-color: #fec42d;
-    background-image: url(https://source.unsplash.com/7OCUyev2M9E/1600x900)
+    background-image: url(/backgrounds/7OCUyev2M9E.jpg)
   }
 
   #app.backdrop-black-sand {
     background-color: #2c2c2c;
-    background-image: url(https://source.unsplash.com/w1_4YH5IhDg/1600x900)
+    background-image: url(/backgrounds/w1_4YH5IhDg.jpg)
   }
 
   #app.backdrop-music-stand {
     background-color: #0b0704;
-    background-image: url(https://source.unsplash.com/njaQKSM365I/1600x900)
+    background-image: url(/backgrounds/njaQKSM365I.jpg)
   }
 
   .banner {
