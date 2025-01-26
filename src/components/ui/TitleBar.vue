@@ -22,7 +22,7 @@ const { floatingStyles } = useFloating(reference, floating, {
 <template>
   <menu id="titlebar">
     <button id="file-button" popovertarget="file-menu" ref="reference">File</button>
-    <div popover id="file-menu" ref="floating" :style="floatingStyles">
+    <div popover id="file-menu" ref="floating" :style="floatingStyles" @click="floating.togglePopover()">
       <ul>
         <li><button @click="localFileStore.newFile">New</button></li>
         <li><button @click="localFileStore.openFile">Open</button></li>
