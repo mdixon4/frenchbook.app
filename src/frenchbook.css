@@ -44,6 +44,10 @@
   inherits: true;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 @media print {
   /* Ensure user agent does not need "print background colours" on in order
   for white outlines to print around chord names etc */

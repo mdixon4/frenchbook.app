@@ -58,18 +58,17 @@ onMounted(() => {
 <style>
 @media screen {
 
-  #app.docked-left {
+  .docked-left #work-area {
     flex-direction: row;
   }
 
-  #app.docked-top {
+  .docked-top #work-area {
     flex-direction: column;
   }
 
   #app {
-    display: grid;
-    grid-template-rows: min-content auto;
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     /* flex-wrap: wrap; */
     flex-grow: 1;
     background-color: #080f1f;
@@ -78,11 +77,14 @@ onMounted(() => {
     background-attachment: fixed;
     align-items: stretch;
     overflow: hidden;
+    height: 100%;
   }
 
   #work-area {
     display: flex;
     flex-direction: row;
+    overflow: hidden;
+    align-items: stretch;
   }
 
   #app.backdrop-wood {
@@ -176,11 +178,10 @@ onMounted(() => {
   .desk {
     flex-grow: 1;
     flex-shrink: 1;
-    max-height: 100vh;
     padding: 2rem;
     display: flex;
     justify-content: center;
-    /* overflow: hidden; */
+    overflow: hidden;
   }
 
   .page-panzoom {

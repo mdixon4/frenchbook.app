@@ -133,12 +133,10 @@ const handleTabPress = () => {
 
 .docked-left .controller {
   resize: horizontal;
-  height: 100vh;
 }
 
 .docked-top .controller {
   resize: vertical;
-  width: 100vw;
 }
 
 /* 
