@@ -117,13 +117,14 @@ export const useLocalFileStore = defineStore('localFile', () => {
 
 
   async function saveFile() {
-    if (!fileHandle.value) {
-      fileHandle.value = await showSaveDialog()
+    let thisFileHandle = fileHandle.value
+    if (!thisFileHandle) {
+      thisFileHandle = await showSaveDialog()
     }
-
-    if (fileHandle.value) {
-      await writeFile(fileHandle.value, songStore.songText)
+    if (thisFileHandle) {
+      await writeFile(thisFileHandle, songStore.songText)
       fileText.value = songStore.songText
+      fileHandle.value = thisFileHandle
     }
   }
 
