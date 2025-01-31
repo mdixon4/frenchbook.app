@@ -34,7 +34,7 @@
     </div>
     <div class="title-bar">
       <div class="number">{{ metadata.number }}</div>
-      <div class="title" v-html="metadata.title"></div>
+      <div class="title" v-html="metadata.title || '&nbsp;'"></div>
       <div class="number">{{ metadata.number }}</div>
     </div>
   </header>

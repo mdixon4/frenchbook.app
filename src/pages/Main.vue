@@ -24,7 +24,7 @@ const props = defineProps({
   }
 })
 
-watch(props.isTablet, (isTablet) => {
+watch(() => props.isTablet, (isTablet) => {
   document.documentElement.dataset.media = isTablet ? 'screen' : 'print'
   document.documentElement.dataset.ratio = isTablet ? '3:4' : ''
 })

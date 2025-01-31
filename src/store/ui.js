@@ -14,6 +14,7 @@ export const useUIStore = defineStore('ui', () => {
   const isControllerWrapped = ref(true)
   const isChangingSettings = ref(false)
   const pdfApiKey = useLocalStorage('pdfApiKey', '')
+  const isWaitingForPdf = ref(false)
 
   // const isBroadcasting = ref(false)
   // const isListening = ref(false)
@@ -55,6 +56,7 @@ export const useUIStore = defineStore('ui', () => {
     broadcastPassword,
     metaThemeColor,
     pdfApiKey,
+    isWaitingForPdf
   }
 
 }, {

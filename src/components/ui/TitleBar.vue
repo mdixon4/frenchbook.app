@@ -45,11 +45,47 @@ const { floatingStyles } = useFloating(reference, floating, {
 
     <div id="drag-handle">
       <span>{{ localFileStore.fileName || '(untitled)' }}{{ localFileStore.isUnsaved ? '*' : '' }}</span>
+
+      <svg v-if="uiStore.isWaitingForPdf" class="download-icon" viewBox="0 0 32 32" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M20 5.33335H6.66667V26.6667H25.3333V10.6667H20V5.33335ZM4 3.98935C4 3.25869 4.596 2.66669 5.332 2.66669H21.3333L28 9.33335V27.9907C28.0012 28.1658 27.968 28.3394 27.9021 28.5016C27.8362 28.6639 27.739 28.8116 27.6161 28.9362C27.4931 29.0609 27.3468 29.1602 27.1855 29.2283C27.0242 29.2964 26.8511 29.3321 26.676 29.3334H5.324C4.97384 29.3309 4.63869 29.1908 4.39096 28.9433C4.14322 28.6959 4.00279 28.3608 4 28.0107V3.98935Z"
+          fill="currentColor" />
+        <path class="down-arrow" d="M21.3333 16H17.3333V10.6667H14.6666V16H10.6666L16 21.3334L21.3333 16Z"
+          fill="currentColor" />
+      </svg>
+
+
     </div>
   </menu>
 </template>
 
 <style>
+.download-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.download-icon .down-arrow {
+  animation: pulse 2s infinite;
+}
+
 @media print {
   #titlebar {
     display: none;

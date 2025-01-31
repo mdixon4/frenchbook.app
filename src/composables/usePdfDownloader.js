@@ -3,7 +3,7 @@ import { useSongStore } from '../store/song'
 import { useUIStore } from '../store/ui'
 import { useLocalFileStore } from '../store/localFile'
 
-const fetchPdf = async () => {
+const fetchPdf = async (retries = 1) => {
   const songStore = useSongStore()
   const uiStore = useUIStore()
   const resp = await fetch('/api/export', {
@@ -17,21 +17,41 @@ const fetchPdf = async () => {
   if (resp.status === 200 && resp.headers.get('Content-Type') === 'application/pdf' && resp.headers.get('Content-Disposition').startsWith('attachment')) {
     return resp
   }
+  if (resp.status === 502) {
+    try {
+      const json = await resp.json()
+      if (json.errorType === 'LambdaTimeout') {
+        if (retries) {
+          return fetchPdf(retries - 1)
+        }
+      }
+      return null
+    } catch (err) {
+      console.error(err)
+      return null
+    }
+  }
   return null
 }
 
 const promptForSave = (filename) => {
-  return window.showSaveFilePicker({
-    suggestedName: filename,
-    types: [
-      {
-        description: 'PDF files',
-        accept: {
-          'application/pdf': ['.pdf']
+  try {
+    console.log('promptForSave')
+    return window.showSaveFilePicker({
+      suggestedName: filename,
+      types: [
+        {
+          description: 'PDF files',
+          accept: {
+            'application/pdf': ['.pdf']
+          }
         }
-      }
-    ]
-  })
+      ]
+    })
+  } catch (err) {
+    console.log(err)
+    return null
+  }
 }
 
 const autoDownload = async (resp, filename) => {
@@ -63,12 +83,12 @@ export const usePdfDownloader = () => {
 
   const pdfFileName = computed(() => {
     if (localFileStore.fileName) {
-      return localFileStore.fileName.replace(/\.[^.]+$/, '.pdf')
+      return localFileStore.fileName + '.pdf'
     }
     if (songStore.songTitle) {
-      return songStore.songTitle + '.pdf'
+      return songStore.songTitle + '.grid.pdf'
     }
-    return 'untitled-chart.pdf'
+    return 'untitled-chart.grid.pdf'
   })
 
 
@@ -82,8 +102,16 @@ export const usePdfDownloader = () => {
 
     const [resp, fileHandle] = await Promise.all([
       fetchPdf(),
-      canSave ? promptForSave(pdfFileName.value) : Promise.resolve(NOT_SUPPORTED)
-    ])
+      canSave
+        ? promptForSave(pdfFileName.value).then((fileHandle) => {
+          uiStore.isWaitingForPdf = true
+          return fileHandle
+        })
+        : Promise.resolve(NOT_SUPPORTED),
+    ]).then((results) => {
+      uiStore.isWaitingForPdf = false
+      return results
+    })
 
     if (!fileHandle) {
       return
