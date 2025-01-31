@@ -85,6 +85,7 @@ onMounted(() => {
     flex-direction: row;
     overflow: hidden;
     align-items: stretch;
+    flex-grow: 1;
   }
 
   #app.backdrop-wood {
@@ -181,7 +182,6 @@ onMounted(() => {
     padding: 2rem;
     display: flex;
     justify-content: center;
-    overflow: hidden;
   }
 
   .page-panzoom {
