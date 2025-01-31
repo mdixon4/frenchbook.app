@@ -96,13 +96,14 @@ const { floatingStyles } = useFloating(reference, floating, {
   left: env(titlebar-area-x, 0);
   top: env(titlebar-area-y, 0);
   height: env(titlebar-area-height);
+  min-height: env(titlebar-area-height, 34px);
   padding-right: calc(100% - env(titlebar-area-width));
   /* width: env(titlebar-area-width, 100%) */
   width: 100%;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 13px;
-  background-color: hsla(0, 0%, 0%, 0.75);
+  background-color: black;
   padding-inline-start: 1.2rem;
   display: flex;
   align-items: center;
