@@ -126,9 +126,11 @@ export type MetaData = {
 
 export type SongPart = Stanza | TextBlock | HR
 
+export type Page = Array<SongPart>
+
 export type Song = {
   metadata: MetaData
-  parts: Array<SongPart>
+  pages: Array<Page>
   css: string
 }
 

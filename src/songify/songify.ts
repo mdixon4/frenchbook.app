@@ -926,24 +926,53 @@ const extractParts = (songMatter: string): Array<SongPart> => {
 }
 
 
+function testForCssString(text: string): boolean {
+  // Attempt to parse as CSS. If it parses, it's CSS. If it doesn't, it's not.
+  try {
+    const sheet = new CSSStyleSheet()
+    sheet.replaceSync(text)
+    if (sheet.cssRules.length === 0) {
+      return false
+    }
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+
 export const songify = (songText: string): Song => {
   try {
     songText = songText.replaceAll('\r\n', '\n')
 
-    let [frontMatter, songMatter, css, ...otherMatter] = songText.split(/\n*=+\n*/m)
-    if (songMatter === undefined) {
-      songMatter = frontMatter
+    let songMatter = [] as Array<string>
+    let frontMatter = ''
+    let css = ''
+
+    let parts = songText.split(/\n*=+\n*/m)
+    if (parts.length === 1) {
+      songMatter = [parts[0]]
       frontMatter = ''
+    } else {
+      frontMatter = parts[0]
+      if (parts.length > 2 && testForCssString(parts.at(-1) || '')) {
+        css = parts.at(-1) || ''
+        songMatter = parts.slice(1, -1)
+      } else {
+        songMatter = parts.slice(1)
+      }
     }
+    
     let metadata = parseFrontMatter(frontMatter)
     
-    let parts = extractParts(songMatter)
+    let pages = songMatter.map(songMatterPage => extractParts(songMatterPage)).filter(page => page.length)
+    
 
-    parts = handleInterpartSpacing(parts, metadata)
+    pages = pages.map(parts => handleInterpartSpacing(parts, metadata))
     
     return {
       metadata,
-      parts,
+      pages,
       css
     }
   } catch (err) {
@@ -953,14 +982,14 @@ export const songify = (songText: string): Song => {
       metadata: {
         title: 'Error'
       },
-      parts: [
+      pages: [[
         {
           type: 'plain-text',
           classes: ['error'],
           text: err.message,
           html: err.message
         }
-      ],
+      ]],
       css: '.error { background: pink; padding: 2rem; }'
     }
   }

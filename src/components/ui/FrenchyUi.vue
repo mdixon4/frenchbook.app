@@ -18,7 +18,6 @@
         <div class="page-holder">
           <div class="page-panzoom" ref="pagePanzoomEl">
             <slot></slot>
-            <frenchy-page-rulers></frenchy-page-rulers>
           </div>
         </div>
       </div>
@@ -31,7 +30,6 @@ import { ref, computed, watch, defineProps, defineEmits, onMounted, inject } fro
 import { useHead } from '@unhead/vue'
 import { useStorage, useVModel } from '@vueuse/core'
 import panzoom from 'panzoom'
-import FrenchyPageRulers from './FrenchyPageRulers.vue'
 import FrenchySettings from './FrenchySettings.vue'
 import FrenchyController from './FrenchyController.vue'
 import FrenchyEditButton from './FrenchyEditButton.vue'
@@ -184,11 +182,6 @@ onMounted(() => {
     justify-content: center;
   }
 
-  .page-panzoom {
-    background: white;
-    border: 1px solid black;
-    box-shadow: 4px 4px black;
-  }
 
 }
 

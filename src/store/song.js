@@ -10,6 +10,7 @@ export const useSongStore = defineStore('song', () => {
   const songText = ref('')
   const song = computed(() => songify(songText.value))
   const songTitle = computed(() => song.value?.metadata?.title ?? null)
+  const pages = computed(() => song.value?.pages ?? [])
   syncWithUrlHash(songText)
 
   onMounted(() => {
@@ -32,6 +33,7 @@ export const useSongStore = defineStore('song', () => {
     songText,
     song,
     songTitle,
-    defaultSongText
+    defaultSongText,
+    pages,
   }
 })
