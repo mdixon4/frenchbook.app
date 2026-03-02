@@ -13,12 +13,14 @@
   font-weight: normal;
   src: url('/src/assets/lilyjazz-chord.otf') format('opentype');
 }
+
 @font-face {
   font-family: 'MuseJazz';
   font-style: normal;
   font-weight: normal;
   src: url('/src/assets/MuseJazz.otf') format('opentype');
 }
+
 @font-face {
   font-family: 'RhythmsFont';
   font-style: normal;
@@ -44,11 +46,14 @@
   inherits: true;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 @media print {
+
   /* Ensure user agent does not need "print background colours" on in order
   for white outlines to print around chord names etc */
   body {
@@ -73,54 +78,78 @@
   --bottom-page-margin: 10mm;
   --header-height: 16mm;
   --song-top-padding: calc(var(--y-unit) / 2);
+  --interior-page-width: calc(var(--page-width) - var(--left-page-margin) - var(--right-page-margin));
 }
+
 :root[data-page-size='ipad'] {
-  --header-height: 1.5rem;
+  /* --header-height: 1.5rem; */
+  --header-height: 7mm;
   --top-page-margin: 2mm;
-  --bottom-page-margin: 2mm;
-  --page-height: calc(297mm - 20mm - 16mm - calc(var(--y-unit)/2) + var(--top-page-margin) + var(--bottom-page-margin));
-  --song-top-padding: 0;
+  --bottom-page-margin: 10mm;
+  /* 16mm is A4 header height, 20mm is A4 top and bottom margin combined, plus half a y-unit to account for the song top padding.
+   * So we subtract these to get the real music page height, and add our new margins back in. This gives us a page height that allows the same number of rows to fit vertically
+   * The width is then calculated based on the ipad aspect ratio, and the margins are recalculated based on the new width. */
+  --page-height: calc(297mm - 20mm - 16mm + var(--top-page-margin) + var(--bottom-page-margin) + var(--header-height));
+  --song-top-padding: calc(var(--y-unit) / 2);
   --page-width: calc(var(--page-height) * 3 / 4);
-  --remaining-margin-space: calc(var(--page-width) - var(--page-columns) * var(--root-bar-width) - var(--header-height));
+  --interior-page-width: calc(var(--page-columns) * var(--root-bar-width));
+  /* --remaining-margin-space: calc(var(--page-width) - var(--page-columns) * var(--root-bar-width) - var(--header-height)); */
+  --top-content-height: 1.5rem;
+  --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width) - var(--top-content-height));
   --x-page-margin: calc(var(--remaining-margin-space) / 2);
   --left-page-margin: calc(var(--remaining-margin-space) / 2);
-  --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--header-height));
-  
+  /* --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--header-height)); */
+  --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--top-content-height));
+}
+
+header {
+  height: var(--header-height);
 }
 
 :root[data-page-size='ipad'] header {
-  position: absolute;
+  width: var(--interior-page-width);
+  /* position: absolute;
   left: 100%;
   transform-origin: top left;
-  transform: rotate(90deg);
+  transform: rotate(90deg); */
 }
-  
+
 :root[data-page-size='ipad'] .title-bar {
-  width: calc(var(--page-height) - 0.5cm);
+  border-top: var(--thick-stroke-width) solid var(--gridline-color);
+  /* width: calc(var(--page-height) - 0.5cm);
   position: relative;
   left: calc(-1 * var(--top-page-margin));
-  margin-inline: 0.25cm;
+  margin-inline: 0.25cm; */
 }
+
 :root[data-page-size='ipad'] .top-content {
-  display: none;
+  /* display: none; */
+  position: absolute;
+  width: var(--page-height);
+  height: var(--top-content-height);
+  left: 100%;
+  top: 0;
+  transform-origin: top left;
+  transform: rotate(90deg);
+  padding-inline: 1rem;
+  border-bottom: 0;
 }
+
 :root[data-page-size='ipad'] .number {
-  font-size: 1.75rem; 
+  font-size: 1.5rem;
   line-height: 1.5rem;
 }
+
 :root[data-page-size='ipad'] .title-bar .title {
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.7rem;
+  line-height: 1.5rem;
 }
 
 
 :root {
   --root-bar-width: 22mm;
   --page-columns: 8;
-  --x-page-margin: calc(
-    calc(var(--page-width) - var(--page-columns) * var(--root-bar-width))
-    / 2
-  );
+  --x-page-margin: calc(calc(var(--page-width) - var(--page-columns) * var(--root-bar-width)) / 2);
   --left-page-margin: var(--x-page-margin);
   --right-page-margin: var(--x-page-margin);
 
@@ -145,7 +174,7 @@
   --serif-font: 'EB Garamond', 'Noto Sans Symbols', 'Noto Emoji';
   --annotation-font: 'EB Garamond', 'Noto Sans Symbols', 'Noto Emoji';
   --annotation-script-font: 'EB Garamond', 'Noto Music', 'Noto Sans Symbols', 'Noto Emoji';
-  
+
   --root-large-chord-size: 8.6mm;
   --root-small-chord-size: calc(var(--root-large-chord-size) / 1.625);
 }

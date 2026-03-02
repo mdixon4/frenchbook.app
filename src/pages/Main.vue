@@ -25,9 +25,11 @@ const props = defineProps({
 })
 
 watch(() => props.isTablet, (isTablet) => {
+  console.log('isTablet changed/set')
   document.documentElement.dataset.media = isTablet ? 'screen' : 'print'
   document.documentElement.dataset.ratio = isTablet ? '3:4' : ''
-})
+  document.documentElement.dataset.pageSize = isTablet ? 'ipad' : 'a4'
+}, { immediate: true })
 
 useKeyboardShortcuts()
 const songStore = useSongStore()
