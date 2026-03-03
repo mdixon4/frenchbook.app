@@ -95,11 +95,12 @@
   --interior-page-width: calc(var(--page-columns) * var(--root-bar-width));
   /* --remaining-margin-space: calc(var(--page-width) - var(--page-columns) * var(--root-bar-width) - var(--header-height)); */
   --top-content-height: 1.5rem;
-  --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width) - var(--top-content-height));
+  /* --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width) - var(--top-content-height)); */
+  --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width));
   --x-page-margin: calc(var(--remaining-margin-space) / 2);
   --left-page-margin: calc(var(--remaining-margin-space) / 2);
   /* --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--header-height)); */
-  --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--top-content-height));
+  --right-page-margin: calc(var(--remaining-margin-space) / 2);
 }
 
 header {
@@ -127,12 +128,14 @@ header {
   position: absolute;
   width: var(--page-height);
   height: var(--top-content-height);
-  left: 100%;
+  left: calc(100% - 1mm);
   top: 0;
   transform-origin: top left;
   transform: rotate(90deg);
   padding-inline: 1rem;
   border-bottom: 0;
+  justify-content: start;
+  gap: 1rem;
 }
 
 :root[data-page-size='ipad'] .number {
