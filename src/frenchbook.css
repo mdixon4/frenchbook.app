@@ -83,44 +83,68 @@
 
 :root[data-page-size='ipad'] {
   /* --header-height: 1.5rem; */
-  --header-height: 7mm;
-  --top-page-margin: 2mm;
-  --bottom-page-margin: 10mm;
+  --header-height: 0mm;
+  --top-page-margin: 1mm;
+  --bottom-page-margin: calc(var(--song-top-padding) + var(--top-page-margin));
   /* 16mm is A4 header height, 20mm is A4 top and bottom margin combined, plus half a y-unit to account for the song top padding.
    * So we subtract these to get the real music page height, and add our new margins back in. This gives us a page height that allows the same number of rows to fit vertically
    * The width is then calculated based on the ipad aspect ratio, and the margins are recalculated based on the new width. */
   --page-height: calc(297mm - 20mm - 16mm + var(--top-page-margin) + var(--bottom-page-margin) + var(--header-height));
-  --song-top-padding: calc(var(--y-unit) / 2);
   --page-width: calc(var(--page-height) * 3 / 4);
   --interior-page-width: calc(var(--page-columns) * var(--root-bar-width));
   /* --remaining-margin-space: calc(var(--page-width) - var(--page-columns) * var(--root-bar-width) - var(--header-height)); */
-  --top-content-height: 1.5rem;
-  /* --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width) - var(--top-content-height)); */
-  --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width));
+  --title-bar-height: 2rem;
+  --top-content-height: 0.2rem;
+  --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width) - var(--title-bar-height));
+  /* --remaining-margin-space: calc(var(--page-width) - var(--interior-page-width)); */
   --x-page-margin: calc(var(--remaining-margin-space) / 2);
   --left-page-margin: calc(var(--remaining-margin-space) / 2);
-  /* --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--header-height)); */
-  --right-page-margin: calc(var(--remaining-margin-space) / 2);
+  --right-page-margin: calc(var(--remaining-margin-space) / 2 + var(--title-bar-height));
+  /* --right-page-margin: calc(var(--remaining-margin-space) / 2); */
 }
 
 header {
   height: var(--header-height);
 }
 
-:root[data-page-size='ipad'] header {
-  width: var(--interior-page-width);
-  /* position: absolute;
-  left: 100%;
-  transform-origin: top left;
-  transform: rotate(90deg); */
-}
+:root[data-page-size='ipad'] header {}
 
 :root[data-page-size='ipad'] .title-bar {
-  border-top: var(--thick-stroke-width) solid var(--gridline-color);
+  max-width: var(--page-height);
+  width: max-content;
+  position: absolute;
+  top: 0;
+  left: calc(100%);
+  transform-origin: top left;
+  transform: rotate(90deg);
+  /* border-bottom: 0; */
+  grid-auto-columns: max-content;
+  align-items: baseline;
+  align-content: start;
+  column-gap: 3mm;
+  padding: 0 var(--top-page-margin);
+  height: var(--title-bar-height);
+  border-right: var(--stroke-width) solid var(--gridline-color);
+  border-bottom-width: var(--stroke-width);
+  border: 0;
+  background: linear-gradient(to right, rgb(234, 255, 40), rgb(248, 241, 144));
+
+  .number:not(:first-child) {
+    display: none;
+  }
+
+  .number {
+    padding-top: 0.2rem;
+  }
+
   /* width: calc(var(--page-height) - 0.5cm);
   position: relative;
   left: calc(-1 * var(--top-page-margin));
   margin-inline: 0.25cm; */
+}
+
+.title-bar-credits {
+  display: none;
 }
 
 :root[data-page-size='ipad'] .top-content {
@@ -132,10 +156,30 @@ header {
   top: 0;
   transform-origin: top left;
   transform: rotate(90deg);
-  padding-inline: 1rem;
+  padding-right: var(--bottom-page-margin);
   border-bottom: 0;
-  justify-content: start;
-  gap: 1rem;
+  justify-content: end;
+
+  /* gap: 1rem; */
+  .french-book-logo {
+    width: 5rem;
+  }
+
+  .shirazz-logo {
+    width: 4rem;
+  }
+
+  img {
+    display: block;
+  }
+
+  .credits {
+    display: none;
+  }
+
+  .title-bar-credits {
+    display: block;
+  }
 }
 
 :root[data-page-size='ipad'] .number {
