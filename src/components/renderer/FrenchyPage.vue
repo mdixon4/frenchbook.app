@@ -1,6 +1,8 @@
 <template>
   <div class="page" v-if="song">
-    <frenchy-header layout="ipad" :metadata="song.metadata" :totalPages="song.pages.length"
+    <frenchy-header-vertical :metadata="song.metadata" :totalPages="song.pages.length"
+      :pageNumber="props.pageIdx + 1"></frenchy-header-vertical>
+    <frenchy-header :metadata="song.metadata" :totalPages="song.pages.length"
       :pageNumber="props.pageIdx + 1"></frenchy-header>
     <div class="song" :style="{
       '--bar-width': `calc(${song.metadata.barWidth || 1} * var(--root-bar-width))`,
@@ -21,6 +23,7 @@
 import { defineProps, computed } from 'vue'
 
 import FrenchyHeader from './FrenchyHeader.vue'
+import FrenchyHeaderVertical from './FrenchyHeaderVertical.vue'
 import FrenchyStanza from './FrenchyStanza.vue'
 import FrenchyHr from './FrenchyHr.vue'
 import FrenchyTextBlock from './FrenchyTextBlock.vue'
