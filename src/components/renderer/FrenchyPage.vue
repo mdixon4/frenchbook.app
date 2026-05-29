@@ -53,4 +53,8 @@ const parts = computed(() => {
     box-shadow: 4px 4px black;
   }
 }
+
+.page {
+  isolation: isolate;
+}
 </style>
